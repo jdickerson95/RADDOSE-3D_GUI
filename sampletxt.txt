@@ -1,0 +1,2 @@
+All dose values exceed x MGy. Studies by y et al. suggest that these residues are effected beyond this dose.
+Diffracted Dose Efficiency is highest for strategy x.
