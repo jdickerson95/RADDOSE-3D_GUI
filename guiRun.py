@@ -446,7 +446,7 @@ class RADDOSEgui(Frame):
 		self.crystChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
 
 		# make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
-		l = Label(LabelFrameBodyRight,text="Choose your beam strategy",style="labelFrameTitle.TLabel")
+		l = Label(LabelFrameBodyRight,text="Choose experiment strategy",style="labelFrameTitle.TLabel")
 		chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
 		chooseBeamStratFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
 
