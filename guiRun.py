@@ -444,18 +444,23 @@ class RADDOSEgui(Frame):
 		self.crystChoices = [cryst.crystName for cryst in self.crystList]
 		self.crystChoiceMenu = dynamicOptionMenu(chooseCrystFrame, self.crystChoice,self.crystChoices[0],*self.crystChoices)
 		self.crystChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
-
-		# make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
-		l = Label(LabelFrameBodyRight,text="Choose experiment strategy",style="labelFrameTitle.TLabel")
+  
+          # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
+		l = Label(LabelFrameBodyRight,text="Choose a beam",style="labelFrameTitle.TLabel")
 		chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
 		chooseBeamStratFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
-
-		# make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies 
+  
+          # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies 
 		# created below
 		self.beamChoice = StringVar(self)
 		self.beamChoices = [bm.beamName for bm in self.beamList]
 		self.beamChoiceMenu = dynamicOptionMenu(chooseBeamStratFrame, self.beamChoice,self.beamChoices[0],*self.beamChoices)
 		self.beamChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
+
+		# make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
+		l = Label(LabelFrameBodyRight,text="Choose exposure strategy",style="labelFrameTitle.TLabel")
+		chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
+		chooseBeamStratFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
 
 		# make a button to incorporate the currently selected beam (in beam dropdown list above) to the treeview of beam 
 		# strategies below
