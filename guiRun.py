@@ -20,33 +20,33 @@ class beams(object):
 	# this class is for beam parameters for a loaded or created beam
 	def __init__(self,beamName="",beamType="",beamFWHM=[],
 				 beamFlux=0,beamEnergy=0,beamRectColl=[]):
-		self.beamName = beamName
-		self.beamType = beamType
-		self.beamFWHM = beamFWHM
-		self.beamFlux = beamFlux
-		self.beamEnergy = beamEnergy
-		self.beamRectColl = beamRectColl
+		self.beamName     = beamName
+		self.type         = beamType
+		self.fWHM         = beamFWHM
+		self.flux         = beamFlux
+		self.energy       = beamEnergy
+		self.collimation  = beamRectColl
 
 #####################################################################################################
 class crystals(object):
 	# this class is for crystal parameters for a loaded or created crystal
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
 				 crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff=""):
-		self.crystName = crystName
-		self.crystType = crystType
-		self.crystDimX = crystDimX
-		self.crystDimY = crystDimY
-		self.crystDimZ = crystDimZ
-		self.crystPixPerMic = crystPixPerMic
-		self.crystAbsorpCoeff = crystAbsorpCoeff
+		self.crystName        = crystName
+		self.type             = crystType
+		self.crystDimX        = crystDimX
+		self.crystDimY        = crystDimY
+		self.crystDimZ        = crystDimZ
+		self.pixelsPerMicron  = crystPixPerMic
+		self.absCoefCalc      = crystAbsorpCoeff
 
 #####################################################################################################
 class wedges(object):
 	# this class is for wedge parameters for a loaded or created wedge
 	def __init__(self,angStart="",angStop="",exposTime=""):
-		self.angStart = angStart
-		self.angStop = angStop
-		self.exposTime = exposTime
+		self.angStart     = angStart
+		self.angStop      = angStop
+		self.exposureTime = exposTime
 
 #####################################################################################################
 class dynamicOptionMenu(OptionMenu):
