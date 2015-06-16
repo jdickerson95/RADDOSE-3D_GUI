@@ -504,13 +504,11 @@ class RADDOSEgui(Frame):
 		expLoadNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
 		self.expLoadName = StringVar()
 		expLoadNameBox = Entry(runStrategyFrame,textvariable=self.expLoadName)
-		expLoadNameBox.grid(row=0, column=1,columnspan=4,pady=5,sticky=W+E)
-		addExpButton = Button(runStrategyFrame,text="Add",command=self.clickCrystAdd)
-		addExpButton.grid(row=0, column=5,pady=5,padx=6,sticky=W+E)
+		expLoadNameBox.grid(row=0, column=1, columnspan=2, pady=5,sticky=W+E)
 
 		# make a run button to run the currently defined strategy
 		runButton = Button(runStrategyFrame,text="Run",command=self.runStrategy)
-		runButton.grid(row=1, columnspan=6,pady=10,padx=10,sticky=W+E)
+		runButton.grid(row=1, columnspan=3, pady=10,padx=10,sticky=W+E)
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
