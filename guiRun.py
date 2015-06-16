@@ -594,7 +594,7 @@ class RADDOSEgui(Frame):
 		# make an example visual wedge here
 		C = Canvas(currentStrategyWedge, bg=self.lightcolour, height=100, width=100)
 		coord = 0, 20, 100, 100
-		arc = C.create_arc(coord, start=0, extent=150, fill=self.darkcolour)
+		C.create_arc(coord, start=0, extent=150, fill=self.darkcolour)
 		C.grid(row=0,column=1,rowspan=4)
 
 		# create a 'make' button here to add this wedge to the list of added beam strategies in treeview list
