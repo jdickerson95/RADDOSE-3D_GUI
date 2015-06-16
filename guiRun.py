@@ -930,17 +930,22 @@ class RADDOSEgui(Frame):
 
 		"""
 		crystLines = [] #Inialise empty list
-		crystLines.append("Crystal") # Append "Crystal" to the list
-		crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and values
-		#Add another dictionary entry that puts all three dimension values into a string
+		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
+		crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and corresponding values
+
+		#Add a dictionary entry that puts all three crystal dimension values into a string
 		crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
+
 		#loop through each entry in the dictionary, create a string of the key
-		#and value from the dictionary and append that to the initialised list
+		#and value from the dictionary and append that to the list created above
 		for crystProp in crystPropertyDict:
 			if crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName':
 				string = '{} {}'.format(crystProp,str(crystPropertyDict[crystProp]))
 				crystLines.append(string)
-		crystBlock = "\n".join(crystLines) #separate list entries with a new line and store in a variable
+
+		#write list entries as a single text block with each list entry joined
+		#by a new line character
+		crystBlock = "\n".join(crystLines)
 		return crystBlock #return the crystal block
 
 	def readRADDOSEInputFile(self,filename):
