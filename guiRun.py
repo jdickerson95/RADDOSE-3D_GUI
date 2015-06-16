@@ -50,7 +50,7 @@ class wedges(object):
 
 #####################################################################################################
 class dynamicOptionMenu(OptionMenu):
-	# this little class is for a small option menu from which a dropdown selection box of both loaded 
+	# this little class is for a small option menu from which a dropdown selection box of both loaded
 	# crystals and beams can be added to the current strategy - in the right window of the gui
 	def __init__(self, *args, **kw):
 		self._command = kw.get("command")
@@ -63,7 +63,7 @@ class dynamicOptionMenu(OptionMenu):
 class VerticalScrolledFrame(Frame):
   	# this class is for a vertical scrolled frame that actually seems to work!
     def __init__(self, parent, *args, **kw):
-        Frame.__init__(self, parent, *args, **kw)            
+        Frame.__init__(self, parent, *args, **kw)
 
         # create a canvas object and a vertical scrollbar for scrolling it
         vscrollbar = Scrollbar(self, orient=VERTICAL)
@@ -76,7 +76,7 @@ class VerticalScrolledFrame(Frame):
         # reset the view
         canvas.xview_moveto(0)
         canvas.yview_moveto(0)
-        
+
         # make a style for my vertical scroll frame widget here
         vertScrollStyleFrame = Style()
         vertScrollStyleFrame.configure('vertScrollStyle.TFrame',background='#005b96',foreground='#005b96')
@@ -139,8 +139,8 @@ class RADDOSEgui(Frame):
 	# this is the main RADDOSE gui class here
 
 	def __init__(self, parent):
-		Frame.__init__(self, parent)   
-		 
+		Frame.__init__(self, parent)
+
 		self.parent = parent
 		self.initUI()
 
@@ -202,7 +202,7 @@ class RADDOSEgui(Frame):
 		self.parent.config(menu=menubar)
 		fileMenu = Menu(menubar)
 		fileMenu.add_command(label="Exit", command=self._quit)
-		menubar.add_cascade(label="File", menu=fileMenu)        
+		menubar.add_cascade(label="File", menu=fileMenu)
 
 		#####################################################################################################
 		# geometry management for the gui
@@ -306,7 +306,7 @@ class RADDOSEgui(Frame):
 		addCrystButton = Button(crystLoadLabelFrame,text="Find File",command=self.clickCrystLoad)
 		addCrystButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
 
-		# add crystal naming option to crystLoadLabelFrame frame here. Name is what user wishes to 
+		# add crystal naming option to crystLoadLabelFrame frame here. Name is what user wishes to
 		# call the current crystal for future reference
 		crystLoadNameLabel = Label(crystLoadLabelFrame,text="Crystal Name",style="inputBoxes.TLabel")
 		crystLoadNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
@@ -331,7 +331,7 @@ class RADDOSEgui(Frame):
 		makeCrystButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
 
 		# make a listbox frame in options frame to show added crystals. The listbox of added
-		# crystals is created here, along with a scrollbar 
+		# crystals is created here, along with a scrollbar
 		crystListFrame = Frame(FrameBodyMiddleTop,style="BodyGroovy.TFrame")
 		crystListFrame.pack(side=TOP,fill=BOTH,padx=5,pady=0)
 		scrollbarCrystList = Scrollbar(crystListFrame, orient=VERTICAL)
@@ -344,8 +344,8 @@ class RADDOSEgui(Frame):
 		self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=1)
 		for cryst in self.crystList:
 		    self.crystListbox.insert(END, cryst.crystName)
-		self.crystListbox.update_idletasks() 
-		self.crystListbox.bind("<<ListboxSelect>>", self.onSelect)     
+		self.crystListbox.update_idletasks()
+		self.crystListbox.bind("<<ListboxSelect>>", self.onSelect)
 		scrollbarCrystList.config(command=self.crystListbox.yview)
 		self.crystListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
 		scrollbarCrystList.pack(side=RIGHT, fill=Y,pady=5)
@@ -358,7 +358,7 @@ class RADDOSEgui(Frame):
 		# this button deletes the currently selected crystal from the listbox strategy list above
 		deleteCrystButton = Button(FrameBodyMiddleTop, text="Delete",command=self.deleteCryst)
 		deleteCrystButton.pack(side=LEFT,padx=10, pady=5,fill=X,anchor=N)
-		
+
 
 		#####################################################################################################
 		# for bottom middle body --> make-a-beam window
@@ -377,7 +377,7 @@ class RADDOSEgui(Frame):
 		addBeamButton = Button(beamLoadLabelFrame,text="Find File",command=self.clickBeamLoad)
 		addBeamButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
 
-		# add beam naming option to beamLoadLabelFrame frame here. Name is what user wishes to 
+		# add beam naming option to beamLoadLabelFrame frame here. Name is what user wishes to
 		# call the current beam for future reference
 		beamLoadNameLabel = Label(beamLoadLabelFrame,text="Beam Name",style="inputBoxes.TLabel")
 		beamLoadNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
@@ -402,7 +402,7 @@ class RADDOSEgui(Frame):
 		makeBeamButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
 
 		# make a listbox frame in options frame to show added beams. The listbox of added
-		# beams is created here, along with a scrollbar 
+		# beams is created here, along with a scrollbar
 		beamListFrame = Frame(FrameBodyMiddleBottom,style="BodyGroovy.TFrame")
 		beamListFrame.pack(side=TOP,fill=BOTH,padx=5,pady=0)
 		scrollbarBeamList = Scrollbar(beamListFrame, orient=VERTICAL)
@@ -415,8 +415,8 @@ class RADDOSEgui(Frame):
 		self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=1)
 		for beam in self.beamList:
 		    self.beamListbox.insert(END, beam.beamName)
-		self.beamListbox.update_idletasks() 
-		self.beamListbox.bind("<<ListboxSelect>>", self.onSelect)     
+		self.beamListbox.update_idletasks()
+		self.beamListbox.bind("<<ListboxSelect>>", self.onSelect)
 		scrollbarBeamList.config(command=self.beamListbox.yview)
 		self.beamListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
 		scrollbarBeamList.pack(side=RIGHT, fill=Y,pady=5)
@@ -444,13 +444,13 @@ class RADDOSEgui(Frame):
 		self.crystChoices = [cryst.crystName for cryst in self.crystList]
 		self.crystChoiceMenu = dynamicOptionMenu(chooseCrystFrame, self.crystChoice,self.crystChoices[0],*self.crystChoices)
 		self.crystChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
-  
+
           # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
 		l = Label(LabelFrameBodyRight,text="Choose a beam",style="labelFrameTitle.TLabel")
 		chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
 		chooseBeamStratFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
-  
-          # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies 
+
+          # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies
 		# created below
 		self.beamChoice = StringVar(self)
 		self.beamChoices = [bm.beamName for bm in self.beamList]
@@ -462,7 +462,7 @@ class RADDOSEgui(Frame):
 		chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
 		chooseBeamStratFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
 
-		# make a button to incorporate the currently selected beam (in beam dropdown list above) to the treeview of beam 
+		# make a button to incorporate the currently selected beam (in beam dropdown list above) to the treeview of beam
 		# strategies below
 		beamStratButton = Button(chooseBeamStratFrame,text='Add Beam Strategy',command=self.clickAddBeamStrategy)
 		beamStratButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
@@ -470,7 +470,7 @@ class RADDOSEgui(Frame):
 		# make a treeview to show coupled beam and wedge strategies to be used with the specified crystal above
 		self.BeamStratTree = Treeview(chooseBeamStratFrame)
 		self.BeamStratTree["columns"]=("one","two","three","four")
-		self.BeamStratTree.column("#0",width=30) 
+		self.BeamStratTree.column("#0",width=30)
 		self.BeamStratTree.column("one", width=100 )
 		self.BeamStratTree.column("two", width=70)
 		self.BeamStratTree.column("three", width=70)
@@ -495,38 +495,32 @@ class RADDOSEgui(Frame):
 		# make a run button to run the currently defined strategy
 		l = Label(LabelFrameBodyRight,text="Run Strategy",style="labelFrameTitle.TLabel")
 		runStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
-		runStrategyFrame.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH)	
-		runButton = Button(runStrategyFrame,text="Run",command=self.runStrategy)	
+		runStrategyFrame.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH)
+		runButton = Button(runStrategyFrame,text="Run",command=self.runStrategy)
 		runButton.pack(side=TOP,padx=10, pady=10,fill=BOTH)
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
 	def runStrategy(self):
 		# run the current designed strategy here
-		# get the index of the selected crystal from the list of added crystals (in the optionmenu list)
+        # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
 		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
-		# get the selected crystal object here
-		currentCrystal = self.crystList[self.currentCrystIndex]
-
-		print 'Selected crystal: %s' %(str(currentCrystal.crystName)) 
-		print 'Type: %s' %(str(currentCrystal.crystType))
-		print 'Dimensions: %s %s %s' %(str(currentCrystal.crystDimX),
-									   str(currentCrystal.crystDimY),
-									   str(currentCrystal.crystDimZ))
-
-		# get the index of the selected beam from the list of added beams (in the optionmenu list)
+        # get the index of the selected beam from the list of added beams (in the optionmenu list)
 		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
-		print 'Selected beam: %s' %(str(self.beamList[self.currentBeamIndex].beamName)) 
 
-		# want to write a RADDOSE3D input file here
+		currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
+		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
+		print crystalBlock
+
+        # want to write a RADDOSE3D input file here
 		RADDOSEfilename = 'RADDOSE-3D-input.txt'
 		RADDOSEfile = open(RADDOSEfilename,'w')
-		raddose3dinputCRYSTALBLOCK = writeCRYSTALBLOCK(currentCrystal)
-		RADDOSEfile.write(raddose3dinputCRYSTALBLOCK)
+		RADDOSEfile.write(crystalBlock)
+		RADDOSEfile.close()
 
 		# for each added beam+wedge couple in the treeview list of current strategies, create a
 		# RADDOSE3D input
-		# first check that number of included beam and wedge objects to be written into RADDOSE3D 
+		# first check that number of included beam and wedge objects to be written into RADDOSE3D
 		# input file is the same here
 		if len(self.beamList2Run) != len(self.wedgeList2Run):
 			print 'Inconsistent numbers of beam and wedges to be written to RADDOSE-3D input file'
@@ -541,8 +535,6 @@ class RADDOSEgui(Frame):
 			RADDOSEfile.write(raddose3dinputBEAMBLOCK)
 			raddose3dinputWEDGEBLOCK = writeWEDGEBLOCK(currentWedge)
 			RADDOSEfile.write(raddose3dinputWEDGEBLOCK)
-
-		RADDOSEfile.close()
 
 		# read the RADDOSE-3D input file to update the output window to show the new RADDOSE-3D input file
 		self.readRADDOSEInputFile(RADDOSEfilename)
@@ -607,10 +599,10 @@ class RADDOSEgui(Frame):
 		# make a new wedge object
 		currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get())
 		Index = self.BeamStratTree.insert("" , len(self.treeviewIndexlist),    text=str(len(self.treeviewIndexlist)+1),
-								 values=(self.beamChoice.get(),currentWedge.angStart,currentWedge.angStop,currentWedge.exposTime)) 
+								 values=(self.beamChoice.get(),currentWedge.angStart,currentWedge.angStop,currentWedge.exposureTime))
 		self.treeviewIndexlist.append(Index)
 		print self.treeviewIndexlist
-		
+
 		# get the index of the selected beam from the list of added beams (in the optionmenu list)
 		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
 		# get the selected beam object here
@@ -624,10 +616,10 @@ class RADDOSEgui(Frame):
 		self.top_WedgeMaker.destroy()
 
 	def clickRemoveBeamStrategy(self):
-		# what happens when the remove beam strategy button is clicked. This removes the last entry in the treeview 
+		# what happens when the remove beam strategy button is clicked. This removes the last entry in the treeview
 		# of beam+wedge couples currently saved.
 
-		# first find last entry in treeview 
+		# first find last entry in treeview
 		lastIndex = self.treeviewIndexlist[-1]
 
 		# delete this entry from the treeview of beam+wedge couples
@@ -636,13 +628,13 @@ class RADDOSEgui(Frame):
 		# remove this index from the reference list of treeview indices
 		self.treeviewIndexlist.pop(-1)
 
-		# remove the last object from the list of added beam and wedge objects to be written into RADDOSE input script 
+		# remove the last object from the list of added beam and wedge objects to be written into RADDOSE input script
 		# to correspond to updated treeview list
 		self.beamList2Run.pop(-1)
 		self.wedgeList2Run.pop(-1)
 
 	def refreshCrystChoices(self):
-	    # Reset the option menu of added crystals and delete crystals not now 
+	    # Reset the option menu of added crystals and delete crystals not now
 	    # included in the list of added crystals
 	    self.crystChoice.set('')
 	    self.crystChoiceMenu['menu'].delete(0, 'end')
@@ -771,7 +763,7 @@ class RADDOSEgui(Frame):
 
 	# functions for the manipulation of beam files and parameters
 	def refreshBeamChoices(self):
-	    # Reset the option menu of added beam and delete beams not now 
+	    # Reset the option menu of added beam and delete beams not now
 	    # included in the list of added beams
 	    self.beamChoice.set('')
 	    self.beamChoiceMenu['menu'].delete(0, 'end')
@@ -904,7 +896,7 @@ class RADDOSEgui(Frame):
 		# what happens when select button clicked
 		sender = val.widget
 		idx = sender.curselection()
-		value = sender.get(idx)   
+		value = sender.get(idx)
 		self.var3.set(value)
 
 	def readHelpFile(self):
@@ -915,6 +907,41 @@ class RADDOSEgui(Frame):
 		filelines = fileOpen.readlines()
 		fileString = ' '.join(filelines)
 		self.varHelpBox.set(fileString)
+
+	def writeCrystalBlock(self, crystalObj):
+		"""Write a text block of crystal information for RADDOSE-3D
+
+		Function to write a text block of the crystal properties for a
+		RADDOSE-3D input file.
+
+		=================
+		Keyword arguments
+		=================
+		crystalObj:
+			a 'crystals' object whose properties contain the required properties
+			for RADDOSE-3D input.
+
+		=================
+		Return parameters
+		=================
+		crystBlock:
+			a string block that contains the crystal information in the for
+			ready for input into RADDOSE-3D
+
+		"""
+		crystLines = [] #Inialise empty list
+		crystLines.append("Crystal") # Append "Crystal" to the list
+		crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and values
+		#Add another dictionary entry that puts all three dimension values into a string
+		crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
+		#loop through each entry in the dictionary, create a string of the key
+		#and value from the dictionary and append that to the initialised list
+		for crystProp in crystPropertyDict:
+			if crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName':
+				string = '{} {}'.format(crystProp,str(crystPropertyDict[crystProp]))
+				crystLines.append(string)
+		crystBlock = "\n".join(crystLines) #separate list entries with a new line and store in a variable
+		return crystBlock #return the crystal block
 
 	def readRADDOSEInputFile(self,filename):
 		# read in a RADDOSE-3D input txt file
@@ -928,7 +955,7 @@ class RADDOSEgui(Frame):
 		tkMessageBox.showinfo( "Help", "You clicked help")
 
 	def _quit(self):
-		# what happens when close button clicked. 
+		# what happens when close button clicked.
 		self.quit()     # stops mainloop
 		self.destroy()  # this is necessary on Windows to prevent
 
@@ -937,7 +964,7 @@ def main():
 	# when the script is run in python, do the following:
     root = Tk()
     app = RADDOSEgui(root)
-    root.mainloop()  
+    root.mainloop()
 
 if __name__ == '__main__':
-    main()  
+    main()

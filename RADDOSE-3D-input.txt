@@ -1,0 +1,5 @@
+Crystal
+Dimensions 10 20 30
+type Cuboid
+absCoefCalc Average
+pixelsPerMicron 1
