@@ -492,12 +492,25 @@ class RADDOSEgui(Frame):
 		beamStratRemoveButton = Button(chooseBeamStratFrame,text='Remove last entry',command=self.clickRemoveBeamStrategy)
 		beamStratRemoveButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
 
-		# make a run button to run the currently defined strategy
+		# make a labelframe. This label frame is for Running the experiment once
+		# the crystal, beam and wedge has been defined.
 		l = Label(LabelFrameBodyRight,text="Run Strategy",style="labelFrameTitle.TLabel")
 		runStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
 		runStrategyFrame.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH)
+
+		# make a box that allows user to uniquely name the experiment (i.e. the
+		#crystal, beam and wedge combination) before running.
+		expLoadNameLabel = Label(runStrategyFrame,text="Experiment Name",style="inputBoxes.TLabel")
+		expLoadNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
+		self.expLoadName = StringVar()
+		expLoadNameBox = Entry(runStrategyFrame,textvariable=self.expLoadName)
+		expLoadNameBox.grid(row=0, column=1,columnspan=4,pady=5,sticky=W+E)
+		addExpButton = Button(runStrategyFrame,text="Add",command=self.clickCrystAdd)
+		addExpButton.grid(row=0, column=5,pady=5,padx=6,sticky=W+E)
+
+		# make a run button to run the currently defined strategy
 		runButton = Button(runStrategyFrame,text="Run",command=self.runStrategy)
-		runButton.pack(side=TOP,padx=10, pady=10,fill=BOTH)
+		runButton.grid(row=1, columnspan=6,pady=10,padx=10,sticky=W+E)
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
