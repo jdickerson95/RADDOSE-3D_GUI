@@ -577,9 +577,9 @@ class RADDOSEgui(Frame):
 		for currentBeam in self.beamList2Run:
 			counter += 1
 			currentWedge = self.wedgeList2Run[counter]
-			raddose3dinputBEAMBLOCK = writeBEAMBLOCK(currentBeam)
+			beamBlock = self.writeBeamBlock(currentBeam)
 			RADDOSEfile.write(raddose3dinputBEAMBLOCK)
-			raddose3dinputWEDGEBLOCK = writeWEDGEBLOCK(currentWedge)
+			Wedgeblock = self.writeWedgeBlock(currentWedge)
 			RADDOSEfile.write(raddose3dinputWEDGEBLOCK)
 
 		# read the RADDOSE-3D input file to update the output window to show the new RADDOSE-3D input file
@@ -993,6 +993,12 @@ class RADDOSEgui(Frame):
 		#by a new line character
 		crystBlock = "\n".join(crystLines)
 		return crystBlock #return the crystal block
+
+	def writeBeamBlock(self):
+		return "No beam block yet"
+
+	def writeWedgeBlock(self):
+		return "No Wedge block yet"
 
 	def readRADDOSEInputFile(self,filename):
 		# read in a RADDOSE-3D input txt file
