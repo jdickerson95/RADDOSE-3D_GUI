@@ -13,6 +13,7 @@ import tkMessageBox
 import tkFileDialog
 import Tkinter as tk
 import sys
+import os
 #from GUI2RADDOSE3DINPUT import *
 
 #####################################################################################################
@@ -513,6 +514,23 @@ class RADDOSEgui(Frame):
 	#####################################################################################################
 	# below is a list of button actions in the gui
 	def runStrategy(self):
+
+		#Check if the experiment name already exists by checking all of the
+		#directory names in the current directory
+		for directory in os.listdir('.'): #loop through current directory
+			if directory == self.expLoadName:
+				addQuery = tkMessageBox.askquestion( "Duplicate Experiment Names",
+				"Experiment name %s already exists. Do you want to overwrite this experiment?"%(str(self.expLoadName.get())))
+				if addQuery == 'yes':
+					self.crystListbox.insert(END, str(self.crystLoadName.get()))
+
+					# add a crystal object to the list of crystals (outside of listbox)
+					self.crystList.append(crystals(self.crystLoadName.get(),'?','?','?','?','?','?'))
+
+					# also update list of crystal choices used in the right strategy window
+					self.refreshCrystChoices()
+				else:
+					pass
 		# run the current designed strategy here
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
 		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
