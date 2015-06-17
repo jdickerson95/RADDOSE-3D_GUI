@@ -465,7 +465,7 @@ class RADDOSEgui(Frame):
 
 		# make a button to incorporate the currently selected beam (in beam dropdown list above) to the treeview of beam
 		# strategies below
-		beamStratButton = Button(chooseBeamStratFrame,text='Add Beam Strategy',command=self.clickAddBeamStrategy)
+		beamStratButton = Button(chooseBeamStratFrame,text='Add Exposure Strategy',command=self.clickAddBeamStrategy)
 		beamStratButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
 
 		# make a treeview to show coupled beam and wedge strategies to be used with the specified crystal above
