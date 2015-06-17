@@ -528,11 +528,11 @@ class RADDOSEgui(Frame):
 		expName = str(self.expLoadName.get()) #get experiment name as a string
 
 		#First check that the experiment name hasn't been left blank. If so then
-		#tell user that they need to supply an experiment name. Otherwise check
-		#check if experiment name exists as a directory in the current folder.
-		#if it does then ask the user if they want to overwrite the previous
-		#experiment. Otherwise create the experiment directory and run the
-		#experiment.
+		#tell user that they need to supply an experiment name.
+		#Otherwise check if the experiment name already exists as a directory in
+		#the current folder.if it does then ask the user if they want to
+		#overwrite the previous experiment.
+		#Otherwise create the experiment directory and run the experiment.
 		if not expName:
 			string = """No experiment name has been given.\nPlease give a name to the experiment that you wish to run in the 'Experiment Name' field.
 			""" %()
