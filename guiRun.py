@@ -508,29 +508,47 @@ class RADDOSEgui(Frame):
 		expLoadNameBox.grid(row=0, column=1, columnspan=2, pady=5,sticky=W+E)
 
 		# make a run button to run the currently defined strategy
-		runButton = Button(runStrategyFrame,text="Run",command=self.runStrategy)
+		runButton = Button(runStrategyFrame,text="Run",command=self.runExperiment)
 		runButton.grid(row=1, columnspan=3, pady=10,padx=10,sticky=W+E)
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
+
+	def runExperiment(self):
+		"""Run the experiment defined by the specified crystal, beam and wedge
+
+		This function checks whether the experiment name already exists. If it
+		doesn't already exist then it will create a directory with the current
+		experiment name and then run RADDOSE-3D which the chosen crystal, beam
+		and wedge paramters. Otherwise, if the experiment name already exists
+		then a pop up dialogue is created which asks the user whether they want
+		to overwrite the current experiment that already exists under the same
+		name.
+		"""
+		expName = str(self.expLoadName.get()) #get experiment name as a string
+
+		#First check that the experiment name hasn't been left blank. If so then
+		#tell user that they need to supply an experiment name. Otherwise check
+		#check if experiment name exists as a directory in the current folder.
+		#if it does then ask the user if they want to overwrite the previous
+		#experiment. Otherwise create the experiment directory and run the
+		#experiment.
+		if not expName:
+			string = """No experiment name has been given.\nPlease give a name to the experiment that you wish to run in the 'Experiment Name' field.
+			""" %()
+			tkMessageBox.showinfo( "No Experiment Name", string)
+		elif os.path.exists(expName):
+			addQuery = tkMessageBox.askquestion( "Duplicate Experiment Names",
+			"Experiment name %s already exists. Do you want to overwrite this experiment?"%(expName))
+			if addQuery == 'yes':
+				self.runStrategy()
+			else:
+				pass
+		else:
+			os.mkdir(expName)
+			self.runStrategy()
+
 	def runStrategy(self):
-
-		#Check if the experiment name already exists by checking all of the
-		#directory names in the current directory
-		for directory in os.listdir('.'): #loop through current directory
-			if directory == self.expLoadName:
-				addQuery = tkMessageBox.askquestion( "Duplicate Experiment Names",
-				"Experiment name %s already exists. Do you want to overwrite this experiment?"%(str(self.expLoadName.get())))
-				if addQuery == 'yes':
-					self.crystListbox.insert(END, str(self.crystLoadName.get()))
-
-					# add a crystal object to the list of crystals (outside of listbox)
-					self.crystList.append(crystals(self.crystLoadName.get(),'?','?','?','?','?','?'))
-
-					# also update list of crystal choices used in the right strategy window
-					self.refreshCrystChoices()
-				else:
-					pass
 		# run the current designed strategy here
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
 		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
@@ -542,7 +560,7 @@ class RADDOSEgui(Frame):
 		print crystalBlock
 
         # want to write a RADDOSE3D input file here
-		RADDOSEfilename = 'RADDOSE-3D-input.txt'
+		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(str(self.expLoadName.get()))
 		RADDOSEfile = open(RADDOSEfilename,'w')
 		RADDOSEfile.write(crystalBlock)
 		RADDOSEfile.close()
