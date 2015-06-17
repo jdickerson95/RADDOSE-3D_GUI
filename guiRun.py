@@ -524,6 +524,17 @@ class RADDOSEgui(Frame):
 		then a pop up dialogue is created which asks the user whether they want
 		to overwrite the current experiment that already exists under the same
 		name.
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
 		"""
 		expName = str(self.expLoadName.get()) #get experiment name as a string
 
@@ -971,8 +982,8 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		crystBlock:
-			a string block that contains the crystal information in the for
-			ready for input into RADDOSE-3D
+			a string block that contains the crystal information in the form
+			required for input into RADDOSE-3D
 
 		"""
 		crystLines = [] #Inialise empty list
@@ -994,10 +1005,50 @@ class RADDOSEgui(Frame):
 		crystBlock = "\n".join(crystLines)
 		return crystBlock #return the crystal block
 
-	def writeBeamBlock(self):
+	def writeBeamBlock(self, beamObj):
+		"""Write a text block of beam information for RADDOSE-3D
+
+		Function to write a text block of the beam properties for a
+		RADDOSE-3D input file.
+
+		=================
+		Keyword arguments
+		=================
+		beamObj:
+			a 'beams' object whose properties contain the required properties
+			for RADDOSE-3D input.
+
+		=================
+		Return parameters
+		=================
+		beamBlock:
+			a string block that contains the beam information in the form
+			required for input into RADDOSE-3D
+
+		"""
 		return "No beam block yet"
 
-	def writeWedgeBlock(self):
+	def writeWedgeBlock(self, wedgeObj):
+		"""Write a text block of wedge information for RADDOSE-3D
+
+		Function to write a text block of the wedge properties for a
+		RADDOSE-3D input file.
+
+		=================
+		Keyword arguments
+		=================
+		beamObj:
+			a 'wedges' object whose properties contain the required properties
+			for RADDOSE-3D input.
+
+		=================
+		Return parameters
+		=================
+		beamBlock:
+			a string block that contains the wedge information in the form
+			required for input into RADDOSE-3D
+
+		"""
 		return "No Wedge block yet"
 
 	def readRADDOSEInputFile(self,filename):
