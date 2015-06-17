@@ -557,7 +557,6 @@ class RADDOSEgui(Frame):
 
 		currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
 		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
-		print crystalBlock
 
         # want to write a RADDOSE3D input file here
 		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(str(self.expLoadName.get()))
