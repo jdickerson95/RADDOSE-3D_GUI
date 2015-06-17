@@ -14,6 +14,7 @@ import tkFileDialog
 import Tkinter as tk
 import sys
 import os
+import subprocess
 #from GUI2RADDOSE3DINPUT import *
 
 #####################################################################################################
@@ -579,6 +580,7 @@ class RADDOSEgui(Frame):
 		No explicit return parameters
 		"""
 		self.writeRaddose3DInputFile()
+		self.runRaddose3D()
 
 	def clickAddBeamStrategy(self):
 		# what happens when add beam strategy button clicked. Makes a new small window allowing
@@ -948,6 +950,22 @@ class RADDOSEgui(Frame):
 		self.varHelpBox.set(fileString)
 
 	def writeRaddose3DInputFile(self):
+		"""Writes an input file for RADDOSE-3D
+
+		This function writes an input file suitable for input to RADDOSE-3D.
+		This input file is placed in the corresponding experiment directory.
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
 		# run the current designed strategy here
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
 		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
@@ -990,6 +1008,53 @@ class RADDOSEgui(Frame):
 		self.readRADDOSEInputFile(RADDOSEfilename)
 		quote = self.raddose3Dinputtxt.get()
 		self.inputtxt.insert(END, quote)
+
+	def runRaddose3D(self):
+		"""Run RADDOSE-3D
+
+		This function runs RADDOSE-3D and puts all of the output files into the
+		corresponding experiment directory.
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		experimentName = str(self.expLoadName.get()) #Get experiment name as string
+		#os.chdir(experimentName) #change directory into experiment folder
+		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(experimentName) #get name of input file
+
+		#write terminal command to run RADDOSE-3D
+		terminalCommand = "java -jar raddose3d.jar -i {}".format(RADDOSEfilename)
+
+		#Run RADDOSE-3D
+		process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True)
+
+		(outputLog, stderr) = process.communicate() # extract the output log
+
+		if process.returncode != 0:
+			print outputLog
+			#os.chdir("..") #Go back to original directory
+			string = """There was an error Whilst running RADDOSE-3D.\nPlease check the log file ("outputLog.txt") and your crystal, beam and wedge parameters.\nOtherwise contact the Garman Group: elspeth.garman@bioch.ox.ac.uk
+			""" %()
+			tkMessageBox.showinfo( "RADDOSE-3D Error", string)
+
+		#write the output log file
+		outputLogFilename = 'outputLog.txt'
+		outputLogfile = open(outputLogFilename,'w')
+		outputLogfile.write(outputLog)
+		outputLogfile.close()
+
+		self.inputtxt.insert(END, outputLog)
+
+		#os.chdir("..") #Go back to original directory
+
 
 	def writeCrystalBlock(self, crystalObj):
 		"""Write a text block of crystal information for RADDOSE-3D
