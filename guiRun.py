@@ -20,13 +20,14 @@ import os
 class beams(object):
 	# this class is for beam parameters for a loaded or created beam
 	def __init__(self,beamName="",beamType="",beamFWHM=[],
-				 beamFlux=0,beamEnergy=0,beamRectColl=[]):
-		self.beamName     = beamName
-		self.type         = beamType
-		self.fWHM         = beamFWHM
-		self.flux         = beamFlux
-		self.energy       = beamEnergy
-		self.collimation  = beamRectColl
+				 beamFlux=0,beamEnergy=0,beamRectColl=[], beamPixelSize=[]):
+		self.beamName     	= beamName
+		self.type         	= beamType
+		self.fwhm         	= beamFWHM
+		self.flux         	= beamFlux
+		self.energy       	= beamEnergy
+		self.collimation  	= beamRectColl
+		self.pixelSize		= beamPixelSize
 
 #####################################################################################################
 class crystals(object):
@@ -409,8 +410,8 @@ class RADDOSEgui(Frame):
 		scrollbarBeamList = Scrollbar(beamListFrame, orient=VERTICAL)
 
 		# want to make a list of beam object instances (here two example beams are defined)
-		exampleBeam = beams('Example beam',"Gaussian",[25,25],10000000000,10,[100,100])
-		exampleBeam2 = beams('Example beam 2',"Top Hat",[50,50],20000000000,12,[120,120])
+		exampleBeam = beams('Example beam',"Gaussian",[25,25],10000000000,10,[100,100],[2,2])
+		exampleBeam2 = beams('Example beam 2',"Top Hat",[50,50],20000000000,12,[120,120],[1,1])
 		self.beamList = [exampleBeam,exampleBeam2]
 
 		self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=1)
@@ -560,43 +561,24 @@ class RADDOSEgui(Frame):
 			self.runStrategy()
 
 	def runStrategy(self):
-		# run the current designed strategy here
-        # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
-		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
-        # get the index of the selected beam from the list of added beams (in the optionmenu list)
-		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
+		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
 
-		currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
-		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
+		This function writes an input file from the given crystal, beam and
+		wedge objects. Then it runs RADDOSE-3D with that input file and puts all
+		of the output files in the corresponding experiment folder.
 
-        # want to write a RADDOSE3D input file here
-		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(str(self.expLoadName.get()))
-		RADDOSEfile = open(RADDOSEfilename,'w')
-		RADDOSEfile.write(crystalBlock)
-		RADDOSEfile.close()
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
 
-		# for each added beam+wedge couple in the treeview list of current strategies, create a
-		# RADDOSE3D input
-		# first check that number of included beam and wedge objects to be written into RADDOSE3D
-		# input file is the same here
-		if len(self.beamList2Run) != len(self.wedgeList2Run):
-			print 'Inconsistent numbers of beam and wedges to be written to RADDOSE-3D input file'
-			print '---> terminating script'
-			sys.exit()
-
-		counter = -1
-		for currentBeam in self.beamList2Run:
-			counter += 1
-			currentWedge = self.wedgeList2Run[counter]
-			beamBlock = self.writeBeamBlock(currentBeam)
-			RADDOSEfile.write(raddose3dinputBEAMBLOCK)
-			Wedgeblock = self.writeWedgeBlock(currentWedge)
-			RADDOSEfile.write(raddose3dinputWEDGEBLOCK)
-
-		# read the RADDOSE-3D input file to update the output window to show the new RADDOSE-3D input file
-		self.readRADDOSEInputFile(RADDOSEfilename)
-		quote = self.raddose3Dinputtxt.get()
-		self.inputtxt.insert(END, quote*2)
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		self.writeRaddose3DInputFile()
 
 	def clickAddBeamStrategy(self):
 		# what happens when add beam strategy button clicked. Makes a new small window allowing
@@ -965,6 +947,50 @@ class RADDOSEgui(Frame):
 		fileString = ' '.join(filelines)
 		self.varHelpBox.set(fileString)
 
+	def writeRaddose3DInputFile(self):
+		# run the current designed strategy here
+        # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
+		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
+        # get the index of the selected beam from the list of added beams (in the optionmenu list)
+		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
+
+		currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
+		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
+
+        # want to write a RADDOSE3D input file here
+		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(str(self.expLoadName.get()))
+		RADDOSEfile = open(RADDOSEfilename,'w')
+		RADDOSEfile.write(crystalBlock)
+		RADDOSEfile.write("\n\n")
+		RADDOSEfile.close()
+
+		# for each added beam+wedge couple in the treeview list of current strategies, create a
+		# RADDOSE3D input
+		# first check that number of included beam and wedge objects to be written into RADDOSE3D
+		# input file is the same here
+		if len(self.beamList2Run) != len(self.wedgeList2Run):
+			print 'Inconsistent numbers of beam and wedges to be written to RADDOSE-3D input file'
+			print '---> terminating script'
+			sys.exit()
+
+		RADDOSEfile = open(RADDOSEfilename,'a')
+		counter = -1
+		for currentBeam in self.beamList2Run:
+			counter += 1
+			currentWedge = self.wedgeList2Run[counter]
+			beamBlock = self.writeBeamBlock(currentBeam)
+			RADDOSEfile.write(beamBlock)
+			RADDOSEfile.write("\n\n")
+			Wedgeblock = self.writeWedgeBlock(currentWedge)
+			RADDOSEfile.write(Wedgeblock)
+			RADDOSEfile.write("\n\n")
+		RADDOSEfile.close()
+
+		# read the RADDOSE-3D input file to update the output window to show the new RADDOSE-3D input file
+		self.readRADDOSEInputFile(RADDOSEfilename)
+		quote = self.raddose3Dinputtxt.get()
+		self.inputtxt.insert(END, quote)
+
 	def writeCrystalBlock(self, crystalObj):
 		"""Write a text block of crystal information for RADDOSE-3D
 
@@ -1026,7 +1052,28 @@ class RADDOSEgui(Frame):
 			required for input into RADDOSE-3D
 
 		"""
-		return "No beam block yet"
+		beamLines = [] #Inialise empty list
+		beamLines.append("Beam") # Append the string - "Beam" - to the list
+		beamPropertyDict = vars(beamObj) #create a dictionary from the beam object properties and corresponding values
+
+		#Add a dictionary entry that puts beam FWHM dimensions values into a string
+		beamPropertyDict["FWHM"] = '{} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
+		#Add a dictionary entry that puts beam collimation dimensions values into a string
+		beamPropertyDict["Collimation"] = '{} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
+		#Add a dictionary entry that puts beam pixel size dimensions values into a string
+		beamPropertyDict["PixelSize"] = '{} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
+
+		#loop through each entry in the dictionary, create a string of the key
+		#and value from the dictionary and append that to the list created above
+		for beamProp in beamPropertyDict:
+			if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName':
+				string = '{} {}'.format(beamProp,str(beamPropertyDict[beamProp]))
+				beamLines.append(string)
+
+		#write list entries as a single text block with each list entry joined
+		#by a new line character
+		beamBlock = "\n".join(beamLines)
+		return beamBlock #return the beam block
 
 	def writeWedgeBlock(self, wedgeObj):
 		"""Write a text block of wedge information for RADDOSE-3D
@@ -1049,7 +1096,24 @@ class RADDOSEgui(Frame):
 			required for input into RADDOSE-3D
 
 		"""
-		return "No Wedge block yet"
+		wedgeLines = [] #Inialise empty list
+		#Ensure the Wedge line is written first into the RADDOSE-3D input file.
+		wedgeString = "Wedge {} {}".format(wedgeObj.angStart, wedgeObj.angStop)
+		wedgeLines.append(wedgeString)
+
+		wedgePropertyDict = vars(wedgeObj) #create a dictionary from the wedge object properties and corresponding values
+
+		#loop through each entry in the dictionary, create a string of the key
+		#and value from the dictionary and append that to the list created above
+		for wedgeProp in wedgePropertyDict:
+			if wedgeProp != 'angStart' and wedgeProp != 'angStop':
+				string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
+				wedgeLines.append(string)
+
+		#write list entries as a single text block with each list entry joined
+		#by a new line character
+		wedgeBlock = "\n".join(wedgeLines)
+		return wedgeBlock
 
 	def readRADDOSEInputFile(self,filename):
 		# read in a RADDOSE-3D input txt file
