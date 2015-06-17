@@ -1027,20 +1027,17 @@ class RADDOSEgui(Frame):
 		No explicit return parameters
 		"""
 		experimentName = str(self.expLoadName.get()) #Get experiment name as string
-		#os.chdir(experimentName) #change directory into experiment folder
-		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(experimentName) #get name of input file
+		os.chdir(experimentName) #change directory into experiment folder
+		RADDOSEfilename = 'RADDOSE-3D-input.txt' #get name of input file
 
 		#write terminal command to run RADDOSE-3D
-		terminalCommand = "java -jar raddose3d.jar -i {}".format(RADDOSEfilename)
-
-		#Run RADDOSE-3D
-		process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True)
-
+		terminalCommand = "java -jar ../raddose3d.jar -i {}".format(RADDOSEfilename)
+		process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True) #Run RADDOSE-3D
 		(outputLog, stderr) = process.communicate() # extract the output log
 
 		if process.returncode != 0:
 			print outputLog
-			#os.chdir("..") #Go back to original directory
+			os.chdir("..") #Go back to original directory
 			string = """There was an error Whilst running RADDOSE-3D.\nPlease check the log file ("outputLog.txt") and your crystal, beam and wedge parameters.\nOtherwise contact the Garman Group: elspeth.garman@bioch.ox.ac.uk
 			""" %()
 			tkMessageBox.showinfo( "RADDOSE-3D Error", string)
@@ -1051,9 +1048,8 @@ class RADDOSEgui(Frame):
 		outputLogfile.write(outputLog)
 		outputLogfile.close()
 
-		self.inputtxt.insert(END, outputLog)
-
-		#os.chdir("..") #Go back to original directory
+		self.inputtxt.insert(END, outputLog) # Print RADDOSE-3D log to summary window.
+		os.chdir("..") #Go back to original directory
 
 
 	def writeCrystalBlock(self, crystalObj):
@@ -1124,7 +1120,7 @@ class RADDOSEgui(Frame):
 		#Add a dictionary entry that puts beam FWHM dimensions values into a string
 		beamPropertyDict["FWHM"] = '{} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
 		#Add a dictionary entry that puts beam collimation dimensions values into a string
-		beamPropertyDict["Collimation"] = '{} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
+		beamPropertyDict["Collimation Rectangular"] = '{} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
 		#Add a dictionary entry that puts beam pixel size dimensions values into a string
 		beamPropertyDict["PixelSize"] = '{} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
 
