@@ -1037,14 +1037,14 @@ class RADDOSEgui(Frame):
 		=================
 		Keyword arguments
 		=================
-		beamObj:
+		wedgeObj:
 			a 'wedges' object whose properties contain the required properties
 			for RADDOSE-3D input.
 
 		=================
 		Return parameters
 		=================
-		beamBlock:
+		wedgeBlock:
 			a string block that contains the wedge information in the form
 			required for input into RADDOSE-3D
 
