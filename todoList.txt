@@ -1,0 +1,40 @@
+####################################################
+########### RADDOSE-3D GUI TO DO LIST  #############
+####################################################
+
+
+-***************************-
+To do before 30th June 2015
+-***************************-
+
+- Need an option to look for RADDOSE-3D input files and create an "experiment"
+from the input file.
+
+- Need to be able to "load" multiple experiments so that the doses can be
+compared.
+
+- Need to decide on a plot (scatter plot) to compare dose against experiment,
+and implement it.
+
+- Need to output a summary of the main results from an experiment run.
+
+
+
+-***************************-
+To do at some point
+-***************************-
+
+- Crystal and beam options need to check for sensible inputs.
+(i.e. numerical values are given for crystal dimensions)
+
+- to continue the previous point, drop down boxes of RADDOSE-3D inputs should be
+made for inputs that can only take certain values or text.
+
+- Fix the scroll bars (they don't always seem to work)
+
+- Add more options to Help/Suggestion Dialogue
+
+- Need to add buttons on for the summary window so the user can switch between
+plots, experiment summaries, input information etc.
+
+- Add capability to create an interactive dose contour plot (with axis)
