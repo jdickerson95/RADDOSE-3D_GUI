@@ -545,11 +545,43 @@ class RADDOSEgui(Frame):
 	# below is a list of button actions in the gui
 
 	def runManualExperiment(self):
+		"""Run the a manually experiment defined by the specified crystal, beam and wedge
+
+		This function intiates the running of an experiment involving a manually defined
+		strategy by the user within the GUI
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
 		self.CurrentexpLoadName = self.expLoadName
 		self.strategyType = 'Manual'
 		self.runExperiment()
 
 	def runPremadeRD3DExperiment(self):
+		"""Run the a premade RD3D job with premade input file
+
+		This function intiates the running of an experiment involving a premade RD3D 
+		input file
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
 		self.CurrentexpLoadName = self.premadeRD3DStrategyName
 		self.strategyType = 'Premade'
 		self.runExperiment()
