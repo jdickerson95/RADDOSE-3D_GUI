@@ -58,10 +58,10 @@ class experiments(object):
 	#information about the RADDOSE-3D run such as the various aggregate dose
 	#metrics (e.g. the DWD, max dose, and average dose metrics) and the time
 	#stamp when the experiment was run.
-	def __init__(self, crystal, beam, wedge):
-		self.crystal = crystal
-		self.beam = beam
-		self.wedge = wedge
+	def __init__(self, crystalIndex, beamIndices, wedgeIndices, raddoseLog):
+		self.crystalIndex = crystalIndex
+		self.beamIndices = beamIndices
+		self.wedgeIndices = wedgeIndices
 
 #####################################################################################################
 class dynamicOptionMenu(OptionMenu):
@@ -424,7 +424,7 @@ class RADDOSEgui(Frame):
 
 		# want to make a list of beam object instances (here two example beams are defined)
 		exampleBeam = beams('Example beam',"Gaussian",[25,25],10000000000,10,[100,100],[2,2])
-		exampleBeam2 = beams('Example beam 2',"Top Hat",[50,50],20000000000,12,[120,120],[1,1])
+		exampleBeam2 = beams('Example beam 2',"TopHat",[50,50],20000000000,12,[120,120],[1,1])
 		self.beamList = [exampleBeam,exampleBeam2]
 
 		self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=1)
@@ -1117,6 +1117,10 @@ class RADDOSEgui(Frame):
 		outputLogfile = open(outputLogFilename,'w')
 		outputLogfile.write(outputLog)
 		outputLogfile.close()
+
+		#print "Here we are going to see the index params"
+		#print self.currentCrystIndex
+		#print self.currentBeamIndex
 
 		self.inputtxt.insert(END, outputLog) # Print RADDOSE-3D log to summary window.
 		os.chdir("..") #Go back to original directory
