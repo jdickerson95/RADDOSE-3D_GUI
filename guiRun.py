@@ -52,6 +52,18 @@ class wedges(object):
 		self.exposureTime = exposTime
 
 #####################################################################################################
+class experiments(object):
+	#This class creates experiment objects. Experiments are defined by a unique
+	#crystal, beam and wedge object. The experiment will also contain
+	#information about the RADDOSE-3D run such as the various aggregate dose
+	#metrics (e.g. the DWD, max dose, and average dose metrics) and the time
+	#stamp when the experiment was run.
+	def __init__(self, crystal, beam, wedge):
+		self.crystal = crystal
+		self.beam = beam
+		self.wedge = wedge
+
+#####################################################################################################
 class dynamicOptionMenu(OptionMenu):
 	# this little class is for a small option menu from which a dropdown selection box of both loaded
 	# crystals and beams can be added to the current strategy - in the right window of the gui
