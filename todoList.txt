@@ -11,13 +11,21 @@ To do before 30th June 2015
 from the input file.
 
 - Need to be able to "load" multiple experiments so that the doses can be
-compared.
+compared. Make experiment objects.
+crystal
+beam
+wedge
+time stamp
+dose
 
-- Need to decide on a plot (scatter plot) to compare dose against experiment,
-and implement it.
+- Need to be able to delete experiment objects as well as the directory
+
+- Make bar plot to compare experiments
 
 - Need to output a summary of the main results from an experiment run.
 
+- Need to add buttons on for the summary window so the user can switch between
+plots, experiment summaries, input information etc.
 
 
 -***************************-
@@ -34,11 +42,10 @@ made for inputs that can only take certain values or text.
 
 - Add more options to Help/Suggestion Dialogue
 
-- Need to add buttons on for the summary window so the user can switch between
-plots, experiment summaries, input information etc.
-
 - Add capability to create an interactive dose contour plot (with axis)
 
-sdfwjfbwbfkw
+- Add RADDOSE-3D logo on the top of the GUI
 
-wfwbubfwj re
+- Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
+
+- Add more RADDOSE-3D input options (inc PDB)
