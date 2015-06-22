@@ -690,10 +690,10 @@ class RADDOSEgui(Frame):
 		# what happens when crystal view button clicked
 		crystToView = self.crystList[self.crystListbox.index(ANCHOR)]
 		crystInfo ="""Name: %s\nType: %s\nDimensions: %s %s %s\nPixels per Micron: %s\nAbsorption Coefficient: %s
-		           """ %(str(crystToView.crystName),str(crystToView.crystType),
+		           """ %(str(crystToView.crystName),str(crystToView.type),
 		          		str(crystToView.crystDimX),str(crystToView.crystDimY),
-		          		str(crystToView.crystDimZ),str(crystToView.crystPixPerMic),
-		          		str(crystToView.crystAbsorpCoeff))
+		          		str(crystToView.crystDimZ),str(crystToView.pixelsPerMicron),
+		          		str(crystToView.absCoefCalc))
 		tkMessageBox.showinfo( "View Crystal Information", crystInfo)
 
 		print str(crystToView.crystDimX)
