@@ -944,13 +944,47 @@ class RADDOSEgui(Frame):
 		self.beamLoadBox.delete(0,END)
 		self.beamLoadBox.insert(0,self.beamLoad)
 
+	def readRD3DInputFileBeamInfo(self):
+		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object
+		RD3DinputFile = open(self.beamLoadBox.get(),'r').readlines()
+		for line in RD3DinputFile:
+			try:
+				if 'FWHM' in line.split()[0]:
+					self.BeamFWHMVertical = line.split()[1]
+					self.BeamFWHMHorizontal = line.split()[2]
+				elif 'energy' in line.split()[0]:
+					self.BeamEnergy = line.split()[1]
+				elif 'flux' in line.split()[0]:
+					self.BeamFlux = line.split()[1]
+				elif 'Collimation' in line.split()[0]:
+					self.BeamCollimationType = line.split()[1]
+					self.BeamRectCollVert = line.split()[2]
+					self.BeamRectCollHoriz = line.split()[3]
+				elif 'type' in line.split()[0]:
+					self.BeamType = line.split()[1]
+				elif 'PixelSize' in line.split()[0]:
+					self.BeamPixelSizeX = line.split()[1]
+					self.BeamPixelSizeY = line.split()[2]
+			except IndexError:
+				continue
+
 	def clickBeamAdd(self):
 		# what happens when beam add button clicked
 		addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
 		if addQuery == 'yes':
 			self.beamListbox.insert(END, str(self.beamLoadName.get()))
+
+			# read in RADDOSE-3D style input file to get beam properties
+			self.readRD3DInputFileBeamInfo()
+
 			# add a beam object to the list of beams (outside of listbox)
-			self.beamList.append(beams(self.beamLoadName.get(),'?',['?','?'],'?','?',['?','?']))
+			self.beamList.append(beams(self.beamLoadName.get(),
+				   					   self.BeamType,
+									  [self.BeamFWHMVertical,self.BeamFWHMHorizontal],
+									   self.BeamFlux,
+									   self.BeamEnergy,
+									  [self.BeamRectCollVert,self.BeamRectCollHoriz],
+									  [self.BeamPixelSizeX,self.BeamPixelSizeY]))
 
 			# also update list of beam choices used in the right strategy window
 			self.refreshBeamChoices()
