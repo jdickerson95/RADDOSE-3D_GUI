@@ -819,9 +819,9 @@ class RADDOSEgui(Frame):
 		# what happens when beam view button clicked
 		beamToView = self.beamList[self.beamListbox.index(ANCHOR)]
 		beamInfo ="""Name: %s\nType: %s\nFWHM: %s\nFlux: %s\nEnergy: %s\nRectangular Collimation: %s
-		           """ %(str(beamToView.beamName),str(beamToView.beamType),
-		          		str(beamToView.beamFWHM),str(beamToView.beamFlux),
-		          		str(beamToView.beamEnergy),str(beamToView.beamRectColl))
+		           """ %(str(beamToView.beamName),str(beamToView.type),
+		          		str(beamToView.fwhm),str(beamToView.flux),
+		          		str(beamToView.energy),str(beamToView.collimation))
 		tkMessageBox.showinfo( "View Beam Information", beamInfo)
 
 	def deleteBeam(self):
