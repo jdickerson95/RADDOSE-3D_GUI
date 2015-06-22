@@ -14,6 +14,7 @@ import tkFileDialog
 import Tkinter as tk
 import sys
 import os
+import shutil
 import subprocess
 import time
 import datetime
@@ -561,7 +562,8 @@ class RADDOSEgui(Frame):
 		# the crystal, beam and wedge has been defined.
 		l = Label(LabelFrameBodyRight,text="Run Strategy",style="labelFrameTitle.TLabel")
 		runStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
-		runStrategyFrame.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH)
+		runStrategyFrame.pack(side=TOP,padx=10, pady=10,fill=BOTH)
+		runStrategyFrame.columnconfigure(1, weight=1)
 
 		# make a box that allows user to uniquely name the experiment (i.e. the
 		#crystal, beam and wedge combination) before running.
@@ -569,17 +571,85 @@ class RADDOSEgui(Frame):
 		expLoadNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
 		self.expLoadName = StringVar()
 		expLoadNameBox = Entry(runStrategyFrame,textvariable=self.expLoadName)
-		expLoadNameBox.grid(row=0, column=1, columnspan=2, pady=5,sticky=W+E)
+		expLoadNameBox.grid(row=0, column=1, columnspan=3, pady=5,padx=10,sticky=W+E)
 
 		# make a run button to run the currently defined strategy
-		runButton = Button(runStrategyFrame,text="Run",command=self.runExperiment)
-		runButton.grid(row=1, columnspan=3, pady=10,padx=10,sticky=W+E)
+		runButton = Button(runStrategyFrame,text="Run",command=self.runManualExperiment)
+		runButton.grid(row=1, columnspan=4, pady=10,padx=10,sticky=W+E)
+
+		# Pre-made RADDOSE-3D run box starts here:
+		# make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
+		l = Label(LabelFrameBodyRight,text="Run pre-made job",style="labelFrameTitle.TLabel")
+		runPremadeRD3DStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
+		runPremadeRD3DStrategyFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
+
+		# add RD3D input file 'load' option to runPremadeRD3DStrategyFrame frame here
+		RD3DinputLoadLabel = Label(runPremadeRD3DStrategyFrame,text="RADDOSE-3D input Load",style="inputBoxes.TLabel")
+		RD3DinputLoadLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
+		self.RD3DinputLoad = StringVar()
+		self.RD3DinputLoadBox = Entry(runPremadeRD3DStrategyFrame,textvariable=self.RD3DinputLoad)
+		self.RD3DinputLoadBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
+		addRD3DinputButton = Button(runPremadeRD3DStrategyFrame,text="Find File",command=self.clickRD3DinputLoad)
+		addRD3DinputButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
+
+		# add experiment naming option to runPremadeRD3DStrategyFrame frame here. Name is what user wishes to
+		# call the current experiment for future reference
+		premadeRD3DStrategyLabel = Label(runPremadeRD3DStrategyFrame,text="Experiment Name",style="inputBoxes.TLabel")
+		premadeRD3DStrategyLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
+		self.premadeRD3DStrategyName = StringVar()
+		premadeRD3DStrategyBox = Entry(runPremadeRD3DStrategyFrame,textvariable=self.premadeRD3DStrategyName)
+		premadeRD3DStrategyBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
+		premadeRD3DRunButton = Button(runPremadeRD3DStrategyFrame,text="Run",command=self.runPremadeRD3DExperiment)
+		premadeRD3DRunButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
+
 
 		self.RADDOSEfilename = 'RADDOSE-3D-input.txt'
 		self.experiments = {}
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
+
+	def runManualExperiment(self):
+		"""Run the a manually experiment defined by the specified crystal, beam and wedge
+
+		This function intiates the running of an experiment involving a manually defined
+		strategy by the user within the GUI
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		self.CurrentexpLoadName = self.expLoadName
+		self.strategyType = 'Manual'
+		self.runExperiment()
+
+	def runPremadeRD3DExperiment(self):
+		"""Run the a premade RD3D job with premade input file
+
+		This function intiates the running of an experiment involving a premade RD3D
+		input file
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		self.CurrentexpLoadName = self.premadeRD3DStrategyName
+		self.strategyType = 'Premade'
+		self.runExperiment()
 
 	def runExperiment(self):
 		"""Run the experiment defined by the specified crystal, beam and wedge
@@ -603,7 +673,7 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
-		expName = str(self.expLoadName.get()) #get experiment name as a string
+		expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
 
 		#First check that the experiment name hasn't been left blank. If so then
 		#tell user that they need to supply an experiment name.
@@ -629,9 +699,11 @@ class RADDOSEgui(Frame):
 	def runStrategy(self):
 		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
 
-		This function writes an input file from the given crystal, beam and
-		wedge objects. Then it runs RADDOSE-3D with that input file and puts all
-		of the output files in the corresponding experiment folder.
+		For a manually defined strategy, this function writes an input file
+		from the given crystal, beam and wedge objects. For a premade RD3D
+		input file, the suitable input file is copied into the working directory
+		for the experimental run. Then it runs RADDOSE-3D with that input
+		file and puts all of the output files in the corresponding experiment folder.
 
 		=================
 		Keyword arguments
@@ -644,7 +716,13 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
-		self.writeRaddose3DInputFile()
+		# for manual strategy need to write RD3D input file. for premade RD3D input file
+		# need to copy file to new working directory for experiment
+		if self.strategyType == 'Manual':
+			self.writeRaddose3DInputFile()
+		elif self.strategyType == 'Premade':
+			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get())+self.RADDOSEfilename)
+
 		self.runRaddose3D()
 
 	def clickAddBeamStrategy(self):
@@ -1099,7 +1177,8 @@ class RADDOSEgui(Frame):
 		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
 
         # want to write a RADDOSE3D input file here
-		RADDOSEfilename = '{}/{}'.format(str(self.expLoadName.get()), self.RADDOSEfilename)
+
+		RADDOSEfilename = '{}/{}'.format(str(self.CurrentexpLoadName.get()), self.RADDOSEfilename)
 		RADDOSEfile = open(RADDOSEfilename,'w')
 		RADDOSEfile.write(crystalBlock)
 		RADDOSEfile.write("\n\n")
@@ -1149,7 +1228,7 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
-		experimentName = str(self.expLoadName.get()) #Get experiment name as string
+		experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 		os.chdir(experimentName) #change directory into experiment folder
 
 		#write terminal command to run RADDOSE-3D
@@ -1311,6 +1390,27 @@ class RADDOSEgui(Frame):
 		filelines = fileOpen.readlines()
 		fileString = ' '.join(filelines)
 		self.raddose3Dinputtxt.set(fileString)
+
+	def clickRD3DinputLoad(self):
+		"""Load a pre-made RADDOSE-3D input file
+
+		Function to allow file search and load of a pre-made RADDOSE-3D input file to
+		be directly run within the RADDOSE-3D GUI
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
+		self.RD3DinputLoadBox.delete(0,END)
+		self.RD3DinputLoadBox.insert(0,self.RD3DinputLoad)
 
 	def clickHelp(self):
 		# what happens when help button clicked
