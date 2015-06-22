@@ -500,6 +500,7 @@ class RADDOSEgui(Frame):
 		l = Label(LabelFrameBodyRight,text="Run Strategy",style="labelFrameTitle.TLabel")
 		runStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
 		runStrategyFrame.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH)
+		runStrategyFrame.columnconfigure(1, weight=1)
 
 		# make a box that allows user to uniquely name the experiment (i.e. the
 		#crystal, beam and wedge combination) before running.
@@ -507,11 +508,11 @@ class RADDOSEgui(Frame):
 		expLoadNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
 		self.expLoadName = StringVar()
 		expLoadNameBox = Entry(runStrategyFrame,textvariable=self.expLoadName)
-		expLoadNameBox.grid(row=0, column=1, columnspan=2, pady=5,sticky=W+E)
+		expLoadNameBox.grid(row=0, column=1, columnspan=3, pady=5,padx=10,sticky=W+E)
 
 		# make a run button to run the currently defined strategy
 		runButton = Button(runStrategyFrame,text="Run",command=self.runExperiment)
-		runButton.grid(row=1, columnspan=3, pady=10,padx=10,sticky=W+E)
+		runButton.grid(row=1, columnspan=4, pady=10,padx=10,sticky=W+E)
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
