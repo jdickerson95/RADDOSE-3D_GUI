@@ -499,7 +499,7 @@ class RADDOSEgui(Frame):
 		# the crystal, beam and wedge has been defined.
 		l = Label(LabelFrameBodyRight,text="Run Strategy",style="labelFrameTitle.TLabel")
 		runStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
-		runStrategyFrame.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH)
+		runStrategyFrame.pack(side=TOP,padx=10, pady=10,fill=BOTH)
 		runStrategyFrame.columnconfigure(1, weight=1)
 
 		# make a box that allows user to uniquely name the experiment (i.e. the
@@ -514,8 +514,39 @@ class RADDOSEgui(Frame):
 		runButton = Button(runStrategyFrame,text="Run",command=self.runExperiment)
 		runButton.grid(row=1, columnspan=4, pady=10,padx=10,sticky=W+E)
 
+		# Pre-made RADDOSE-3D run box starts here:
+		# make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
+		l = Label(LabelFrameBodyRight,text="Run pre-made job",style="labelFrameTitle.TLabel")
+		runPremadeRD3DStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
+		runPremadeRD3DStrategyFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
+
+		# add RD3D input file 'load' option to runPremadeRD3DStrategyFrame frame here
+		RD3DinputLoadLabel = Label(runPremadeRD3DStrategyFrame,text="RADDOSE-3D input Load",style="inputBoxes.TLabel")
+		RD3DinputLoadLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
+		self.RD3DinputLoad = StringVar()
+		self.RD3DinputLoadBox = Entry(runPremadeRD3DStrategyFrame,textvariable=self.RD3DinputLoad)
+		self.RD3DinputLoadBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
+		addRD3DinputButton = Button(runPremadeRD3DStrategyFrame,text="Find File",command=self.clickRD3DinputLoad)
+		addRD3DinputButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
+
+		# add experiment naming option to runPremadeRD3DStrategyFrame frame here. Name is what user wishes to
+		# call the current experiment for future reference
+		premadeRD3DStrategyLabel = Label(runPremadeRD3DStrategyFrame,text="Experiment Name",style="inputBoxes.TLabel")
+		premadeRD3DStrategyLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
+		self.premadeRD3DStrategyName = StringVar()
+		premadeRD3DStrategyBox = Entry(runPremadeRD3DStrategyFrame,textvariable=self.premadeRD3DStrategyName)
+		premadeRD3DStrategyBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
+		premadeRD3DRunButton = Button(runPremadeRD3DStrategyFrame,text="Add",command=self.runPreMadeRD3DExperiment)
+		premadeRD3DRunButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
+
+
 	#####################################################################################################
 	# below is a list of button actions in the gui
+
+	def clickRD3DinputLoad(self):
+		pass
+	def runPreMadeRD3DExperiment(self):
+		pass
 
 	def runExperiment(self):
 		"""Run the experiment defined by the specified crystal, beam and wedge
