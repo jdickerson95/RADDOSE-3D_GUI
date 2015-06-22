@@ -343,6 +343,7 @@ class RADDOSEgui(Frame):
 		#####################################################################################################
 		# for bottom left body --> summary/output window
 		self.experimentDict = {}
+		self.expNameList = []
 
 		# make labelframe in which an experiment can be chosen from list of added experiments
 		l = Label(FrameBodyLeftBottom,text="Choose an experiment",style="labelFrameTitle.TLabel")
@@ -353,13 +354,13 @@ class RADDOSEgui(Frame):
 		#Check if there any experiments loaded. If so then choose the first key
 		#in the experiment dictionary as an option. Otherwise let the user know
 		#that there are no loaded experiments
-		if bool(self.experimentDict):
-			self.expChoice.set(self.experimentDict.keys()[0])
+		if self.expNameList:
+			self.expChoice.set(self.expNameList[0])
 		else:
 			self.expChoice.set('No existing experiments')
 
 		#Create the option menu of experiments
-		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.experimentDict.keys())
+		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
 		self.expChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
 
 		self.raddose3Dinputtxt = StringVar()
@@ -603,15 +604,23 @@ class RADDOSEgui(Frame):
 		expListFrame.pack(side=TOP,fill=BOTH,padx=5,pady=0)
 		scrollbarexpList = Scrollbar(expListFrame, orient=VERTICAL)
 
-		self.expNameList = []
+		self.emptyExpListString = "No experiments loaded"
 		self.expListbox = Listbox(expListFrame,yscrollcommand=scrollbarCrystList.set,height=1)
-		self.expListbox.insert(END, "No experiments currently loaded")
+		self.expListbox.insert(END, self.emptyExpListString)
 		self.expListbox.update_idletasks()
 		self.expListbox.bind("<<ListboxSelect>>", self.onSelect)
 		scrollbarexpList.config(command=self.expListbox.yview)
 		self.expListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
 		scrollbarexpList.pack(side=RIGHT, fill=Y,pady=5)
 		self.var3 = StringVar()
+
+		# this button will view the currently selected crystal in the list
+		loadExpButton = Button(expListFrame, text="Load to summary window",command=self.clickLoadExperiment)
+		loadExpButton.pack(side=TOP,padx=10, pady=5,fill=X,anchor=N,expand=True)
+
+		# this button deletes the currently selected crystal from the listbox strategy list above
+		deleteExpButton = Button(expListFrame, text="Delete experiment",command=self.deleteExperiment)
+		deleteExpButton.pack(side=BOTTOM,padx=10, pady=5,fill=X,anchor=N)
 
 		# Pre-made RADDOSE-3D run box starts here:
 		# make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
@@ -731,7 +740,11 @@ class RADDOSEgui(Frame):
 			os.mkdir(expName)
 			self.runStrategy()
 
+		#Update experiments loaded to summary window
 		self.refreshExperimentChoices()
+
+		#Update the experiment list in the strategy window
+		self.addToExperimentList()
 
 	def runStrategy(self):
 		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
@@ -962,6 +975,51 @@ class RADDOSEgui(Frame):
 		# once this function runs, the toplevel window should be exited
 		self.top_CrystMaker.destroy()
 
+	def addToExperimentList(self):
+		if self.emptyExpListString in self.expListbox.get(0):
+			self.expListbox.delete(0)
+		experimentName = str(self.CurrentexpLoadName.get())
+		self.expListbox.insert(END, experimentName)
+
+	def deleteExperiment(self):
+		expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
+		experimentName = self.expListbox.get(expListIndex) #get experiment name
+
+		#Ask if user actually wants to delete the experiment
+		addQuery = tkMessageBox.askquestion( "Delete Experiment",
+		"Are you sure you want to delete experiment: %s?"%(experimentName))
+		if addQuery == 'yes':
+			self.expListbox.delete(expListIndex) #remove from experiment list box
+			del self.experimentDict[experimentName] #delete from dictionary
+			shutil.rmtree(experimentName) # Delete experiment directory
+			#check if experiment was also loaded into summary window (i.e. if
+			#it's in the experiment dictionary)
+			if experimentName in self.expNameList:
+				self.expNameList.remove(experimentName) #remove from experiment list
+				self.refreshExperimentChoices() #refresh experiment list in summary window
+
+			#If experiment dictionary is empty then print string to experiment
+			#list box to notify user that there are no existing experiments.
+			if not self.expNameList:
+				self.expListbox.insert(0, self.emptyExpListString)
+		else:
+			pass
+
+	def clickLoadExperiment(self):
+		expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
+		experimentName = self.expListbox.get(expListIndex) #get experiment name
+
+		#Check if the experiment name has already been added to the summary
+		#window list
+		if experimentName in self.expNameList:
+			string = """Experiment %s is already loaded.\n
+			""" %(experimentName)
+			tkMessageBox.showinfo( "No Experiment Name", string)
+		else:
+			self.expNameList.append(experimentName) #add experiment name to list
+			self.refreshExperimentChoices() #refresh experiment list in summary window
+
+
 	def clickCrystLoad(self):
 		# what happens when crystal load button clicked
 		self.crystLoad = tkFileDialog.askopenfilename(parent=self,title='Open crystal file to load')
@@ -1022,15 +1080,15 @@ class RADDOSEgui(Frame):
 		# delete all options from menu
 		self.expChoiceMenu['menu'].delete(0, 'end')
 		# get a list of all of the current keys from the dictionary of experiments
-		new_expChoices = self.experimentDict.keys()
+		new_expChoices = self.expNameList
 		# Insert list of new options
 		for choice in new_expChoices:
 			self.expChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.expChoice, choice))
 		#Check if there any experiments loaded. If so then choose the first key
 		#in the experiment dictionary as an option. Otherwise let the user know
 		#that there are no loaded experiments
-		if bool(self.experimentDict):
-			self.expChoice.set(self.experimentDict.keys()[0])
+		if self.expNameList:
+			self.expChoice.set(self.expNameList[0])
 		else:
 			self.expChoice.set('No existing experiments')
 
@@ -1310,6 +1368,7 @@ class RADDOSEgui(Frame):
 		currentCrystal = self.crystList[self.currentCrystIndex]
 		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile)
 		self.experimentDict[experimentName] = experiment
+		self.expNameList.append(experimentName)
 
 
 	def writeCrystalBlock(self, crystalObj):
