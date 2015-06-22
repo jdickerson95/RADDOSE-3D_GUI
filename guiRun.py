@@ -543,8 +543,6 @@ class RADDOSEgui(Frame):
 	#####################################################################################################
 	# below is a list of button actions in the gui
 
-	def clickRD3DinputLoad(self):
-		pass
 	def runPreMadeRD3DExperiment(self):
 		pass
 
@@ -1272,6 +1270,27 @@ class RADDOSEgui(Frame):
 		filelines = fileOpen.readlines()
 		fileString = ' '.join(filelines)
 		self.raddose3Dinputtxt.set(fileString)
+
+	def clickRD3DinputLoad(self):
+		"""Load a pre-made RADDOSE-3D input file
+
+		Function to allow file search and load of a pre-made RADDOSE-3D input file to 
+		be directly run within the RADDOSE-3D GUI
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
+		self.RD3DinputLoadBox.delete(0,END)
+		self.RD3DinputLoadBox.insert(0,self.RD3DinputLoad)
 
 	def clickHelp(self):
 		# what happens when help button clicked
