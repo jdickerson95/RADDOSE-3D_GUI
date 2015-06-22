@@ -15,6 +15,8 @@ import Tkinter as tk
 import sys
 import os
 import subprocess
+import time
+import datetime
 #from GUI2RADDOSE3DINPUT import *
 
 #####################################################################################################
@@ -52,16 +54,64 @@ class wedges(object):
 		self.exposureTime = exposTime
 
 #####################################################################################################
-class experiments(object):
+class Experiments(object):
 	#This class creates experiment objects. Experiments are defined by a unique
-	#crystal, beam and wedge object. The experiment will also contain
-	#information about the RADDOSE-3D run such as the various aggregate dose
-	#metrics (e.g. the DWD, max dose, and average dose metrics) and the time
-	#stamp when the experiment was run.
-	def __init__(self, crystalIndex, beamIndices, wedgeIndices, raddoseLog):
-		self.crystalIndex = crystalIndex
-		self.beamIndices = beamIndices
-		self.wedgeIndices = wedgeIndices
+	#crystal, set of beams and a corresponding set of wedges. The experiment
+	#will also contain information about the RADDOSE-3D run such as the various
+	#aggregate dose metrics (e.g. the DWD, max dose, and average dose metrics)
+	#and the time stamp when the experiment was run.
+	def __init__(self, crystal, beamList, wedgeList, pathToRaddose3dLog):
+		self.crystal = crystal
+		self.beamList = beamList
+		self.wedgeList = wedgeList
+		dwd, maxDose, avgDose = self.parseRaddoseOutput(pathToRaddose3dLog)
+		self.dwd = dwd
+		self.maxDose = maxDose
+		self.avgDose = avgDose
+		ts = time.time()
+		self.timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+
+	def parseRaddoseOutput(self,pathToRaddose3dLog):
+		"""Parses the RADDOSE-3D log and returns the specified dose value.
+		"""
+
+		raddoseOutput = open(pathToRaddose3dLog,'r')
+
+		parseDoseDWD = "Average Diffraction Weighted Dose"
+		parseDoseMax = "Max Dose"
+		parseDoseAvg = "Average Dose (Whole Crystal)"
+
+		for line in raddoseOutput:
+			if parseDoseDWD in line and "MGy" in line:
+				dwdDose = self.parseRaddoseLine(line)
+			elif parseDoseMax in line and "MGy" in line:
+				maxDose = self.parseRaddoseLine(line)
+			elif parseDoseAvg in line and "MGy" in line:
+				avgDose = self.parseRaddoseLine(line)
+
+		raddoseOutput.close()
+
+		return (dwdDose, maxDose, avgDose)
+
+	def parseRaddoseLine(self, raddoseLine):
+		"""Parses a line from the RADDDOSE-3D and returns the laast numerical
+		value from the line.
+		"""
+		splitLine = raddoseLine.split(" ")
+		for element in splitLine:
+			if self.isfloat(element):
+				value = float(element)
+
+		return value
+
+	def isfloat(self, value):
+		"""Checks whether a value can be parsed as a float.
+		"""
+		try:
+			float(value)
+			return True
+		except ValueError:
+			return False
 
 #####################################################################################################
 class dynamicOptionMenu(OptionMenu):
@@ -524,6 +574,9 @@ class RADDOSEgui(Frame):
 		# make a run button to run the currently defined strategy
 		runButton = Button(runStrategyFrame,text="Run",command=self.runExperiment)
 		runButton.grid(row=1, columnspan=3, pady=10,padx=10,sticky=W+E)
+
+		self.RADDOSEfilename = 'RADDOSE-3D-input.txt'
+		self.experiments = {}
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
@@ -1046,7 +1099,7 @@ class RADDOSEgui(Frame):
 		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
 
         # want to write a RADDOSE3D input file here
-		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(str(self.expLoadName.get()))
+		RADDOSEfilename = '{}/{}'.format(str(self.expLoadName.get()), self.RADDOSEfilename)
 		RADDOSEfile = open(RADDOSEfilename,'w')
 		RADDOSEfile.write(crystalBlock)
 		RADDOSEfile.write("\n\n")
@@ -1098,10 +1151,9 @@ class RADDOSEgui(Frame):
 		"""
 		experimentName = str(self.expLoadName.get()) #Get experiment name as string
 		os.chdir(experimentName) #change directory into experiment folder
-		RADDOSEfilename = 'RADDOSE-3D-input.txt' #get name of input file
 
 		#write terminal command to run RADDOSE-3D
-		terminalCommand = "java -jar ../raddose3d.jar -i {}".format(RADDOSEfilename)
+		terminalCommand = "java -jar ../raddose3d.jar -i {}".format(self.RADDOSEfilename)
 		process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True) #Run RADDOSE-3D
 		(outputLog, stderr) = process.communicate() # extract the output log
 
@@ -1118,12 +1170,15 @@ class RADDOSEgui(Frame):
 		outputLogfile.write(outputLog)
 		outputLogfile.close()
 
-		#print "Here we are going to see the index params"
-		#print self.currentCrystIndex
-		#print self.currentBeamIndex
-
 		self.inputtxt.insert(END, outputLog) # Print RADDOSE-3D log to summary window.
 		os.chdir("..") #Go back to original directory
+
+
+		#Create an experiment object and add it to the experiment dictionary
+		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
+		currentCrystal = self.crystList[self.currentCrystIndex]
+		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile)
+		self.experiments[experimentName] = experiment
 
 
 	def writeCrystalBlock(self, crystalObj):
