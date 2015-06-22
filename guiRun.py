@@ -788,14 +788,38 @@ class RADDOSEgui(Frame):
 		self.crystLoadBox.delete(0,END)
 		self.crystLoadBox.insert(0,self.crystLoad)
 
+	def readRD3DInputFileCrystInfo(self):
+		# reads in the crystal information from a RADDOSE-3D input file in order to create a new crystal object
+		RD3DinputFile = open(self.crystLoadBox.get(),'r').readlines()
+		for line in RD3DinputFile:
+			try:
+				if 'Dimensions' in line.split()[0]:
+					self.CrystalDimX = line.split()[1]
+					self.CrystalDimY = line.split()[2]
+					self.CrystalDimZ = line.split()[3]
+				elif 'type' in line.split()[0]:
+					self.CrystalType = line.split()[1]
+				elif 'absCoefCalc' in line.split()[0]:
+					self.CrystalAbsorpCoeff = line.split()[1]
+				elif 'pixelsPerMicron' in line.split()[0]:
+					self.CrystalpixPerMicron = line.split()[1]
+			except IndexError:
+				continue
+
 	def clickCrystAdd(self):
 		# what happens when crystal add button clicked
 		addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
 		if addQuery == 'yes':
 			self.crystListbox.insert(END, str(self.crystLoadName.get()))
 
+			# read in RADDOSE-3D style input file to get crystal properties
+			self.readRD3DInputFileCrystInfo()
+
 			# add a crystal object to the list of crystals (outside of listbox)
-			self.crystList.append(crystals(self.crystLoadName.get(),'?','?','?','?','?','?'))
+			self.crystList.append(crystals(self.crystLoadName.get(),self.CrystalType,
+										   self.CrystalDimX,self.CrystalDimY,
+										   self.CrystalDimZ,self.CrystalpixPerMicron,
+										   self.CrystalAbsorpCoeff))
 
 			# also update list of crystal choices used in the right strategy window
 			self.refreshCrystChoices()
