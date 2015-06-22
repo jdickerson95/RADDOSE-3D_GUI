@@ -342,6 +342,24 @@ class RADDOSEgui(Frame):
 
 		#####################################################################################################
 		# for bottom left body --> summary/output window
+		self.experimentDict = {}
+
+		# make labelframe in which a crystal can be chosen from list of added crystals
+		l = Label(FrameBodyLeftBottom,text="Choose an experiment",style="labelFrameTitle.TLabel")
+		chooseExpFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
+		chooseExpFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
+
+		self.expChoice = StringVar(self)
+		#Check if there any experiments loaded. If so then choose the first key
+		#in the experiment dictionary as an option. Otherwise let the user know
+		#that there are no loaded experiments
+		if bool(self.experimentDict):
+			self.expChoice.set(self.experimentDict.keys()[0])
+		else:
+			self.expChoice.set('No existing experiments')
+		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.experimentDict.keys())
+		self.expChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
+
 		self.raddose3Dinputtxt = StringVar()
 		scrollbarRaddoseInputFile = Scrollbar(FrameBodyLeftBottom, orient=VERTICAL)
 		self.inputtxt = Text(FrameBodyLeftBottom, height=100,width=60,wrap=WORD,font=("Helvetica", 8))
@@ -604,7 +622,6 @@ class RADDOSEgui(Frame):
 
 
 		self.RADDOSEfilename = 'RADDOSE-3D-input.txt'
-		self.experiments = {}
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
