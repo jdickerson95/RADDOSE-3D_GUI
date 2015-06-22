@@ -344,7 +344,7 @@ class RADDOSEgui(Frame):
 		# for bottom left body --> summary/output window
 		self.experimentDict = {}
 
-		# make labelframe in which a crystal can be chosen from list of added crystals
+		# make labelframe in which an experiment can be chosen from list of added experiments
 		l = Label(FrameBodyLeftBottom,text="Choose an experiment",style="labelFrameTitle.TLabel")
 		chooseExpFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
 		chooseExpFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
@@ -357,6 +357,8 @@ class RADDOSEgui(Frame):
 			self.expChoice.set(self.experimentDict.keys()[0])
 		else:
 			self.expChoice.set('No existing experiments')
+
+		#Create the option menu of experiments
 		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.experimentDict.keys())
 		self.expChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
 
@@ -713,6 +715,8 @@ class RADDOSEgui(Frame):
 			os.mkdir(expName)
 			self.runStrategy()
 
+		self.refreshExperimentChoices()
+
 	def runStrategy(self):
 		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
 
@@ -998,6 +1002,21 @@ class RADDOSEgui(Frame):
 	    for choice in new_BeamChoices:
 	        self.beamChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.beamChoice, choice))
 
+	def refreshExperimentChoices(self):
+		# delete all options from menu
+		self.expChoiceMenu['menu'].delete(0, 'end')
+		# get a list of all of the current keys from the dictionary of experiments
+		new_expChoices = self.experimentDict.keys()
+		# Insert list of new options
+		for choice in new_expChoices:
+			self.expChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.expChoice, choice))
+		#Check if there any experiments loaded. If so then choose the first key
+		#in the experiment dictionary as an option. Otherwise let the user know
+		#that there are no loaded experiments
+		if bool(self.experimentDict):
+			self.expChoice.set(self.experimentDict.keys()[0])
+		else:
+			self.expChoice.set('No existing experiments')
 
 	def clickBeamView(self):
 		# what happens when beam view button clicked
@@ -1274,7 +1293,7 @@ class RADDOSEgui(Frame):
 		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
 		currentCrystal = self.crystList[self.currentCrystIndex]
 		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile)
-		self.experiments[experimentName] = experiment
+		self.experimentDict[experimentName] = experiment
 
 
 	def writeCrystalBlock(self, crystalObj):
