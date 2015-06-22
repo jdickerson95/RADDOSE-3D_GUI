@@ -597,6 +597,22 @@ class RADDOSEgui(Frame):
 		runButton = Button(runStrategyFrame,text="Run",command=self.runManualExperiment)
 		runButton.grid(row=1, columnspan=4, pady=10,padx=10,sticky=W+E)
 
+		# make a listbox frame in options frame to show added experiments. The
+		# listbox of added experiments is created here, along with a scrollbar.
+		expListFrame = Frame(LabelFrameBodyRight,style="BodyGroovy.TFrame")
+		expListFrame.pack(side=TOP,fill=BOTH,padx=5,pady=0)
+		scrollbarexpList = Scrollbar(expListFrame, orient=VERTICAL)
+
+		self.expNameList = []
+		self.expListbox = Listbox(expListFrame,yscrollcommand=scrollbarCrystList.set,height=1)
+		self.expListbox.insert(END, "No experiments currently loaded")
+		self.expListbox.update_idletasks()
+		self.expListbox.bind("<<ListboxSelect>>", self.onSelect)
+		scrollbarexpList.config(command=self.expListbox.yview)
+		self.expListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
+		scrollbarexpList.pack(side=RIGHT, fill=Y,pady=5)
+		self.var3 = StringVar()
+
 		# Pre-made RADDOSE-3D run box starts here:
 		# make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
 		l = Label(LabelFrameBodyRight,text="Run pre-made job",style="labelFrameTitle.TLabel")
