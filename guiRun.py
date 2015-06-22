@@ -14,6 +14,7 @@ import tkFileDialog
 import Tkinter as tk
 import sys
 import os
+import shutil
 import subprocess
 #from GUI2RADDOSE3DINPUT import *
 
@@ -511,7 +512,7 @@ class RADDOSEgui(Frame):
 		expLoadNameBox.grid(row=0, column=1, columnspan=3, pady=5,padx=10,sticky=W+E)
 
 		# make a run button to run the currently defined strategy
-		runButton = Button(runStrategyFrame,text="Run",command=self.runExperiment)
+		runButton = Button(runStrategyFrame,text="Run",command=self.runManualExperiment)
 		runButton.grid(row=1, columnspan=4, pady=10,padx=10,sticky=W+E)
 
 		# Pre-made RADDOSE-3D run box starts here:
@@ -536,15 +537,22 @@ class RADDOSEgui(Frame):
 		self.premadeRD3DStrategyName = StringVar()
 		premadeRD3DStrategyBox = Entry(runPremadeRD3DStrategyFrame,textvariable=self.premadeRD3DStrategyName)
 		premadeRD3DStrategyBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
-		premadeRD3DRunButton = Button(runPremadeRD3DStrategyFrame,text="Add",command=self.runPreMadeRD3DExperiment)
+		premadeRD3DRunButton = Button(runPremadeRD3DStrategyFrame,text="Run",command=self.runPremadeRD3DExperiment)
 		premadeRD3DRunButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
 
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
 
-	def runPreMadeRD3DExperiment(self):
-		pass
+	def runManualExperiment(self):
+		self.CurrentexpLoadName = self.expLoadName
+		self.strategyType = 'Manual'
+		self.runExperiment()
+
+	def runPremadeRD3DExperiment(self):
+		self.CurrentexpLoadName = self.premadeRD3DStrategyName
+		self.strategyType = 'Premade'
+		self.runExperiment()
 
 	def runExperiment(self):
 		"""Run the experiment defined by the specified crystal, beam and wedge
@@ -568,7 +576,7 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
-		expName = str(self.expLoadName.get()) #get experiment name as a string
+		expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
 
 		#First check that the experiment name hasn't been left blank. If so then
 		#tell user that they need to supply an experiment name.
@@ -609,7 +617,13 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
-		self.writeRaddose3DInputFile()
+		# for manual strategy need to write RD3D input file. for premade RD3D input file
+		# need to copy file to new working directory for experiment
+		if self.strategyType == 'Manual':
+			self.writeRaddose3DInputFile()
+		elif self.strategyType == 'Premade':
+			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get()))
+
 		self.runRaddose3D()
 
 	def clickAddBeamStrategy(self):
@@ -1064,7 +1078,7 @@ class RADDOSEgui(Frame):
 		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
 
         # want to write a RADDOSE3D input file here
-		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(str(self.expLoadName.get()))
+		RADDOSEfilename = '{}/RADDOSE-3D-input.txt'.format(str(self.CurrentexpLoadName.get()))
 		RADDOSEfile = open(RADDOSEfilename,'w')
 		RADDOSEfile.write(crystalBlock)
 		RADDOSEfile.write("\n\n")
@@ -1114,7 +1128,7 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
-		experimentName = str(self.expLoadName.get()) #Get experiment name as string
+		experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 		os.chdir(experimentName) #change directory into experiment folder
 		RADDOSEfilename = 'RADDOSE-3D-input.txt' #get name of input file
 
