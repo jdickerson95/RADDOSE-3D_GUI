@@ -634,9 +634,11 @@ class RADDOSEgui(Frame):
 	def runStrategy(self):
 		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
 
-		This function writes an input file from the given crystal, beam and
-		wedge objects. Then it runs RADDOSE-3D with that input file and puts all
-		of the output files in the corresponding experiment folder.
+		For a manually defined strategy, this function writes an input file 
+		from the given crystal, beam and wedge objects. For a premade RD3D 
+		input file, the suitable input file is copied into the working directory 
+		for the experimental run. Then it runs RADDOSE-3D with that input 
+		file and puts all of the output files in the corresponding experiment folder.
 
 		=================
 		Keyword arguments
@@ -654,7 +656,7 @@ class RADDOSEgui(Frame):
 		if self.strategyType == 'Manual':
 			self.writeRaddose3DInputFile()
 		elif self.strategyType == 'Premade':
-			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get()))
+			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get())+'/RADDOSE-3D-input.txt')
 
 		self.runRaddose3D()
 
