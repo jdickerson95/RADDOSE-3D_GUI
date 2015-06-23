@@ -60,8 +60,9 @@ class Experiments(object):
 	#crystal, set of beams and a corresponding set of wedges. The experiment
 	#will also contain information about the RADDOSE-3D run such as the various
 	#aggregate dose metrics (e.g. the DWD, max dose, and average dose metrics)
-	#and the time stamp when the experiment was run.
-	def __init__(self, crystal, beamList, wedgeList, pathToRaddose3dLog):
+	#and the time stamp when the experiment was run. The log is the information
+	#output when RADDOSE-3D was run for this particular experiment.
+	def __init__(self, crystal, beamList, wedgeList, pathToRaddose3dLog, log):
 		self.crystal = crystal
 		self.beamList = beamList
 		self.wedgeList = wedgeList
@@ -71,6 +72,7 @@ class Experiments(object):
 		self.avgDose = avgDose
 		ts = time.time()
 		self.timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+		self.log = log
 
 	def parseRaddoseOutput(self,pathToRaddose3dLog):
 		"""Parses the RADDOSE-3D log and returns the specified dose value.
@@ -1374,7 +1376,7 @@ class RADDOSEgui(Frame):
 		#Create an experiment object and add it to the experiment dictionary
 		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
 		currentCrystal = self.crystList[self.currentCrystIndex]
-		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile)
+		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
 		self.experimentDict[experimentName] = experiment
 		self.expNameList.append(experimentName)
 
