@@ -253,7 +253,7 @@ class RADDOSEgui(Frame):
 		styleTitle = Style()
 		styleTitle.configure("Title.TLabel",foreground="white",
 							 background=self.headercolour,font=("Helvetica", 26))
-		
+
 		# make a style for the gui header RD3D web address details
 		styleTitle = Style()
 		styleTitle.configure("RD3DheaderWebAddress.TLabel",foreground="white",
@@ -448,7 +448,7 @@ class RADDOSEgui(Frame):
 
 		# want to make a list of crystal object instances (here two example crystals are defined)
 		exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1,'Average')
-		exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,'RADDOSE')
+		exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,'Average')
 		self.crystList = [exampleCryst,exampleCryst2]
 
 		self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=8)
