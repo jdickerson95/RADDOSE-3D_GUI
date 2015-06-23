@@ -375,6 +375,9 @@ class RADDOSEgui(Frame):
 		self.inputtxt.delete(1.0, END)
 		self.inputtxt.insert(END, quote*2)
 
+		removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
+		removeExpButton.pack(side=BOTTOM,pady=5)
+
 
 		#####################################################################################################
 		# for top middle body --> make-a-crystal window
@@ -1010,7 +1013,7 @@ class RADDOSEgui(Frame):
 		experimentName = self.expListbox.get(expListIndex) #get experiment name
 
 		#Check if the experiment name has already been added to the summary
-		#window list
+		#window list. If so then tell the user in a pop up window
 		if experimentName in self.expNameList:
 			string = """Experiment %s is already loaded.\n
 			""" %(experimentName)
@@ -1018,6 +1021,11 @@ class RADDOSEgui(Frame):
 		else:
 			self.expNameList.append(experimentName) #add experiment name to list
 			self.refreshExperimentChoices() #refresh experiment list in summary window
+
+	def removeExperimentFromList(self):
+		experimentName = str(self.expChoice.get()) #get the experiment name
+		self.expNameList.remove(experimentName) #remove experiment from list
+		self.refreshExperimentChoices() # update the experiment list in the summary window.
 
 
 	def clickCrystLoad(self):
