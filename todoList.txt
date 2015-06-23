@@ -44,8 +44,6 @@ made for inputs that can only take certain values or text.
 
 - Add capability to create an interactive dose contour plot (with axis)
 
-- Add RADDOSE-3D logo on the top of the GUI
-
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
 
 - Add more RADDOSE-3D input options (inc PDB)
