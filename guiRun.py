@@ -643,7 +643,7 @@ class RADDOSEgui(Frame):
 		loadExpButton.pack(side=TOP,padx=10, pady=5,fill=X,anchor=N,expand=True)
 
 		# this button deletes the currently selected crystal from the listbox strategy list above
-		deleteExpButton = Button(expListFrame, text="Delete experiment",command=self.deleteExperiment)
+		deleteExpButton = Button(expListFrame, text="Delete experiment",command=self.findExperimentTodelete)
 		deleteExpButton.pack(side=BOTTOM,padx=10, pady=5,fill=X,anchor=N)
 
 		# Pre-made RADDOSE-3D run box starts here:
@@ -757,7 +757,14 @@ class RADDOSEgui(Frame):
 			addQuery = tkMessageBox.askquestion( "Duplicate Experiment Names",
 			"Experiment name %s already exists. Do you want to overwrite this experiment?"%(expName))
 			if addQuery == 'yes':
-				self.runStrategy()
+				expTuple = self.expListbox.get(0, END) #extract list from list box
+				if expName in expTuple:
+					expIndex = expTuple.index(expName) #find the index with the corresponding experiment name
+				else:
+					expIndex = -1
+				self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
+				os.mkdir(expName) #make the new directory
+				self.runStrategy() #run the strategy
 			else:
 				pass
 		else:
@@ -792,11 +799,10 @@ class RADDOSEgui(Frame):
 			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get())+self.RADDOSEfilename)
 
 		self.runRaddose3D()
-		#Update experiments loaded to summary window
-		self.refreshExperimentChoices()
-
 		#Update the experiment list in the strategy window
 		self.addToExperimentList()
+		#Update experiments loaded to summary window
+		self.refreshExperimentChoices()
 
 	def clickAddBeamStrategy(self):
 		# what happens when add beam strategy button clicked. Makes a new small window allowing
@@ -1044,11 +1050,11 @@ class RADDOSEgui(Frame):
 
 	def addToExperimentList(self):
 		if self.emptyExpListString in self.expListbox.get(0):
-			self.expListbox.delete(0)
+			self.expListbox.delete(0, END)
 		experimentName = str(self.CurrentexpLoadName.get())
 		self.expListbox.insert(END, experimentName)
 
-	def deleteExperiment(self):
+	def findExperimentTodelete(self):
 		expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
 		experimentName = self.expListbox.get(expListIndex) #get experiment name
 
@@ -1056,21 +1062,25 @@ class RADDOSEgui(Frame):
 		addQuery = tkMessageBox.askquestion( "Delete Experiment",
 		"Are you sure you want to delete experiment: %s?"%(experimentName))
 		if addQuery == 'yes':
-			self.expListbox.delete(expListIndex) #remove from experiment list box
-			del self.experimentDict[experimentName] #delete from dictionary
-			shutil.rmtree(experimentName) # Delete experiment directory
-			#check if experiment was also loaded into summary window (i.e. if
-			#it's in the experiment dictionary)
-			if experimentName in self.expNameList:
-				self.expNameList.remove(experimentName) #remove from experiment list
-				self.refreshExperimentChoices() #refresh experiment list in summary window
-
-			#If experiment dictionary is empty then print string to experiment
-			#list box to notify user that there are no existing experiments.
-			if not self.expNameList:
-				self.expListbox.insert(0, self.emptyExpListString)
+			self.deleteExperiment(expListIndex, experimentName)
 		else:
 			pass
+
+	def deleteExperiment(self, expListIndex, experimentName):
+		if expListIndex != -1:
+			self.expListbox.delete(expListIndex) #remove from experiment list box
+			del self.experimentDict[experimentName] #delete from dictionary
+		shutil.rmtree(experimentName) # Delete experiment directory
+		#check if experiment was also loaded into summary window (i.e. if
+		#it's in the experiment dictionary)
+		if experimentName in self.expNameList:
+			self.expNameList.remove(experimentName) #remove from experiment list
+			self.refreshExperimentChoices() #refresh experiment list in summary window
+
+		#If experiment dictionary is empty then print string to experiment
+		#list box to notify user that there are no existing experiments.
+		if not self.experimentDict:
+			self.expListbox.insert(0, self.emptyExpListString)
 
 	def clickLoadExperiment(self):
 		expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
