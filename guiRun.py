@@ -365,7 +365,7 @@ class RADDOSEgui(Frame):
 		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
 		self.expChoiceMenu.grid(row=0, column=0, columnspan=1,pady=5, padx=3, sticky=W+E)
 
-		expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.displaySummary)
+		expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.clickSummary)
 		expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		self.raddose3Dinputtxt = StringVar()
@@ -906,27 +906,42 @@ class RADDOSEgui(Frame):
 		          		wedgeObject.angStop, wedgeObject.exposureTime)
 		return string
 
-	def displaySummary(self):
+	def clickSummary(self):
 		if self.expNameList:
 			expName = str(self.expChoice.get())
-			expObject = self.experimentDict[expName]
-
-			self.inputtxt.delete(1.0, END)
-			self.inputtxt.insert(1.0, "Summary of experiment: %s\n\n"%(expName))
-
-			crystalInfo = self.extractCrystalInfo(expObject.crystal)
-			self.inputtxt.insert(END, crystalInfo+"\n")
-			counter = -1
-			for beamObject in expObject.beamList:
-				counter += 1
-				beamString = self.extractBeamInfo(beamObject)
-				wedgeObject = expObject.wedgeList[counter]
-				wedgeString =self.extractWedgeInfo(wedgeObject)
-				self.inputtxt.insert(END, beamString+"\n"+wedgeString+"\n")
+			self.displaySummary(expName)
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
 			""" %()
 			tkMessageBox.showinfo( "No experiments loaded", string)
+
+	def displaySummary(self, expName):
+		#extract the experiment object corresponding to the chosen
+		#experiment in the list
+		expObject = self.experimentDict[expName]
+
+		#Write first line of the summary giving the experiment name
+		self.inputtxt.delete(1.0, END) #Delete any text already in the box
+		self.inputtxt.insert(1.0, "Summary of experiment: %s\n\n"%(expName))
+
+		#Dose Summary
+		self.inputtxt.insert(END, "Dose Summary:\n"%())
+		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Diffraction Weighted Dose (DWD)",expObject.dwd))
+		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Maximum Dose",expObject.maxDose))
+		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
+		self.inputtxt.insert(END, "\n")
+
+		#Add crystal summary
+		crystalInfo = self.extractCrystalInfo(expObject.crystal)
+		self.inputtxt.insert(END, crystalInfo+"\n")
+		#Add beam and wedge summaries
+		counter = -1
+		for beamObject in expObject.beamList:
+			counter += 1
+			beamString = self.extractBeamInfo(beamObject)
+			wedgeObject = expObject.wedgeList[counter]
+			wedgeString =self.extractWedgeInfo(wedgeObject)
+			self.inputtxt.insert(END, beamString+"\n"+wedgeString+"\n")
 
 
 	def deleteCryst(self):
@@ -1409,8 +1424,6 @@ class RADDOSEgui(Frame):
 		outputLogfile.write(outputLog)
 		outputLogfile.close()
 
-		# Print a statement to tell user that the run has finished.
-		self.inputtxt.insert(END, "RADDOSE-3D has now finished running\n")
 		os.chdir("..") #Go back to original directory
 
 
@@ -1420,6 +1433,9 @@ class RADDOSEgui(Frame):
 		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
 		self.experimentDict[experimentName] = experiment
 		self.expNameList.append(experimentName)
+
+		# Print a summary of the RADDOSE-3D run.
+		self.displaySummary(experimentName)
 
 
 	def writeCrystalBlock(self, crystalObj):
