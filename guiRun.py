@@ -383,9 +383,10 @@ class RADDOSEgui(Frame):
 		expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.clickSummary)
 		expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
+		#create text box with scrollbar to detail the summary output for currently selected experiment
 		self.raddose3Dinputtxt = StringVar()
 		scrollbarRaddoseInputFile = Scrollbar(FrameBodyLeftBottom, orient=VERTICAL)
-		self.inputtxt = Text(FrameBodyLeftBottom, height=100,width=60,wrap=WORD,font=("Helvetica", 8))
+		self.inputtxt = Text(FrameBodyLeftBottom, height=33,width=60,wrap=WORD,font=("Helvetica", 8))
 		scrollbarRaddoseInputFile.pack(side=LEFT,fill=Y)
 		self.inputtxt.pack(side=LEFT,expand=True)
 		scrollbarStrategyList.config(command=self.inputtxt.yview)
