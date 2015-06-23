@@ -634,7 +634,7 @@ class RADDOSEgui(Frame):
 		# make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
 		l = Label(LabelFrameBodyRight,text="Run pre-made job",style="labelFrameTitle.TLabel")
 		runPremadeRD3DStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
-		runPremadeRD3DStrategyFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
+		runPremadeRD3DStrategyFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
 
 		# add RD3D input file 'load' option to runPremadeRD3DStrategyFrame frame here
 		RD3DinputLoadLabel = Label(runPremadeRD3DStrategyFrame,text="RADDOSE-3D input Load",style="inputBoxes.TLabel")
