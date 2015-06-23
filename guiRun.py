@@ -363,7 +363,10 @@ class RADDOSEgui(Frame):
 
 		#Create the option menu of experiments
 		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
-		self.expChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
+		self.expChoiceMenu.grid(row=0, column=0, columnspan=1,pady=5, padx=3, sticky=W+E)
+
+		expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.displaySummary)
+		expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		self.raddose3Dinputtxt = StringVar()
 		scrollbarRaddoseInputFile = Scrollbar(FrameBodyLeftBottom, orient=VERTICAL)
@@ -378,7 +381,7 @@ class RADDOSEgui(Frame):
 		self.inputtxt.insert(END, quote*2)
 
 		removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
-		removeExpButton.pack(side=BOTTOM,pady=5)
+		removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 
 		#####################################################################################################
@@ -886,16 +889,45 @@ class RADDOSEgui(Frame):
 	def clickCrystView(self):
 		# what happens when crystal view button clicked
 		crystToView = self.crystList[self.crystListbox.index(ANCHOR)]
-		crystInfo ="""Name: %s\nType: %s\nDimensions: %s %s %s\nPixels per Micron: %s\nAbsorption Coefficient: %s
-		           """ %(str(crystToView.crystName),str(crystToView.type),
-		          		str(crystToView.crystDimX),str(crystToView.crystDimY),
-		          		str(crystToView.crystDimZ),str(crystToView.pixelsPerMicron),
-		          		str(crystToView.absCoefCalc))
+		crystInfo = self.extractCrystalInfo(crystToView)
 		tkMessageBox.showinfo( "View Crystal Information", crystInfo)
 
-		print str(crystToView.crystDimX)
-		print str(crystToView.crystDimY)
-		print str(crystToView.crystDimZ)
+	def extractCrystalInfo(self, crystalObject):
+		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAbsorption Coefficient: %s\n
+		           """ %(str(crystalObject.crystName),str(crystalObject.type),
+		          		str(crystalObject.crystDimX),str(crystalObject.crystDimY),
+		          		str(crystalObject.crystDimZ),str(crystalObject.pixelsPerMicron),
+		          		str(crystalObject.absCoefCalc))
+		return string
+
+	def extractWedgeInfo(self, wedgeObject):
+		string = """Total Oscillation %.2f (Angle Start: %s, End: %s) in degrees\nTotal Exposure Time: %s seconds\n
+		           """ %(float(wedgeObject.angStop) - float(wedgeObject.angStart), wedgeObject.angStart,
+		          		wedgeObject.angStop, wedgeObject.exposureTime)
+		return string
+
+	def displaySummary(self):
+		if self.expNameList:
+			expName = str(self.expChoice.get())
+			expObject = self.experimentDict[expName]
+
+			self.inputtxt.delete(1.0, END)
+			self.inputtxt.insert(1.0, "Summary of experiment: %s\n\n"%(expName))
+
+			crystalInfo = self.extractCrystalInfo(expObject.crystal)
+			self.inputtxt.insert(END, crystalInfo+"\n")
+			counter = -1
+			for beamObject in expObject.beamList:
+				counter += 1
+				beamString = self.extractBeamInfo(beamObject)
+				wedgeObject = expObject.wedgeList[counter]
+				wedgeString =self.extractWedgeInfo(wedgeObject)
+				self.inputtxt.insert(END, beamString+"\n"+wedgeString+"\n")
+		else:
+			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+			""" %()
+			tkMessageBox.showinfo( "No experiments loaded", string)
+
 
 	def deleteCryst(self):
 		# delete the selected crystal from the listbox of added crystals. Also remove the
@@ -1018,7 +1050,7 @@ class RADDOSEgui(Frame):
 		if experimentName in self.expNameList:
 			string = """Experiment %s is already loaded.\n
 			""" %(experimentName)
-			tkMessageBox.showinfo( "No Experiment Name", string)
+			tkMessageBox.showinfo( "Experiment already loaded", string)
 		else:
 			self.expNameList.append(experimentName) #add experiment name to list
 			self.refreshExperimentChoices() #refresh experiment list in summary window
@@ -1104,11 +1136,15 @@ class RADDOSEgui(Frame):
 	def clickBeamView(self):
 		# what happens when beam view button clicked
 		beamToView = self.beamList[self.beamListbox.index(ANCHOR)]
-		beamInfo ="""Name: %s\nType: %s\nFWHM: %s\nFlux: %s\nEnergy: %s\nRectangular Collimation: %s
-		           """ %(str(beamToView.beamName),str(beamToView.type),
-		          		str(beamToView.fwhm),str(beamToView.flux),
-		          		str(beamToView.energy),str(beamToView.collimation))
+		beamInfo = self.extractBeamInfo(beamToView)
 		tkMessageBox.showinfo( "View Beam Information", beamInfo)
+
+	def extractBeamInfo(self, beamObject):
+		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %s (photons per second)\nEnergy: %skeV\nRectangular Collimation: %s (microns in x,y)\n
+		           """ %(str(beamObject.beamName),str(beamObject.type),
+		          		str(beamObject.fwhm),str(beamObject.flux),
+		          		str(beamObject.energy),str(beamObject.collimation))
+		return string
 
 	def deleteBeam(self):
 		self.beamListbox.delete(ANCHOR)
