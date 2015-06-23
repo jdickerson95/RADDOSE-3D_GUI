@@ -10,16 +10,6 @@ To do before 30th June 2015
 - Need an option to look for RADDOSE-3D input files and create an "experiment"
 from the input file.
 
-- Need to be able to "load" multiple experiments so that the doses can be
-compared. Make experiment objects.
-crystal
-beam
-wedge
-time stamp
-dose
-
-- Need to be able to delete experiment objects as well as the directory
-
 - Make bar plot to compare experiments
 
 - Need to output a summary of the main results from an experiment run.
