@@ -60,8 +60,9 @@ class Experiments(object):
 	#crystal, set of beams and a corresponding set of wedges. The experiment
 	#will also contain information about the RADDOSE-3D run such as the various
 	#aggregate dose metrics (e.g. the DWD, max dose, and average dose metrics)
-	#and the time stamp when the experiment was run.
-	def __init__(self, crystal, beamList, wedgeList, pathToRaddose3dLog):
+	#and the time stamp when the experiment was run. The log is the information
+	#output when RADDOSE-3D was run for this particular experiment.
+	def __init__(self, crystal, beamList, wedgeList, pathToRaddose3dLog, log):
 		self.crystal = crystal
 		self.beamList = beamList
 		self.wedgeList = wedgeList
@@ -71,6 +72,7 @@ class Experiments(object):
 		self.avgDose = avgDose
 		ts = time.time()
 		self.timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+		self.log = log
 
 	def parseRaddoseOutput(self,pathToRaddose3dLog):
 		"""Parses the RADDOSE-3D log and returns the specified dose value.
@@ -752,7 +754,6 @@ class RADDOSEgui(Frame):
 		#Update experiments loaded to summary window
 		self.refreshExperimentChoices()
 
-
 	def runStrategy(self):
 		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
 
@@ -781,6 +782,11 @@ class RADDOSEgui(Frame):
 			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get())+self.RADDOSEfilename)
 
 		self.runRaddose3D()
+		#Update experiments loaded to summary window
+		self.refreshExperimentChoices()
+
+		#Update the experiment list in the strategy window
+		self.addToExperimentList()
 
 	def clickAddBeamStrategy(self):
 		# what happens when add beam strategy button clicked. Makes a new small window allowing
@@ -1289,6 +1295,7 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
+
 		# run the current designed strategy here
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
 		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
@@ -1298,9 +1305,10 @@ class RADDOSEgui(Frame):
 		currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
 		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
 
-        # want to write a RADDOSE3D input file here
-
+		#Create RADDOSE-3D filename
 		RADDOSEfilename = '{}/{}'.format(str(self.CurrentexpLoadName.get()), self.RADDOSEfilename)
+
+		#Write the RADDOSE3D input file here
 		RADDOSEfile = open(RADDOSEfilename,'w')
 		RADDOSEfile.write(crystalBlock)
 		RADDOSEfile.write("\n\n")
@@ -1328,7 +1336,10 @@ class RADDOSEgui(Frame):
 			RADDOSEfile.write("\n\n")
 		RADDOSEfile.close()
 
-		# read the RADDOSE-3D input file to update the output window to show the new RADDOSE-3D input file
+		#Delete contents of summary window and tell user that RADDOSE-3D is
+		#being run with the specified inputs
+		self.inputtxt.delete(1.0, END)
+		self.inputtxt.insert(1.0, "RADDOSE-3D is now running with the following inputs:\n")
 		self.readRADDOSEInputFile(RADDOSEfilename)
 		quote = self.raddose3Dinputtxt.get()
 		self.inputtxt.insert(END, quote)
@@ -1371,14 +1382,15 @@ class RADDOSEgui(Frame):
 		outputLogfile.write(outputLog)
 		outputLogfile.close()
 
-		self.inputtxt.insert(END, outputLog) # Print RADDOSE-3D log to summary window.
+		# Print a statement to tell user that the run has finished.
+		self.inputtxt.insert(END, "RADDOSE-3D has now finished running\n")
 		os.chdir("..") #Go back to original directory
 
 
 		#Create an experiment object and add it to the experiment dictionary
 		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
 		currentCrystal = self.crystList[self.currentCrystIndex]
-		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile)
+		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
 		self.experimentDict[experimentName] = experiment
 		self.expNameList.append(experimentName)
 
