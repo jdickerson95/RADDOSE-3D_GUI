@@ -1286,6 +1286,7 @@ class RADDOSEgui(Frame):
 		=================
 		No explicit return parameters
 		"""
+
 		# run the current designed strategy here
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
 		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
@@ -1295,9 +1296,10 @@ class RADDOSEgui(Frame):
 		currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
 		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
 
-        # want to write a RADDOSE3D input file here
-
+		#Create RADDOSE-3D filename
 		RADDOSEfilename = '{}/{}'.format(str(self.CurrentexpLoadName.get()), self.RADDOSEfilename)
+
+		#Write the RADDOSE3D input file here
 		RADDOSEfile = open(RADDOSEfilename,'w')
 		RADDOSEfile.write(crystalBlock)
 		RADDOSEfile.write("\n\n")
@@ -1325,7 +1327,10 @@ class RADDOSEgui(Frame):
 			RADDOSEfile.write("\n\n")
 		RADDOSEfile.close()
 
-		# read the RADDOSE-3D input file to update the output window to show the new RADDOSE-3D input file
+		#Delete contents of summary window and tell user that RADDOSE-3D is
+		#being run with the specified inputs
+		self.inputtxt.delete(1.0, END)
+		self.inputtxt.insert(1.0, "RADDOSE-3D is now running with the following inputs:\n")
 		self.readRADDOSEInputFile(RADDOSEfilename)
 		quote = self.raddose3Dinputtxt.get()
 		self.inputtxt.insert(END, quote)
@@ -1368,7 +1373,8 @@ class RADDOSEgui(Frame):
 		outputLogfile.write(outputLog)
 		outputLogfile.close()
 
-		self.inputtxt.insert(END, outputLog) # Print RADDOSE-3D log to summary window.
+		# Print a statement to tell user that the run has finished.
+		self.inputtxt.insert(END, "RADDOSE-3D has now finished running\n")
 		os.chdir("..") #Go back to original directory
 
 
