@@ -1,0 +1,8 @@
+####################################################
+######### RADDOSE-3D GUI KNOWN BUG LIST  ###########
+####################################################
+
+Add any spotted bugs as they are found upon GUI testing:
+
+
+
