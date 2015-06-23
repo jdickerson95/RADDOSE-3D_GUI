@@ -49,3 +49,5 @@ made for inputs that can only take certain values or text.
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
 
 - Add more RADDOSE-3D input options (inc PDB)
+
+- Split guiRUN.py into smaller scripts to make it more managable
