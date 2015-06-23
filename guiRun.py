@@ -308,16 +308,16 @@ class RADDOSEgui(Frame):
 		# in middle body frame make a top and bottom
 		l = Label(FrameBodyMiddle,text="Make-a-crystal",style="labelFrameTitle.TLabel")
 		FrameBodyMiddleTop = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyMiddleTop.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=1)
+		FrameBodyMiddleTop.pack(side=TOP,padx=10, pady=10)#,fill=BOTH,expand=1)
 
 		l = Label(FrameBodyMiddle,text="Make-a-beam",style="labelFrameTitle.TLabel")
 		FrameBodyMiddleBottom = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyMiddleBottom.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH,expand=1)
+		FrameBodyMiddleBottom.pack(side=TOP,padx=10, pady=10)#,fill=BOTH,expand=1)
 
 		# in right body frame make a LabelFrame in which a strategy can be created and run
 		l = Label(FrameBodyRight,text="Design-a-strategy",style="labelFrameTitle.TLabel")
 		LabelFrameBodyRight = LabelFrame(FrameBodyRight,labelwidget=l,style="BodyGroovy.TFrame")
-		LabelFrameBodyRight.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=1)
+		LabelFrameBodyRight.pack(side=TOP,padx=10, pady=10)#,fill=BOTH,expand=1)
 
 
 		#####################################################################################################
@@ -436,7 +436,7 @@ class RADDOSEgui(Frame):
 		exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,'RADDOSE')
 		self.crystList = [exampleCryst,exampleCryst2]
 
-		self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=1)
+		self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=8)
 		for cryst in self.crystList:
 		    self.crystListbox.insert(END, cryst.crystName)
 		self.crystListbox.update_idletasks()
@@ -507,7 +507,7 @@ class RADDOSEgui(Frame):
 		exampleBeam2 = beams('Example beam 2',"TopHat",[50,50],20000000000,12,[120,120],[1,1])
 		self.beamList = [exampleBeam,exampleBeam2]
 
-		self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=1)
+		self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=8)
 		for beam in self.beamList:
 		    self.beamListbox.insert(END, beam.beamName)
 		self.beamListbox.update_idletasks()
