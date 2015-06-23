@@ -253,6 +253,11 @@ class RADDOSEgui(Frame):
 		styleTitle = Style()
 		styleTitle.configure("Title.TLabel",foreground="white",
 							 background=self.headercolour,font=("Helvetica", 26))
+		
+		# make a style for the gui header RD3D web address details
+		styleTitle = Style()
+		styleTitle.configure("RD3DheaderWebAddress.TLabel",foreground="white",
+							 background=self.headercolour,font=("Helvetica", 14))
 
 		# make an additional style for the added label titles to labelframe widgets
 		styleLabelFrameTitle = Style()
@@ -284,9 +289,19 @@ class RADDOSEgui(Frame):
 		FrameBody = Frame(self,style="BodyBackground.TFrame")
 		FrameBody.pack(fill=BOTH,expand=1)
 
+		# add a RADDOSE-3D logo here
+		raddoseLogoImg = ImageTk.PhotoImage(Image.open("raddoseLogo.png"))
+		raddoseLogolabel = Label(FrameHeader,image = raddoseLogoImg)
+		raddoseLogolabel.image = raddoseLogoImg # keep a reference!
+		raddoseLogolabel.pack(side = LEFT)
+
 		# make a label in the header frame
 		labelHeader = Label(FrameHeader,text="Data Collection Dose Stategy GUI",style="Title.TLabel")
-		labelHeader.pack()
+		labelHeader.place(in_=FrameHeader, anchor="c", relx=.5, rely=.5)
+
+		# make a text box with RD3D web address details
+		RD3DWebAdress = Label(FrameHeader,text = "http://www.raddo.se/",style="RD3DheaderWebAddress.TLabel")
+		RD3DWebAdress.pack(side = RIGHT,padx=20)
 
 		# in body frame make a left, middle and right side
 		FrameBodyLeft = Frame(FrameBody,style="BodyBackground.TFrame")
@@ -308,16 +323,16 @@ class RADDOSEgui(Frame):
 		# in middle body frame make a top and bottom
 		l = Label(FrameBodyMiddle,text="Make-a-crystal",style="labelFrameTitle.TLabel")
 		FrameBodyMiddleTop = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyMiddleTop.pack(side=TOP,padx=10, pady=10)#,fill=BOTH,expand=1)
+		FrameBodyMiddleTop.pack(side=TOP,padx=10, pady=10)
 
 		l = Label(FrameBodyMiddle,text="Make-a-beam",style="labelFrameTitle.TLabel")
 		FrameBodyMiddleBottom = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyMiddleBottom.pack(side=TOP,padx=10, pady=10)#,fill=BOTH,expand=1)
+		FrameBodyMiddleBottom.pack(side=TOP,padx=10, pady=10)
 
 		# in right body frame make a LabelFrame in which a strategy can be created and run
 		l = Label(FrameBodyRight,text="Design-a-strategy",style="labelFrameTitle.TLabel")
 		LabelFrameBodyRight = LabelFrame(FrameBodyRight,labelwidget=l,style="BodyGroovy.TFrame")
-		LabelFrameBodyRight.pack(side=TOP,padx=10, pady=10)#,fill=BOTH,expand=1)
+		LabelFrameBodyRight.pack(side=TOP,padx=10, pady=10)
 
 
 		#####################################################################################################
