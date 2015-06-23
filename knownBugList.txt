@@ -7,3 +7,8 @@ Add any spotted bugs as they are found upon GUI testing:
 - RADDOSE-3D doesn't tell the user if it completely fails to run. If the only
 input is a crystal object (no beam or wedge parameters specified) then pressing
 the run button still works.
+
+-Experiment lists aren't correctly deleted (need to investigate this further).
+
+-Summaries aren't correctly displayed when choosing to select summaries for an
+experiment when multiple experiments are loaded.
