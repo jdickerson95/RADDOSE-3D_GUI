@@ -2,7 +2,7 @@
 ######### RADDOSE-3D GUI KNOWN BUG LIST  ###########
 ####################################################
 
-Add any spotted bugs as they are found upon GUI testing
+Add any spotted bugs as they are found upon GUI testing:
 
-1. When a new strategy is run, adds strategy name twice to list of loaded strategies (16:12/ 23/06/2015)
+
 
