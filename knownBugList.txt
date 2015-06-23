@@ -8,7 +8,5 @@ Add any spotted bugs as they are found upon GUI testing:
 input is a crystal object (no beam or wedge parameters specified) then pressing
 the run button still works.
 
--Experiment lists aren't correctly sorted when they should be overwritten.
-
 -Summaries aren't correctly displayed when choosing to select summaries for an
 experiment when multiple experiments are loaded.
