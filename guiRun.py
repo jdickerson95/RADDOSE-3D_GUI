@@ -945,6 +945,10 @@ class RADDOSEgui(Frame):
 		self.inputtxt.delete(1.0, END) #Delete any text already in the box
 		self.inputtxt.insert(1.0, "Summary of experiment: %s\n\n"%(expName))
 
+		#Time stamp
+		self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
+		self.inputtxt.insert(END, "\n")
+
 		#Dose Summary
 		self.inputtxt.insert(END, "Dose Summary:\n"%())
 		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Diffraction Weighted Dose (DWD)",expObject.dwd))
