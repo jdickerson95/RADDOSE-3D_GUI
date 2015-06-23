@@ -739,20 +739,11 @@ class RADDOSEgui(Frame):
 			"Experiment name %s already exists. Do you want to overwrite this experiment?"%(expName))
 			if addQuery == 'yes':
 				self.runStrategy()
-				
-				#Update the experiment list in the strategy window
-				self.addToExperimentList()
 			else:
 				pass
 		else:
 			os.mkdir(expName)
 			self.runStrategy()
-
-			#Update the experiment list in the strategy window
-			self.addToExperimentList()
-
-		#Update experiments loaded to summary window
-		self.refreshExperimentChoices()
 
 	def runStrategy(self):
 		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
