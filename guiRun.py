@@ -917,7 +917,7 @@ class RADDOSEgui(Frame):
 
 	def extractCrystalInfo(self, crystalObject):
 		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAbsorption Coefficient: %s\n
-		           """ %(str(crystalObject.crystName),str(crystalObject.type),
+""" %(str(crystalObject.crystName),str(crystalObject.type),
 		          		str(crystalObject.crystDimX),str(crystalObject.crystDimY),
 		          		str(crystalObject.crystDimZ),str(crystalObject.pixelsPerMicron),
 		          		str(crystalObject.absCoefCalc))
@@ -925,7 +925,7 @@ class RADDOSEgui(Frame):
 
 	def extractWedgeInfo(self, wedgeObject):
 		string = """Total Oscillation %.2f (Angle Start: %s, End: %s) in degrees\nTotal Exposure Time: %s seconds\n
-		           """ %(float(wedgeObject.angStop) - float(wedgeObject.angStart), wedgeObject.angStart,
+""" %(float(wedgeObject.angStop) - float(wedgeObject.angStart), wedgeObject.angStart,
 		          		wedgeObject.angStop, wedgeObject.exposureTime)
 		return string
 
@@ -960,7 +960,7 @@ class RADDOSEgui(Frame):
 
 		#Add crystal summary
 		crystalInfo = self.extractCrystalInfo(expObject.crystal)
-		self.inputtxt.insert(END, crystalInfo+"\n")
+		self.inputtxt.insert(END, crystalInfo)
 		#Add beam and wedge summaries
 		counter = -1
 		for beamObject in expObject.beamList:
@@ -968,7 +968,7 @@ class RADDOSEgui(Frame):
 			beamString = self.extractBeamInfo(beamObject)
 			wedgeObject = expObject.wedgeList[counter]
 			wedgeString =self.extractWedgeInfo(wedgeObject)
-			self.inputtxt.insert(END, beamString+"\n"+wedgeString+"\n")
+			self.inputtxt.insert(END, beamString+wedgeString)
 
 
 	def deleteCryst(self):
@@ -1187,7 +1187,7 @@ class RADDOSEgui(Frame):
 
 	def extractBeamInfo(self, beamObject):
 		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %s (photons per second)\nEnergy: %skeV\nRectangular Collimation: %s (microns in x,y)\n
-		           """ %(str(beamObject.beamName),str(beamObject.type),
+"""%(str(beamObject.beamName),str(beamObject.type),
 		          		str(beamObject.fwhm),str(beamObject.flux),
 		          		str(beamObject.energy),str(beamObject.collimation))
 		return string
