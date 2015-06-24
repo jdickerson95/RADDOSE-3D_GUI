@@ -1670,10 +1670,21 @@ class barplotWindow(Frame):
 
 	def __init__(self, master):
 		self.master = master
-		self.frame = Frame(self.master)
-		self.quitButton = Button(self.frame, text = 'Quit', width = 25, command = self.close_windows)
+		self.plottingFrame = Frame(self.master)
+		self.plottingFrame.pack()
+		# create quit button to leave plotting window
+		self.quitButton = Button(self.plottingFrame, text = 'Quit', width = 25, command = self.close_windows)
 		self.quitButton.pack()
-		self.frame.pack()
+
+		# create option list to select which dose metric to plot
+		doseMetricToPlot = StringVar()
+		DoseDWD = "Average Diffraction Weighted Dose"
+		DoseMax = "Max Dose"
+		DoseAvg = "Average Dose (Whole Crystal)"
+		doseMetricToPlot.set(DoseDWD) # default value to show in option list
+		w = OptionMenu(self.plottingFrame, doseMetricToPlot, DoseDWD, DoseMax, DoseAvg)
+		w.pack()
+
 	def close_windows(self):
 		self.master.destroy()
 
