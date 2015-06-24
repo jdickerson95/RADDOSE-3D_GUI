@@ -1675,7 +1675,7 @@ class barplotWindow(Frame):
 		self.plottingFrame.pack()
 		# create quit button to leave plotting window
 		self.quitButton = Button(self.plottingFrame, text = 'Quit', width = 25, command = self.close_windows)
-		self.quitButton.pack()
+		self.quitButton.pack()#.grid(row=0, column=3,pady=5, padx=3, sticky=W+E)
 
 		# create option list to select which dose metric to plot
 		doseMetricToPlot = StringVar()
@@ -1684,7 +1684,11 @@ class barplotWindow(Frame):
 		DoseAvg = "Average Dose (Whole Crystal)"
 		doseMetricToPlot.set(DoseDWD) # default value to show in option list
 		w = OptionMenu(self.plottingFrame, doseMetricToPlot, DoseDWD, DoseMax, DoseAvg)
-		w.pack()
+		w.pack()#.grid(row=0, column=0,pady=5, padx=3, sticky=W+E)
+
+		# create a plot refresh button for when the selected dose metric is changed
+		self.plotRefreshButton = Button(self.plottingFrame, text = 'Refresh', width = 25, command = self.refreshPlot())
+		self.plotRefreshButton.pack()#.grid(row=0, column=1,pady=5, padx=3, sticky=W+E)
 
 		# create lists of dose metrics over all currently loaded strategies
 		DWDList, maxDoseList, avgDoseList = [],[],[]
@@ -1701,10 +1705,9 @@ class barplotWindow(Frame):
 		canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
 		ax = doseCompareFig.add_subplot(111)
 
-		# example bar plot parameters for dummy bar plot
+		# bar plot parameters for DWD bar plot
 		bar_width = 0.35
 		opacity = 0.4
-		print len(DWDList)
 		x = np.arange(len(DWDList))
 		y = np.array(DWDList)
 		ax.bar(x,y,bar_width,alpha=opacity,color='b')
@@ -1716,6 +1719,9 @@ class barplotWindow(Frame):
 		ax.set_ylabel('Dose (Mgy)', fontsize=24)
 		canvasForBarplot.draw()
 
+	def refreshPlot(self):
+		# when a new dose metric is selected from dropdown option list, click to refresh bar plot
+		pass
 
 
 
