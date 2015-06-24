@@ -19,10 +19,10 @@ import subprocess
 import time
 import datetime
 import copy
-import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
+import numpy as np
 
 #####################################################################################################
 class beams(object):
@@ -1684,6 +1684,26 @@ class barplotWindow(Frame):
 		doseMetricToPlot.set(DoseDWD) # default value to show in option list
 		w = OptionMenu(self.plottingFrame, doseMetricToPlot, DoseDWD, DoseMax, DoseAvg)
 		w.pack()
+
+		# a matlibplot legend should be created here
+		doseCompareFig = plt.Figure()
+		canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
+		canvasForBarplot.show()
+		canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
+		ax = doseCompareFig.add_subplot(111)
+
+		# example bar plot parameters for dummy bar plot
+		bar_width = 0.35
+		opacity = 0.4
+		x = np.array([1,2,3,4])
+		y = np.array([3,3,4,4])
+		ax.bar(x, y, bar_width,
+                 alpha=opacity,
+                 color='b')
+
+		ax.set_xlabel('Strategy Index')
+		ax.set_ylabel('Dose (Mgy)')
+		canvasForBarplot.draw()
 
 	def close_windows(self):
 		self.master.destroy()
