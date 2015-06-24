@@ -1673,9 +1673,13 @@ class barplotWindow(Frame):
 		self.master = master
 		self.plottingFrame = Frame(self.master)
 		self.plottingFrame.pack()
+
+		# create frame for buttons and dose metric list 
+		plotButtonFrame = Frame(self.plottingFrame,style="BodyGroovy.TFrame")
+		plotButtonFrame.pack(side=BOTTOM, fill=BOTH, expand=True)
+
 		# create quit button to leave plotting window
-		self.quitButton = Button(self.plottingFrame, text = 'Quit', width = 25, command = self.close_windows)
-		self.quitButton.pack()
+		self.quitButton = Button(plotButtonFrame, text = 'Quit', width = 25, command = self.close_windows)
 
 		# create option list to select which dose metric to plot
 		self.doseMetricToPlot = StringVar()
@@ -1683,12 +1687,10 @@ class barplotWindow(Frame):
 								   'maxDose':"Max Dose",
 								   'avgDose':"Average Dose (Whole Crystal)"}
 		self.doseMetricToPlot.set(self.MetricNameListDict['DWD']) # default value to show in option list
-		doseMetricOptionMenu = OptionMenu(self.plottingFrame, self.doseMetricToPlot,self.MetricNameListDict['DWD'],
+		doseMetricOptionMenu = OptionMenu(plotButtonFrame, self.doseMetricToPlot,self.MetricNameListDict['DWD'],
 					   self.MetricNameListDict['DWD'], 
 					   self.MetricNameListDict['maxDose'],
 					   self.MetricNameListDict['avgDose'])
-
-		doseMetricOptionMenu.pack()
 
 		# create lists of dose metrics over all currently loaded strategies
 		self.DoseListDict = {'DWD':[],'maxDose':[],'avgDose':[]}
@@ -1715,13 +1717,20 @@ class barplotWindow(Frame):
 		self.axBarplot.set_xticks(x+0.5*bar_width)
 		xtickNames = self.axBarplot.set_xticklabels(xTickMarks)
 		plt.setp(xtickNames, rotation=0, fontsize=16)
+		self.axBarplot.set_ylim(0, y.max()*(1.2))
 		self.axBarplot.set_xlabel('Strategy', fontsize=24)
 		self.axBarplot.set_ylabel('Dose (Mgy)', fontsize=24)
+		self.axBarplot.set_title('Average Diffraction Weighted Dose',fontsize=24)
+
 		self.canvasForBarplot.draw()
 
 		# create a plot refresh button for when the selected dose metric is changed
-		self.plotRefreshButton = Button(self.plottingFrame, text = 'Refresh', width = 25, command = self.refreshPlot)
-		self.plotRefreshButton.pack()
+		self.plotRefreshButton = Button(plotButtonFrame, text = 'Refresh', width = 25, command = self.refreshPlot)
+
+		# put buttons and dose metric selection list within plottingFrame frame
+		doseMetricOptionMenu.grid(row=0, column=0,pady=5, padx=5, sticky=W+E)
+		self.plotRefreshButton.grid(row=0, column=1,pady=5, padx=5, sticky=W+E)
+		self.quitButton.grid(row=0, column=2,pady=5, padx=5, sticky=W+E)
 
 	def refreshPlot(self):
 		# when a new dose metric is selected from dropdown option list, click to refresh bar plot
@@ -1741,6 +1750,7 @@ class barplotWindow(Frame):
 		for bar, x in zip(self.doseBarplot,y):
 			bar.set_height(x)
 		self.axBarplot.set_ylim(0, y.max()*(1.2))
+		self.axBarplot.set_title(str(currentDoseMetric),fontsize=24)
 		# replot figure by redrawing canvas
 		self.canvasForBarplot.draw()
 
