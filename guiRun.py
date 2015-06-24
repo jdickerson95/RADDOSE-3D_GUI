@@ -399,6 +399,7 @@ class RADDOSEgui(Frame):
 		scrollbarStrategyList.config(command=self.inputtxt.yview)
 		self.inputtxt.config(yscrollcommand=scrollbarRaddoseInputFile.set)
 		quote = self.raddose3Dinputtxt.get()
+
 		# delete all current text and add new text to text widget
 		self.inputtxt.delete(1.0, END)
 		self.inputtxt.insert(END, quote*2)
@@ -986,6 +987,9 @@ class RADDOSEgui(Frame):
 			self.top_summaryBarplotMaker.title("Summary Dose Plots")
 			# give the new window a dark background colour
 			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
+			# finds separate class for secondary barplotting window
+			self.app = barplotWindow(self.top_summaryBarplotMaker)
+
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
 			""" %()
@@ -1650,6 +1654,20 @@ class RADDOSEgui(Frame):
 		# what happens when close button clicked.
 		self.quit()     # stops mainloop
 		self.destroy()  # this is necessary on Windows to prevent
+
+
+class barplotWindow(Frame):
+	# this is a secondary plotting window class here. It is where all the dose summary bar plots 
+	# will be created
+
+	def __init__(self, master):
+		self.master = master
+		self.frame = Frame(self.master)
+		self.quitButton = tk.Button(self.frame, text = 'Quit', width = 25, command = self.close_windows)
+		self.quitButton.pack()
+		self.frame.pack()
+	def close_windows(self):
+		self.master.destroy()
 
 
 def main():
