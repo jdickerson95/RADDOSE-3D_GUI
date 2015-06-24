@@ -995,7 +995,8 @@ class RADDOSEgui(Frame):
 			# give the new window a dark background colour
 			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
 			# finds separate class for secondary barplotting window
-			self.app = barplotWindow(self.top_summaryBarplotMaker)
+			currentExpDict = self.experimentDict # need to pass experiment dictionary between classes
+			self.app = barplotWindow(self.top_summaryBarplotMaker,currentExpDict)
 
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
@@ -1667,7 +1668,7 @@ class barplotWindow(Frame):
 	# this is a secondary plotting window class here. It is where all the dose summary bar plots 
 	# will be created
 
-	def __init__(self, master):
+	def __init__(self, master,currentExpDict):
 		self.master = master
 		self.plottingFrame = Frame(self.master)
 		self.plottingFrame.pack()
@@ -1684,7 +1685,7 @@ class barplotWindow(Frame):
 		w = OptionMenu(self.plottingFrame, doseMetricToPlot, DoseDWD, DoseMax, DoseAvg)
 		w.pack()
 
-		# a matlibplot legend should be created here
+		# a matlibplot figure axis should be created here
 		doseCompareFig = plt.Figure()
 		canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
 		canvasForBarplot.show()
@@ -1696,13 +1697,18 @@ class barplotWindow(Frame):
 		opacity = 0.4
 		x = np.array([1,2,3,4])
 		y = np.array([3,3,4,4])
-		ax.bar(x, y, bar_width,
-                 alpha=opacity,
-                 color='b')
-
+		ax.bar(x,y,bar_width,alpha=opacity,color='b')
 		ax.set_xlabel('Strategy Index')
 		ax.set_ylabel('Dose (Mgy)')
 		canvasForBarplot.draw()
+
+		print len(currentExpDict)
+		# for expObject in currentExpDict:
+		# 	print expObject.dwd
+		# 	print expObject.maxDose
+		# 	print expObject.avgDose
+
+
 
 	def close_windows(self):
 		self.master.destroy()

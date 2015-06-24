@@ -11,7 +11,3 @@ the run button still works.
 - RADDOSE-3D pre-made input files no longer can be run independently without manually
 loading crystal and beam content from them - need to be incorporated within the new
 strategy summary window (probably after this is completed...)
-
-- Can't currently pass the experiment dictionaries to the secondary bar plot window as
-objects. Subsequently, can't currently pass dose values of loaded experiments to include
-within barplot.
