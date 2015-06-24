@@ -1499,15 +1499,111 @@ class RADDOSEgui(Frame):
 
 		#Create an experiment object and add it to the experiment dictionary
 		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
-
-		currentCrystal = self.crystList[self.currentCrystIndex]
-		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
+		if self.strategyType == 'Manual':
+			currentCrystal = self.crystList[self.currentCrystIndex]
+			experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
+		elif self.strategyType == 'Premade':
+			pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
+			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput)
+			####################################################################
+			####################################################################
+			#NEED TO ADD CRYSTAL, BEAMS AND WEDGES TO THEIR RESPECTIVE LISTS
+			####################################################################
+			####################################################################
+			experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
 
 		self.experimentDict[experimentName] = copy.deepcopy(experiment)
 		self.expNameList.append(experimentName)
 
 		# Print a summary of the RADDOSE-3D run.
 		self.displaySummary(experimentName)
+
+	def parseRaddoseInput(self,pathToRaddoseInput):
+		"""Parses the RADDOSE-3D Input file and returns the a crystal object, a
+		list of beam objects and a list of wedge objects
+		"""
+		commentChars = ['#','!']
+
+		raddoseInput = open(pathToRaddoseInput,'r')
+
+		crystalBlock = False
+		beamBlock    = False
+		wedgeBlock   = False
+
+		#create crystal object and beam and wedge lists
+		crystal = crystals() #create default crystal
+		beamList = []
+		wedgeList = []
+
+		for line in raddoseInput:
+			if "Crystal" in line:
+				crystalBlock = True
+				beamBlock    = False
+				wedgeBlock   = False
+				crystal.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
+			elif "Beam" in line:
+				crystalBlock = False
+				beamBlock    = True
+				wedgeBlock   = False
+				beam = beams() #create beam
+				wedge = wedges() #create wedge. If there's a beam then there's at least one wedge to follow.
+				if wedge.angStart and wedge.angStop and wedge.exposureTime:
+					wedgeList.append(wedge)
+			elif "Wedge" in line:
+				crystalBlock = False
+				beamBlock    = False
+				wedgeBlock   = True
+				beamList.append(beam)
+				if wedge.angStart and wedge.angStop and wedge.exposureTime:
+					wedgeList.append(wedge)
+
+			#remove comment part from line
+			commentCharIndices = []
+			for commentChar in commentChars: #look for comment characters and store the index in list
+				index = line.find(commentChar)
+				commentCharIndices.append(index)
+			minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
+			line = line[0:minIndex] #remove comment part from line
+
+			if crystalBlock:
+				if "Dimensions" in line:
+					dims = line.split()[1:]
+					while dims < 3:
+						dims.append(0)
+					crystal.crystDimX = float(dims[0])
+					crystal.crystDimY = float(dims[1])
+					crystal.crystDimZ = float(dims[2])
+				elif "Type" in line:
+					crystal.type = line.split()[1]
+				elif "PixelsPerMicron" in line:
+					crystal.pixelsPerMicron = float(line.split()[1])
+				elif "CoefCalc" in line:
+					crystal.absCoefCalc = line.split()[1]
+
+			elif beamBlock:
+				if "Type" in line:
+					beam.type = line.split()[1]
+				elif "Flux" in line:
+					beam.flux = float(line.split()[1])
+				elif "Energy" in line:
+					beam.energy = float(line.split()[1])
+				elif "FWHM" in line:
+					beam.fwhm = line.split()[1:]
+				elif "Collimation Rectangular" in line:
+					beam.collimation = line.split()[2:]
+
+			elif wedgeBlock:
+				if "Wedge" in line:
+					angles = line.split()[1:]
+					wedge.angStart = angles[0]
+					wedge.angStop  = angles[1]
+				elif "ExposureTime" in line:
+					wedge.exposTime = line.split()[1]
+
+		wedgeList.append(wedge) #append final wedge
+		raddoseInput.close()
+
+		return (crystal, beamList, wedgeList)
 
 
 	def writeCrystalBlock(self, crystalObj):
