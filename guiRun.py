@@ -958,7 +958,7 @@ class RADDOSEgui(Frame):
 		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
 		self.inputtxt.insert(END, "\n")
 
-		self.inputtxt.insert(END, "Inputs for experiment:\n"%())
+		self.inputtxt.insert(END, "Experiment parameters:\n"%())
 		#Add crystal summary
 		crystalInfo = self.extractCrystalInfo(expObject.crystal)
 		self.inputtxt.insert(END, crystalInfo)
