@@ -19,9 +19,10 @@ import subprocess
 import time
 import datetime
 import copy
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import numpy as np
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
 
 #####################################################################################################
 class beams(object):
@@ -804,7 +805,7 @@ class RADDOSEgui(Frame):
 		if self.strategyType == 'Manual':
 			self.writeRaddose3DInputFile()
 		elif self.strategyType == 'Premade':
-			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get())+self.RADDOSEfilename)
+			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get()))
 
 		self.runRaddose3D()
 		#Update the experiment list in the strategy window
@@ -995,9 +996,7 @@ class RADDOSEgui(Frame):
 			# give the new window a dark background colour
 			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
 			# finds separate class for secondary barplotting window
-			currentExpDict = self.experimentDict # need to pass experiment dictionary between classes
-			currentExpNameList = self.expNameList # need to pass current exp name list between classes
-			self.app = barplotWindow(self.top_summaryBarplotMaker,currentExpDict,currentExpNameList)
+			self.app = barplotWindow(self.top_summaryBarplotMaker)
 
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
@@ -1479,7 +1478,7 @@ class RADDOSEgui(Frame):
 		if process.returncode != 0:
 			print outputLog
 			os.chdir("..") #Go back to original directory
-			string = """There was an error Whilst running RADDOSE-3D.\nPlease check the log file ("outputLog.txt") and your crystal, beam and wedge parameters.\nOtherwise contact the Garman Group: elspeth.garman@bioch.ox.ac.uk
+			string = """There was an error whilst running RADDOSE-3D.\nPlease check the log file ("outputLog.txt") and your crystal, beam and wedge parameters.\nOtherwise contact the Garman Group: elspeth.garman@bioch.ox.ac.uk
 			""" %()
 			tkMessageBox.showinfo( "RADDOSE-3D Error", string)
 
@@ -1666,10 +1665,10 @@ class RADDOSEgui(Frame):
 
 
 class barplotWindow(Frame):
-	# this is a secondary plotting window class here. It is where all the dose summary bar plots 
+	# this is a secondary plotting window class here. It is where all the dose summary bar plots
 	# will be created
 
-	def __init__(self, master,currentExpDict,currentExpNameList):
+	def __init__(self, master):
 		self.master = master
 		self.plottingFrame = Frame(self.master)
 		self.plottingFrame.pack()
@@ -1678,73 +1677,13 @@ class barplotWindow(Frame):
 		self.quitButton.pack()
 
 		# create option list to select which dose metric to plot
-		self.doseMetricToPlot = StringVar()
-		self.MetricNameListDict = {'DWD':"Average Diffraction Weighted Dose",
-								   'maxDose':"Max Dose",
-								   'avgDose':"Average Dose (Whole Crystal)"}
-		self.doseMetricToPlot.set(self.MetricNameListDict['DWD']) # default value to show in option list
-		doseMetricOptionMenu = OptionMenu(self.plottingFrame, self.doseMetricToPlot,self.MetricNameListDict['DWD'],
-					   self.MetricNameListDict['DWD'], 
-					   self.MetricNameListDict['maxDose'],
-					   self.MetricNameListDict['avgDose'])
-
-		doseMetricOptionMenu.pack()
-
-		# create lists of dose metrics over all currently loaded strategies
-		self.DoseListDict = {'DWD':[],'maxDose':[],'avgDose':[]}
-		for expName in currentExpNameList:
-			expObject = currentExpDict[expName]
-			self.DoseListDict['DWD'].append(expObject.dwd)
-			self.DoseListDict['maxDose'].append(expObject.maxDose)
-			self.DoseListDict['avgDose'].append(expObject.avgDose)
-
-		# a matlibplot figure axis should be created here
-		doseCompareFig = plt.Figure(figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
-		self.canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
-		self.canvasForBarplot.show()
-		self.canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
-		ax = doseCompareFig.add_subplot(111)
-
-		# bar plot parameters for DWD bar plot
-		bar_width = 0.35
-		opacity = 0.4
-		y = np.array(self.DoseListDict['DWD'])
-		x = np.arange(len(y))
-		self.doseBarplot = ax.bar(x,y,bar_width,alpha=opacity,color='b')
-		xTickMarks = [str(expName) for expName in currentExpNameList]
-		ax.set_xticks(x+0.5*bar_width)
-		xtickNames = ax.set_xticklabels(xTickMarks)
-		plt.setp(xtickNames, rotation=0, fontsize=16)
-		ax.set_xlabel('Strategy', fontsize=24)
-		ax.set_ylabel('Dose (Mgy)', fontsize=24)
-		self.canvasForBarplot.draw()
-
-		# create a plot refresh button for when the selected dose metric is changed
-		self.plotRefreshButton = Button(self.plottingFrame, text = 'Refresh', width = 25, command = self.refreshPlot)
-		self.plotRefreshButton.pack()
-
-	def refreshPlot(self):
-		# when a new dose metric is selected from dropdown option list, click to refresh bar plot
-		print str(datetime.datetime.now())
-		currentDoseMetric = self.doseMetricToPlot.get()
-		print currentDoseMetric
-		if currentDoseMetric == self.MetricNameListDict['DWD']:
-			y = np.array(self.DoseListDict['DWD'])
-			x = np.arange(len(y))
-		elif currentDoseMetric == self.MetricNameListDict['maxDose']:
-			y = np.array(self.DoseListDict['maxDose'])
-			x = np.arange(len(y))		
-		elif currentDoseMetric == self.MetricNameListDict['avgDose']:
-			y = np.array(self.DoseListDict['avgDose'])
-			x = np.arange(len(y))
-
-		#self.doseBarplot.set_xdata(x)
-		#self.doseBarplot.set_ydata(y)
-		#self.canvasForBarplot.draw()
-
-
-
-
+		doseMetricToPlot = StringVar()
+		DoseDWD = "Average Diffraction Weighted Dose"
+		DoseMax = "Max Dose"
+		DoseAvg = "Average Dose (Whole Crystal)"
+		doseMetricToPlot.set(DoseDWD) # default value to show in option list
+		w = OptionMenu(self.plottingFrame, doseMetricToPlot, DoseDWD, DoseMax, DoseAvg)
+		w.pack()
 
 	def close_windows(self):
 		self.master.destroy()
