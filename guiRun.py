@@ -978,8 +978,11 @@ class RADDOSEgui(Frame):
 		# then create a separate window for a bar plot comparing dose metrics for all strategies
 		# currently loaded within summary window
 		if self.expNameList:
-			expName = str(self.expChoice.get())
-			self.displaySummary(expName)
+			# Makes a new window allowing which will contain bar plots 
+			self.top_summaryBarplotMaker=Toplevel()
+			self.top_summaryBarplotMaker.title("Summary Dose Plots")
+			# give the new window a dark background colour
+			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
 			""" %()
