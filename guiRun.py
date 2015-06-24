@@ -37,6 +37,12 @@ class beams(object):
 		self.collimation  	= beamRectColl
 		self.pixelSize		= beamPixelSize
 
+	def __eq__(self, other) :
+		"""This method checks to see if a beam has the same properties as
+		another beam
+		"""
+		return self.__dict__ == other.__dict__
+
 #####################################################################################################
 class crystals(object):
 	# this class is for crystal parameters for a loaded or created crystal
@@ -1227,7 +1233,7 @@ class RADDOSEgui(Frame):
 		tkMessageBox.showinfo( "View Beam Information", beamInfo)
 
 	def extractBeamInfo(self, beamObject):
-		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %s (photons per second)\nEnergy: %skeV\nRectangular Collimation: %s (microns in x,y)\n
+		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %s (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
 """%(str(beamObject.beamName),str(beamObject.type),
 		          		str(beamObject.fwhm),str(beamObject.flux),
 		          		str(beamObject.energy),str(beamObject.collimation))
@@ -1510,18 +1516,27 @@ class RADDOSEgui(Frame):
 			pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
 			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput)
 			self.addCrystalToList(crystalObject)
-			####################################################################
-			####################################################################
-			#NEED TO ADD CRYSTAL, BEAMS AND WEDGES TO THEIR RESPECTIVE LISTS
-			####################################################################
-			####################################################################
+			uniqueBeamCounter = 1
+			for i in xrange(0,len(beamList)):
+				beam = copy.deepcopy(beamList[i])
+				if i == 0:
+					beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+					self.addBeamToList(beam)
+				elif i > 0:
+					for j in xrange(0,i):
+						if beam.__eq__(beamList[j]):
+							break
+						elif j == i-1:
+							uniqueBeamCounter += 1
+							beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+							self.addBeamToList(beam)
 			experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
 
 		self.experimentDict[experimentName] = copy.deepcopy(experiment)
 		self.expNameList.append(experimentName)
 
 		# Print a summary of the RADDOSE-3D run.
-		#self.displaySummary(experimentName)
+		self.displaySummary(experimentName)
 
 	def parseRaddoseInput(self,pathToRaddoseInput):
 		"""Parses the RADDOSE-3D Input file and returns the a crystal object, a
@@ -1870,6 +1885,7 @@ def main():
 	root = Tk()
 	app = RADDOSEgui(root)
 	root.mainloop()
+	return app
 
 if __name__ == '__main__':
 	main()
