@@ -8,6 +8,6 @@ Add any spotted bugs as they are found upon GUI testing:
 input is a crystal object (no beam or wedge parameters specified) then pressing
 the run button still works.
 
-- RADDOSE-3D pre-made input files no longer can be run independently without manually
-loading crystal and beam content from them - need to be incorporated within the new
-strategy summary window (probably after this is completed...)
+- If the same pre-made input file is loaded twice then the crystals and beams
+with the same names are loaded twice. We may want this but I thought it would be
+good to dicuss

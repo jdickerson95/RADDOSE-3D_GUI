@@ -7,13 +7,9 @@
 To do before 30th June 2015
 -***************************-
 
-- Need an option to look for RADDOSE-3D input files and create an "experiment"
-from the input file.
-
 - Make bar plot to compare experiments
 
-- Need to add buttons on for the summary window so the user can switch between
-plots, experiment summaries, input information etc.
+- Need to add a button so user can see the log file in the summary window.
 
 
 -***************************-
