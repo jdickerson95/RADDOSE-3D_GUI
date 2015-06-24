@@ -20,9 +20,9 @@ import time
 import datetime
 import copy
 import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
 
 #####################################################################################################
 class beams(object):
@@ -1007,7 +1007,7 @@ class RADDOSEgui(Frame):
 			# give the new window a dark background colour
 			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
 			# finds separate class for secondary barplotting window
-			self.app = barplotWindow(self.top_summaryBarplotMaker)
+			self.app = barplotWindow(self.top_summaryBarplotMaker, self.experimentDict, self.expNameList)
 
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
@@ -1792,7 +1792,7 @@ class barplotWindow(Frame):
 	# this is a secondary plotting window class here. It is where all the dose summary bar plots
 	# will be created
 
-	def __init__(self, master):
+	def __init__(self, master, currentExpDict, currentExpNameList):
 		self.master = master
 		self.plottingFrame = Frame(self.master)
 		self.plottingFrame.pack()
