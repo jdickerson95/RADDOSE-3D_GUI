@@ -383,6 +383,10 @@ class RADDOSEgui(Frame):
 		expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.clickSummary)
 		expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
+		# create button to plot dose metrics for currently loaded experiments within summary window
+		expBarplotterButton = Button(chooseExpFrame, text="Plot",command=self.clickBarplotter)
+		expBarplotterButton.grid(row=1, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+
 		#create text box with scrollbar to detail the summary output for currently selected experiment
 		self.raddose3Dinputtxt = StringVar()
 		scrollbarRaddoseInputFile = Scrollbar(FrameBodyLeftBottom, orient=VERTICAL)
@@ -968,6 +972,18 @@ class RADDOSEgui(Frame):
 			wedgeObject = expObject.wedgeList[counter]
 			wedgeString =self.extractWedgeInfo(wedgeObject)
 			self.inputtxt.insert(END, beamString+"\n"+wedgeString+"\n")
+
+	def clickBarplotter(self):
+		# button to first check whether any strategies are loaded within summary window and
+		# then create a separate window for a bar plot comparing dose metrics for all strategies
+		# currently loaded within summary window
+		if self.expNameList:
+			expName = str(self.expChoice.get())
+			self.displaySummary(expName)
+		else:
+			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+			""" %()
+			tkMessageBox.showinfo( "No experiments loaded", string)
 
 
 	def deleteCryst(self):
