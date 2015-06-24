@@ -18,6 +18,7 @@ import shutil
 import subprocess
 import time
 import datetime
+import copy
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
@@ -924,7 +925,7 @@ class RADDOSEgui(Frame):
 
 	def extractCrystalInfo(self, crystalObject):
 		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAbsorption Coefficient: %s\n
-		           """ %(str(crystalObject.crystName),str(crystalObject.type),
+""" %(str(crystalObject.crystName),str(crystalObject.type),
 		          		str(crystalObject.crystDimX),str(crystalObject.crystDimY),
 		          		str(crystalObject.crystDimZ),str(crystalObject.pixelsPerMicron),
 		          		str(crystalObject.absCoefCalc))
@@ -932,7 +933,7 @@ class RADDOSEgui(Frame):
 
 	def extractWedgeInfo(self, wedgeObject):
 		string = """Total Oscillation %.2f (Angle Start: %s, End: %s) in degrees\nTotal Exposure Time: %s seconds\n
-		           """ %(float(wedgeObject.angStop) - float(wedgeObject.angStart), wedgeObject.angStart,
+""" %(float(wedgeObject.angStop) - float(wedgeObject.angStart), wedgeObject.angStart,
 		          		wedgeObject.angStop, wedgeObject.exposureTime)
 		return string
 
@@ -965,9 +966,10 @@ class RADDOSEgui(Frame):
 		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
 		self.inputtxt.insert(END, "\n")
 
+		self.inputtxt.insert(END, "Experiment parameters:\n"%())
 		#Add crystal summary
 		crystalInfo = self.extractCrystalInfo(expObject.crystal)
-		self.inputtxt.insert(END, crystalInfo+"\n")
+		self.inputtxt.insert(END, crystalInfo)
 		#Add beam and wedge summaries
 		counter = -1
 		for beamObject in expObject.beamList:
@@ -975,14 +977,14 @@ class RADDOSEgui(Frame):
 			beamString = self.extractBeamInfo(beamObject)
 			wedgeObject = expObject.wedgeList[counter]
 			wedgeString =self.extractWedgeInfo(wedgeObject)
-			self.inputtxt.insert(END, beamString+"\n"+wedgeString+"\n")
+			self.inputtxt.insert(END, beamString+wedgeString)
 
 	def clickBarplotter(self):
 		# button to first check whether any strategies are loaded within summary window and
 		# then create a separate window for a bar plot comparing dose metrics for all strategies
 		# currently loaded within summary window
 		if self.expNameList:
-			# Makes a new window allowing which will contain bar plots 
+			# Makes a new window allowing which will contain bar plots
 			self.top_summaryBarplotMaker=Toplevel()
 			self.top_summaryBarplotMaker.title("Summary Dose Plots")
 			# give the new window a dark background colour
@@ -1212,7 +1214,7 @@ class RADDOSEgui(Frame):
 
 	def extractBeamInfo(self, beamObject):
 		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %s (photons per second)\nEnergy: %skeV\nRectangular Collimation: %s (microns in x,y)\n
-		           """ %(str(beamObject.beamName),str(beamObject.type),
+"""%(str(beamObject.beamName),str(beamObject.type),
 		          		str(beamObject.fwhm),str(beamObject.flux),
 		          		str(beamObject.energy),str(beamObject.collimation))
 		return string
@@ -1487,7 +1489,7 @@ class RADDOSEgui(Frame):
 		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
 		currentCrystal = self.crystList[self.currentCrystIndex]
 		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
-		self.experimentDict[experimentName] = experiment
+		self.experimentDict[experimentName] = copy.deepcopy(experiment)
 		self.expNameList.append(experimentName)
 
 		# Print a summary of the RADDOSE-3D run.
@@ -1672,9 +1674,9 @@ class barplotWindow(Frame):
 
 def main():
 	# when the script is run in python, do the following:
-    root = Tk()
-    app = RADDOSEgui(root)
-    root.mainloop()
+	root = Tk()
+	app = RADDOSEgui(root)
+	root.mainloop()
 
 if __name__ == '__main__':
-    main()
+	main()
