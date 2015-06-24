@@ -18,7 +18,10 @@ import shutil
 import subprocess
 import time
 import datetime
-#from GUI2RADDOSE3DINPUT import *
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
 
 #####################################################################################################
 class beams(object):
