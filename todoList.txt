@@ -12,8 +12,6 @@ from the input file.
 
 - Make bar plot to compare experiments
 
-- Need to output a summary of the main results from an experiment run.
-
 - Need to add buttons on for the summary window so the user can switch between
 plots, experiment summaries, input information etc.
 
