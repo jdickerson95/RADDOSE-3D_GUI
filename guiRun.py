@@ -801,11 +801,18 @@ class RADDOSEgui(Frame):
 		No explicit return parameters
 		"""
 		# for manual strategy need to write RD3D input file. for premade RD3D input file
-		# need to copy file to new working directory for experiment
+		# need to copy file to new working directory for experiment and rename the file
+		# to the standard input file name.
+		expName = str(self.CurrentexpLoadName.get())
 		if self.strategyType == 'Manual':
 			self.writeRaddose3DInputFile()
 		elif self.strategyType == 'Premade':
-			shutil.copy(self.RD3DinputLoad,str(self.CurrentexpLoadName.get()))
+			shutil.copy(self.RD3DinputLoad, expName)
+			oldFilename = '{}/{}'.format(expName, self.RD3DinputLoad.split("/")[-1])
+			newFilename = '{}/{}'.format(expName, self.RADDOSEfilename)
+			print oldFilename
+			print newFilename
+			os.rename(oldFilename, newFilename)
 
 		self.runRaddose3D()
 		#Update the experiment list in the strategy window
@@ -1490,11 +1497,12 @@ class RADDOSEgui(Frame):
 
 		os.chdir("..") #Go back to original directory
 
-
 		#Create an experiment object and add it to the experiment dictionary
 		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
+
 		currentCrystal = self.crystList[self.currentCrystIndex]
 		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
+
 		self.experimentDict[experimentName] = copy.deepcopy(experiment)
 		self.expNameList.append(experimentName)
 
