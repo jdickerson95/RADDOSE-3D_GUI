@@ -810,8 +810,6 @@ class RADDOSEgui(Frame):
 			shutil.copy(self.RD3DinputLoad, expName)
 			oldFilename = '{}/{}'.format(expName, self.RD3DinputLoad.split("/")[-1])
 			newFilename = '{}/{}'.format(expName, self.RADDOSEfilename)
-			print oldFilename
-			print newFilename
 			os.rename(oldFilename, newFilename)
 
 		self.runRaddose3D()
@@ -1084,14 +1082,17 @@ class RADDOSEgui(Frame):
 		newCryst = crystals(self.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 							self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 							self.CrystalAbsorpCoeff.get())
-		self.crystList.append(newCryst)
-		self.crystListbox.insert(END, str(newCryst.crystName))
-
-		# refresh the option menu of added crystals to keep it up to date
-		self.refreshCrystChoices()
+		self.addCrystalToList(newCryst)
 
 		# once this function runs, the toplevel window should be exited
 		self.top_CrystMaker.destroy()
+
+	def addCrystalToList(self, crystal):
+		self.crystList.append(crystal)
+		self.crystListbox.insert(END, str(crystal.crystName))
+
+		# refresh the option menu of added crystals to keep it up to date
+		self.refreshCrystChoices()
 
 	def addToExperimentList(self):
 		if self.emptyExpListString in self.expListbox.get(0):
@@ -1313,14 +1314,17 @@ class RADDOSEgui(Frame):
 						[self.BeamFWHMVertical.get(),self.BeamFWHMHorizontal.get()],
 						self.BeamFlux.get(),self.BeamEnergy.get(),
 						[self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])
-		self.beamList.append(newBeam)
-		self.beamListbox.insert(END, str(newBeam.beamName))
-
-		# refresh the option menu of added beams to keep it up to date
-		self.refreshBeamChoices()
+		self.addBeamToList(newBeam)
 
 		# once this function runs, the toplevel window should be exited
 		self.top_BeamMaker.destroy()
+
+	def addBeamToList(self, beam):
+		self.beamList.append(beam)
+		self.beamListbox.insert(END, str(beam.beamName))
+
+		# refresh the option menu of added beams to keep it up to date
+		self.refreshBeamChoices()
 
 	def clickBeamLoad(self):
 		# what happens when beam load button clicked
@@ -1505,6 +1509,7 @@ class RADDOSEgui(Frame):
 		elif self.strategyType == 'Premade':
 			pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
 			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput)
+			self.addCrystalToList(crystalObject)
 			####################################################################
 			####################################################################
 			#NEED TO ADD CRYSTAL, BEAMS AND WEDGES TO THEIR RESPECTIVE LISTS
@@ -1516,7 +1521,7 @@ class RADDOSEgui(Frame):
 		self.expNameList.append(experimentName)
 
 		# Print a summary of the RADDOSE-3D run.
-		self.displaySummary(experimentName)
+		#self.displaySummary(experimentName)
 
 	def parseRaddoseInput(self,pathToRaddoseInput):
 		"""Parses the RADDOSE-3D Input file and returns the a crystal object, a
@@ -1530,10 +1535,11 @@ class RADDOSEgui(Frame):
 		beamBlock    = False
 		wedgeBlock   = False
 
-		#create crystal object and beam and wedge lists
 		crystal = crystals() #create default crystal
-		beamList = []
-		wedgeList = []
+		beam = beams() #create default beam
+		wedge = wedges() #create default wedge
+		beamList = [] #create beam list
+		wedgeList = [] #create wedge list
 
 		for line in raddoseInput:
 			if "Crystal" in line:
@@ -1545,25 +1551,24 @@ class RADDOSEgui(Frame):
 				crystalBlock = False
 				beamBlock    = True
 				wedgeBlock   = False
-				beam = beams() #create beam
-				wedge = wedges() #create wedge. If there's a beam then there's at least one wedge to follow.
-				if wedge.angStart and wedge.angStop and wedge.exposureTime:
-					wedgeList.append(wedge)
+
 			elif "Wedge" in line:
 				crystalBlock = False
 				beamBlock    = False
 				wedgeBlock   = True
-				beamList.append(beam)
+				beamList.append(copy.deepcopy(beam))
 				if wedge.angStart and wedge.angStop and wedge.exposureTime:
-					wedgeList.append(wedge)
+					wedgeList.append(copy.deepcopy(wedge))
 
 			#remove comment part from line
 			commentCharIndices = []
 			for commentChar in commentChars: #look for comment characters and store the index in list
 				index = line.find(commentChar)
 				commentCharIndices.append(index)
-			minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
-			line = line[0:minIndex] #remove comment part from line
+
+			if sorted(commentCharIndices)[-1] > -1: # check for positive indices
+				minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
+				line = line[0:minIndex] #remove comment part from line
 
 			if crystalBlock:
 				if "Dimensions" in line:
@@ -1598,9 +1603,9 @@ class RADDOSEgui(Frame):
 					wedge.angStart = angles[0]
 					wedge.angStop  = angles[1]
 				elif "ExposureTime" in line:
-					wedge.exposTime = line.split()[1]
+					wedge.exposureTime = line.split()[1]
 
-		wedgeList.append(wedge) #append final wedge
+		wedgeList.append(copy.deepcopy(wedge)) #append final wedge
 		raddoseInput.close()
 
 		return (crystal, beamList, wedgeList)
