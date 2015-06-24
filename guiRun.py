@@ -1703,20 +1703,20 @@ class barplotWindow(Frame):
 		self.canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
 		self.canvasForBarplot.show()
 		self.canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
-		ax = doseCompareFig.add_subplot(111)
+		self.axBarplot = doseCompareFig.add_subplot(111)
 
 		# bar plot parameters for DWD bar plot
 		bar_width = 0.35
 		opacity = 0.4
 		y = np.array(self.DoseListDict['DWD'])
 		x = np.arange(len(y))
-		self.doseBarplot = ax.bar(x,y,bar_width,alpha=opacity,color='b')
+		self.doseBarplot = self.axBarplot.bar(x,y,bar_width,alpha=opacity,color='b')
 		xTickMarks = [str(expName) for expName in currentExpNameList]
-		ax.set_xticks(x+0.5*bar_width)
-		xtickNames = ax.set_xticklabels(xTickMarks)
+		self.axBarplot.set_xticks(x+0.5*bar_width)
+		xtickNames = self.axBarplot.set_xticklabels(xTickMarks)
 		plt.setp(xtickNames, rotation=0, fontsize=16)
-		ax.set_xlabel('Strategy', fontsize=24)
-		ax.set_ylabel('Dose (Mgy)', fontsize=24)
+		self.axBarplot.set_xlabel('Strategy', fontsize=24)
+		self.axBarplot.set_ylabel('Dose (Mgy)', fontsize=24)
 		self.canvasForBarplot.draw()
 
 		# create a plot refresh button for when the selected dose metric is changed
@@ -1725,7 +1725,6 @@ class barplotWindow(Frame):
 
 	def refreshPlot(self):
 		# when a new dose metric is selected from dropdown option list, click to refresh bar plot
-		print str(datetime.datetime.now())
 		currentDoseMetric = self.doseMetricToPlot.get()
 		print currentDoseMetric
 		if currentDoseMetric == self.MetricNameListDict['DWD']:
@@ -1738,17 +1737,15 @@ class barplotWindow(Frame):
 			y = np.array(self.DoseListDict['avgDose'])
 			x = np.arange(len(y))
 
-		#self.doseBarplot.set_xdata(x)
-		#self.doseBarplot.set_ydata(y)
-		#self.canvasForBarplot.draw()
-
-
-
-
+		# update bars with new dose metric values here
+		for bar, x in zip(self.doseBarplot,y):
+			bar.set_height(x)
+		self.axBarplot.set_ylim(0, y.max()*(1.2))
+		# replot figure by redrawing canvas
+		self.canvasForBarplot.draw()
 
 	def close_windows(self):
 		self.master.destroy()
-
 
 def main():
 	# when the script is run in python, do the following:
