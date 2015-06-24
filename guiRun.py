@@ -836,6 +836,8 @@ class RADDOSEgui(Frame):
 		self.WedgeAngRangeStart = StringVar()
 		WedgeinputBox1 = Entry(WedgeinputFrame1,textvariable=self.WedgeAngRangeStart,width=5)
 		WedgeinputBox1.pack(side=LEFT,pady=5,padx=6)
+		# preset start angle for wedge
+		self.WedgeAngRangeStart.set("0")
 
 		# Wedge input 2 --> Wedge angular range (stop)
 		WedgeinputFrame2 = Frame(currentStrategyWedge,style="inputBoxes.TFrame")
@@ -845,6 +847,8 @@ class RADDOSEgui(Frame):
 		self.WedgeAngRangeStop = StringVar()
 		WedgeinputBox2 = Entry(WedgeinputFrame2,textvariable=self.WedgeAngRangeStop,width=5)
 		WedgeinputBox2.pack(side=LEFT,pady=5,padx=6)
+		# preset end angle for wedge
+		self.WedgeAngRangeStop.set("180")
 
 		# Wedge input 3 --> Wedge total exposure time
 		WedgeinputFrame3 = Frame(currentStrategyWedge,style="inputBoxes.TFrame")
@@ -854,6 +858,8 @@ class RADDOSEgui(Frame):
 		self.WedgeExposTime = StringVar()
 		WedgeinputBox3 = Entry(WedgeinputFrame3,textvariable=self.WedgeExposTime,width=5)
 		WedgeinputBox3.pack(side=LEFT,pady=5,padx=6)
+		# preset total exposure time for wedge
+		self.WedgeExposTime.set("180")
 
 		# make an example visual wedge here
 		C = Canvas(currentStrategyWedge, bg=self.lightcolour, height=100, width=100)
@@ -1665,7 +1671,7 @@ class barplotWindow(Frame):
 	def __init__(self, master):
 		self.master = master
 		self.frame = Frame(self.master)
-		self.quitButton = tk.Button(self.frame, text = 'Quit', width = 25, command = self.close_windows)
+		self.quitButton = Button(self.frame, text = 'Quit', width = 25, command = self.close_windows)
 		self.quitButton.pack()
 		self.frame.pack()
 	def close_windows(self):
