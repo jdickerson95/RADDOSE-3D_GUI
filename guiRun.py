@@ -18,6 +18,7 @@ import shutil
 import subprocess
 import time
 import datetime
+import copy
 #from GUI2RADDOSE3DINPUT import *
 
 #####################################################################################################
@@ -1461,7 +1462,7 @@ class RADDOSEgui(Frame):
 		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
 		currentCrystal = self.crystList[self.currentCrystIndex]
 		experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
-		self.experimentDict[experimentName] = experiment
+		self.experimentDict[experimentName] = copy.deepcopy(experiment)
 		self.expNameList.append(experimentName)
 
 		# Print a summary of the RADDOSE-3D run.
@@ -1632,9 +1633,9 @@ class RADDOSEgui(Frame):
 
 def main():
 	# when the script is run in python, do the following:
-    root = Tk()
-    app = RADDOSEgui(root)
-    root.mainloop()
+	root = Tk()
+	app = RADDOSEgui(root)
+	root.mainloop()
 
 if __name__ == '__main__':
-    main()
+	main()
