@@ -1675,53 +1675,73 @@ class barplotWindow(Frame):
 		self.plottingFrame.pack()
 		# create quit button to leave plotting window
 		self.quitButton = Button(self.plottingFrame, text = 'Quit', width = 25, command = self.close_windows)
-		self.quitButton.pack()#.grid(row=0, column=3,pady=5, padx=3, sticky=W+E)
+		self.quitButton.pack()
 
 		# create option list to select which dose metric to plot
-		doseMetricToPlot = StringVar()
-		DoseDWD = "Average Diffraction Weighted Dose"
-		DoseMax = "Max Dose"
-		DoseAvg = "Average Dose (Whole Crystal)"
-		doseMetricToPlot.set(DoseDWD) # default value to show in option list
-		w = OptionMenu(self.plottingFrame, doseMetricToPlot, DoseDWD, DoseMax, DoseAvg)
-		w.pack()#.grid(row=0, column=0,pady=5, padx=3, sticky=W+E)
+		self.doseMetricToPlot = StringVar()
+		self.MetricNameListDict = {'DWD':"Average Diffraction Weighted Dose",
+								   'maxDose':"Max Dose",
+								   'avgDose':"Average Dose (Whole Crystal)"}
+		self.doseMetricToPlot.set(self.MetricNameListDict['DWD']) # default value to show in option list
+		doseMetricOptionMenu = OptionMenu(self.plottingFrame, self.doseMetricToPlot,self.MetricNameListDict['DWD'],
+					   self.MetricNameListDict['DWD'], 
+					   self.MetricNameListDict['maxDose'],
+					   self.MetricNameListDict['avgDose'])
 
-		# create a plot refresh button for when the selected dose metric is changed
-		self.plotRefreshButton = Button(self.plottingFrame, text = 'Refresh', width = 25, command = self.refreshPlot())
-		self.plotRefreshButton.pack()#.grid(row=0, column=1,pady=5, padx=3, sticky=W+E)
+		doseMetricOptionMenu.pack()
 
 		# create lists of dose metrics over all currently loaded strategies
-		DWDList, maxDoseList, avgDoseList = [],[],[]
+		self.DoseListDict = {'DWD':[],'maxDose':[],'avgDose':[]}
 		for expName in currentExpNameList:
 			expObject = currentExpDict[expName]
-			DWDList.append(expObject.dwd)
-			maxDoseList.append(expObject.maxDose)
-			avgDoseList.append(expObject.avgDose)
+			self.DoseListDict['DWD'].append(expObject.dwd)
+			self.DoseListDict['maxDose'].append(expObject.maxDose)
+			self.DoseListDict['avgDose'].append(expObject.avgDose)
 
 		# a matlibplot figure axis should be created here
 		doseCompareFig = plt.Figure(figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
-		canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
-		canvasForBarplot.show()
-		canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
+		self.canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
+		self.canvasForBarplot.show()
+		self.canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
 		ax = doseCompareFig.add_subplot(111)
 
 		# bar plot parameters for DWD bar plot
 		bar_width = 0.35
 		opacity = 0.4
-		x = np.arange(len(DWDList))
-		y = np.array(DWDList)
-		ax.bar(x,y,bar_width,alpha=opacity,color='b')
+		y = np.array(self.DoseListDict['DWD'])
+		x = np.arange(len(y))
+		self.doseBarplot = ax.bar(x,y,bar_width,alpha=opacity,color='b')
 		xTickMarks = [str(expName) for expName in currentExpNameList]
 		ax.set_xticks(x+0.5*bar_width)
 		xtickNames = ax.set_xticklabels(xTickMarks)
 		plt.setp(xtickNames, rotation=0, fontsize=16)
 		ax.set_xlabel('Strategy', fontsize=24)
 		ax.set_ylabel('Dose (Mgy)', fontsize=24)
-		canvasForBarplot.draw()
+		self.canvasForBarplot.draw()
+
+		# create a plot refresh button for when the selected dose metric is changed
+		self.plotRefreshButton = Button(self.plottingFrame, text = 'Refresh', width = 25, command = self.refreshPlot)
+		self.plotRefreshButton.pack()
 
 	def refreshPlot(self):
 		# when a new dose metric is selected from dropdown option list, click to refresh bar plot
-		pass
+		print str(datetime.datetime.now())
+		currentDoseMetric = self.doseMetricToPlot.get()
+		print currentDoseMetric
+		if currentDoseMetric == self.MetricNameListDict['DWD']:
+			y = np.array(self.DoseListDict['DWD'])
+			x = np.arange(len(y))
+		elif currentDoseMetric == self.MetricNameListDict['maxDose']:
+			y = np.array(self.DoseListDict['maxDose'])
+			x = np.arange(len(y))		
+		elif currentDoseMetric == self.MetricNameListDict['avgDose']:
+			y = np.array(self.DoseListDict['avgDose'])
+			x = np.arange(len(y))
+
+		#self.doseBarplot.set_xdata(x)
+		#self.doseBarplot.set_ydata(y)
+		#self.canvasForBarplot.draw()
+
 
 
 
