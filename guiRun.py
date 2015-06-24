@@ -996,7 +996,8 @@ class RADDOSEgui(Frame):
 			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
 			# finds separate class for secondary barplotting window
 			currentExpDict = self.experimentDict # need to pass experiment dictionary between classes
-			self.app = barplotWindow(self.top_summaryBarplotMaker,currentExpDict)
+			currentExpNameList = self.expNameList # need to pass current exp name list between classes
+			self.app = barplotWindow(self.top_summaryBarplotMaker,currentExpDict,currentExpNameList)
 
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
@@ -1668,7 +1669,7 @@ class barplotWindow(Frame):
 	# this is a secondary plotting window class here. It is where all the dose summary bar plots 
 	# will be created
 
-	def __init__(self, master,currentExpDict):
+	def __init__(self, master,currentExpDict,currentExpNameList):
 		self.master = master
 		self.plottingFrame = Frame(self.master)
 		self.plottingFrame.pack()
@@ -1685,8 +1686,16 @@ class barplotWindow(Frame):
 		w = OptionMenu(self.plottingFrame, doseMetricToPlot, DoseDWD, DoseMax, DoseAvg)
 		w.pack()
 
+		# create lists of dose metrics over all currently loaded strategies
+		DWDList, maxDoseList, avgDoseList = [],[],[]
+		for expName in currentExpNameList:
+			expObject = currentExpDict[expName]
+			DWDList.append(expObject.dwd)
+			maxDoseList.append(expObject.maxDose)
+			avgDoseList.append(expObject.avgDose)
+
 		# a matlibplot figure axis should be created here
-		doseCompareFig = plt.Figure()
+		doseCompareFig = plt.Figure(figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
 		canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
 		canvasForBarplot.show()
 		canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
@@ -1695,18 +1704,19 @@ class barplotWindow(Frame):
 		# example bar plot parameters for dummy bar plot
 		bar_width = 0.35
 		opacity = 0.4
-		x = np.array([1,2,3,4])
-		y = np.array([3,3,4,4])
+		print len(DWDList)
+		x = np.arange(len(DWDList))
+		y = np.array(DWDList)
 		ax.bar(x,y,bar_width,alpha=opacity,color='b')
-		ax.set_xlabel('Strategy Index')
-		ax.set_ylabel('Dose (Mgy)')
+		xTickMarks = [str(expName) for expName in currentExpNameList]
+		ax.set_xticks(x+0.5*bar_width)
+		xtickNames = ax.set_xticklabels(xTickMarks)
+		plt.setp(xtickNames, rotation=0, fontsize=16)
+		ax.set_xlabel('Strategy', fontsize=24)
+		ax.set_ylabel('Dose (Mgy)', fontsize=24)
 		canvasForBarplot.draw()
 
-		print len(currentExpDict)
-		# for expObject in currentExpDict:
-		# 	print expObject.dwd
-		# 	print expObject.maxDose
-		# 	print expObject.avgDose
+
 
 
 
