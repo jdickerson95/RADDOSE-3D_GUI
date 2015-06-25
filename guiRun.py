@@ -415,19 +415,28 @@ class RADDOSEgui(Frame):
 		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
 		self.expChoiceMenu.grid(row=0, column=0, columnspan=1,pady=5, padx=3, sticky=W+E)
 
+		# create an experiment summary button here to refresh the summary output text bar (below) to
+		# show the details of the currently selected experiment (selected in expChoiceMenu)
 		expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.clickSummary)
 		expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-		# create button to plot dose metrics for currently loaded experiments within summary window
-		expBarplotterButton = Button(chooseExpFrame, text="Plot",command=self.clickBarplotter)
-		expBarplotterButton.grid(row=1, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+		# create button to remove currently selected experiment from list of loaded experiments
+		removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
+		removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create a button to display log file of currently selected experiment (in expChoiceMenu)
+		# within summary text box
+		expLogShowButton = Button(chooseExpFrame, text="Log",command=self.clickLogShow)
+		expLogShowButton.grid(row=1, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		#create text box with scrollbar to detail the summary output for currently selected experiment
+		expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
+		expSummaryTextFrame.pack(side=TOP,fill=BOTH,expand=1)
 		self.raddose3Dinputtxt = StringVar()
-		scrollbarRaddoseInputFile = Scrollbar(FrameBodyLeftBottom, orient=VERTICAL)
-		self.inputtxt = Text(FrameBodyLeftBottom, height=33,width=60,wrap=WORD,font=("Helvetica", 8))
+		scrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=VERTICAL)
+		self.inputtxt = Text(expSummaryTextFrame, height=27,width=60,wrap=WORD,font=("Helvetica", 8))
 		scrollbarRaddoseInputFile.pack(side=LEFT,fill=Y)
-		self.inputtxt.pack(side=LEFT,expand=True)
+		self.inputtxt.pack(side=TOP,expand=True)
 		scrollbarStrategyList.config(command=self.inputtxt.yview)
 		self.inputtxt.config(yscrollcommand=scrollbarRaddoseInputFile.set)
 		quote = self.raddose3Dinputtxt.get()
@@ -436,9 +445,29 @@ class RADDOSEgui(Frame):
 		self.inputtxt.delete(1.0, END)
 		self.inputtxt.insert(END, quote*2)
 
-		removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
-		removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
+		# make labelframe for the plotting buttons for the currently selected experiments
+		l = Label(FrameBodyLeftBottom,text="Compare Experiments",style="labelFrameTitle.TLabel")
+		ExpPlotButtonsFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
+		ExpPlotButtonsFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
+		ExpPlotButtonsFrame.columnconfigure(1, weight=1)
 
+		# create button to plot dose metrics for currently loaded experiments within summary window
+		expBarplotterButton = Button(ExpPlotButtonsFrame, text="Plot",command=self.clickBarplotter)
+		expBarplotterButton.grid(row=0, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create button to plot isosurfaces for currently loaded experiments within summary window
+		expIsosurfacesButton = Button(ExpPlotButtonsFrame, text="Dose Contours",command=self.clickIsosurfaces)
+		expIsosurfacesButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create button to display summary details to the summary text window for currently 
+		# loaded experiments within summary window
+		expSummaryShowButton = Button(ExpPlotButtonsFrame, text="Show Summary",command=self.clickExpShowSummary)
+		expSummaryShowButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create button to save summary details to new directory for currently loaded experiments 
+		# within summary window
+		expSaveButton = Button(ExpPlotButtonsFrame, text="Save",command=self.clickExpSave)
+		expSaveButton.grid(row=0, column=3, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		#####################################################################################################
 		# for top middle body --> make-a-crystal window
@@ -1044,6 +1073,70 @@ class RADDOSEgui(Frame):
 			""" %()
 			tkMessageBox.showinfo( "No experiments loaded", string)
 
+	def clickLogShow(self):
+		""" Response to log button click within experiment summary window
+
+		Log button which calls displayLog when clicked, to print the currently 
+		selected experiment RADDOSE--3D log file to the summary text box
+		 within the left hand side summary window
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		if self.expNameList:
+			expName = str(self.expChoice.get())
+			self.displayLog(expName)
+		else:
+			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+			""" %()
+			tkMessageBox.showinfo( "No experiments loaded", string)
+
+	def displayLog(self, expName):
+		"""Display RADDOSE-3D log file for currently selected experiment within summary window
+
+		The RADDOSE-3D log file for the currently selected experiment is printed to the summary 
+		text box within the left-hand side experiment summary window
+
+		=================
+		Keyword arguments
+		=================
+		expName:
+			a unique experiment name corresponding to a unique RADDOSE-3D run, 
+			located within a directory of the same name
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		# extract the experiment object corresponding to the chosen
+		# experiment in the list
+		expObject = self.experimentDict[expName]
+		# Write first line of the summary giving the experiment name
+		self.inputtxt.delete(1.0, END) #Delete any text already in the box
+		self.inputtxt.insert(1.0, "Log for experiment: %s\n\n"%(expName))
+
+		# Time stamp
+		self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
+		self.inputtxt.insert(END, "\n")
+
+		# RD3D log printed to summary text box here
+		self.inputtxt.insert(END,expObject.log)
+
+	def clickIsosurfaces(self):
+		pass
+	def clickExpShowSummary(self):
+		pass
+	def clickExpSave(self):
+		pass
 
 	def deleteCryst(self):
 		# delete the selected crystal from the listbox of added crystals. Also remove the
@@ -1056,61 +1149,73 @@ class RADDOSEgui(Frame):
 	def clickCrystMake(self):
 		# what happens when crystal make button clicked. Makes a new small window allowing
 		# manual entry of crystal parameters
-		self.top_CrystMaker=Toplevel()
-		self.top_CrystMaker.title("Make a crystal")
 
-		# give the new window a dark background colour
-		self.top_CrystMaker.configure(bg=self.darkcolour)
+		# first ensure that crystal to be made has been given a name, and that this is 
+		# different than all other loaded crystals
+		if not str(self.crystMakeName.get()).strip():
+			string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to make.""" %()
+			tkMessageBox.showinfo( "No Crystal Name", string)
+		elif str(self.crystMakeName.get()) in [cryst.crystName for cryst in self.crystList]:
+			tkMessageBox.showinfo( "Duplicate Crystal Names",
+			"Crystal name %s already exists. Please choose another name." %(self.crystMakeName.get()))
+		else:		
+			# if unique crystal name was given, create new pop-up window, in which to set crystal properties
+			self.top_CrystMaker=Toplevel()
+			self.top_CrystMaker.title("Make a crystal")
 
-		# Crystal inputs here:
-		l = Label(self.top_CrystMaker,text="Crystal",style="labelFrameTitle.TLabel")
-		currentStrategyCrystal = LabelFrame(self.top_CrystMaker,labelwidget=l,
-											style="MakeABeam.TFrame")
-		currentStrategyCrystal.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
+			# give the new window a dark background colour
+			self.top_CrystMaker.configure(bg=self.darkcolour)
 
-		# Crystal input 1 --> crystal type
-		CrystalinputFrame1 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
-		CrystalinputFrame1.grid(row=0,column=0)
-		CrystalinputLabel1 = Label(CrystalinputFrame1,text="Crystal Type",style="inputBoxes.TLabel")
-		CrystalinputLabel1.pack(side=LEFT,pady=5,padx=6)
-		self.CrystalType = StringVar()
-		CrystalinputBox1 = Entry(CrystalinputFrame1,textvariable=self.CrystalType,width=5)
-		CrystalinputBox1.pack(side=LEFT,pady=5,padx=6)
+			# Crystal inputs here:
+			l = Label(self.top_CrystMaker,text="Crystal",style="labelFrameTitle.TLabel")
+			currentStrategyCrystal = LabelFrame(self.top_CrystMaker,labelwidget=l,
+												style="MakeABeam.TFrame")
+			currentStrategyCrystal.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
 
-		# Crystal input 2 --> crystal dimensions
-		CrystalinputFrame2 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
-		CrystalinputFrame2.grid(row=0,column=1)
-		CrystalinputLabel2 = Label(CrystalinputFrame2,text="Crystal Dimensions",style="inputBoxes.TLabel")
-		CrystalinputLabel2.pack(side=LEFT,pady=5,padx=6)
-		self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
-		CrystalinputBox2X = Entry(CrystalinputFrame2,textvariable=self.CrystalDimX,width=5)
-		CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
-		CrystalinputBox2Y = Entry(CrystalinputFrame2,textvariable=self.CrystalDimY,width=5)
-		CrystalinputBox2Y.pack(side=LEFT,pady=5,padx=6)
-		CrystalinputBox2Z = Entry(CrystalinputFrame2,textvariable=self.CrystalDimZ,width=5)
-		CrystalinputBox2Z.pack(side=LEFT,pady=5,padx=6)
+			# Crystal input 1 --> crystal type
+			CrystalinputFrame1 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
+			CrystalinputFrame1.grid(row=0,column=0)
+			CrystalinputLabel1 = Label(CrystalinputFrame1,text="Crystal Type",style="inputBoxes.TLabel")
+			CrystalinputLabel1.pack(side=LEFT,pady=5,padx=6)
+			self.CrystalType = StringVar()
+			crystTypeList = ['Cuboid','Spherical','Polyhedron','Cylindrical']
+			crystTypeOptionMenu = OptionMenu(CrystalinputFrame1, self.CrystalType,crystTypeList[0],*crystTypeList)
+			crystTypeOptionMenu.pack(side=LEFT,pady=5,padx=6)
 
-		# Crystal input 3 --> pixels per Micron
-		CrystalinputFrame3 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
-		CrystalinputFrame3.grid(row=1,column=0)
-		CrystalinputLabel3 = Label(CrystalinputFrame3,text="Pixels per Micron",style="inputBoxes.TLabel")
-		CrystalinputLabel3.pack(side=LEFT,pady=5,padx=6)
-		self.CrystalPixPerMic = StringVar()
-		CrystalinputBox3 = Entry(CrystalinputFrame3,textvariable=self.CrystalPixPerMic,width=5)
-		CrystalinputBox3.pack(side=LEFT,pady=5,padx=6)
+			# Crystal input 2 --> crystal dimensions
+			CrystalinputFrame2 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
+			CrystalinputFrame2.grid(row=0,column=1)
+			CrystalinputLabel2 = Label(CrystalinputFrame2,text="Crystal Dimensions",style="inputBoxes.TLabel")
+			CrystalinputLabel2.pack(side=LEFT,pady=5,padx=6)
+			self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
+			CrystalinputBox2X = Entry(CrystalinputFrame2,textvariable=self.CrystalDimX,width=5)
+			CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
+			CrystalinputBox2Y = Entry(CrystalinputFrame2,textvariable=self.CrystalDimY,width=5)
+			CrystalinputBox2Y.pack(side=LEFT,pady=5,padx=6)
+			CrystalinputBox2Z = Entry(CrystalinputFrame2,textvariable=self.CrystalDimZ,width=5)
+			CrystalinputBox2Z.pack(side=LEFT,pady=5,padx=6)
 
-		# Crystal input 4 --> absorption coefficient
-		CrystalinputFrame4 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
-		CrystalinputFrame4.grid(row=1,column=1)
-		CrystalinputLabel4 = Label(CrystalinputFrame4,text="Absorption Coefficient",style="inputBoxes.TLabel")
-		CrystalinputLabel4.pack(side=LEFT,pady=5,padx=6)
-		self.CrystalAbsorpCoeff = StringVar()
-		CrystalinputBox4 = Entry(CrystalinputFrame4,textvariable=self.CrystalAbsorpCoeff,width=5)
-		CrystalinputBox4.pack(side=LEFT,pady=5,padx=6)
+			# Crystal input 3 --> pixels per Micron
+			CrystalinputFrame3 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
+			CrystalinputFrame3.grid(row=1,column=0)
+			CrystalinputLabel3 = Label(CrystalinputFrame3,text="Pixels per Micron",style="inputBoxes.TLabel")
+			CrystalinputLabel3.pack(side=LEFT,pady=5,padx=6)
+			self.CrystalPixPerMic = StringVar()
+			CrystalinputBox3 = Entry(CrystalinputFrame3,textvariable=self.CrystalPixPerMic,width=5)
+			CrystalinputBox3.pack(side=LEFT,pady=5,padx=6)
 
-		# create a 'make' button here to add this crystal to the list of added crystals
-		crystMakeButton = Button(currentStrategyCrystal,text="Make",command=self.addMadeCryst)
-		crystMakeButton.grid(row=2,column=0,columnspan=2,pady=5)
+			# Crystal input 4 --> absorption coefficient
+			CrystalinputFrame4 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
+			CrystalinputFrame4.grid(row=1,column=1)
+			CrystalinputLabel4 = Label(CrystalinputFrame4,text="Absorption Coefficient",style="inputBoxes.TLabel")
+			CrystalinputLabel4.pack(side=LEFT,pady=5,padx=6)
+			self.CrystalAbsorpCoeff = StringVar()
+			CrystalinputBox4 = Entry(CrystalinputFrame4,textvariable=self.CrystalAbsorpCoeff,width=5)
+			CrystalinputBox4.pack(side=LEFT,pady=5,padx=6)
+
+			# create a 'make' button here to add this crystal to the list of added crystals
+			crystMakeButton = Button(currentStrategyCrystal,text="Make",command=self.addMadeCryst)
+			crystMakeButton.grid(row=2,column=0,columnspan=2,pady=5)
 
 	def addMadeCryst(self):
 		# make a new crystal object from above entered parameters and add to both listbox crystal list and
@@ -1291,70 +1396,82 @@ class RADDOSEgui(Frame):
 	def clickBeamMake(self):
 		# what happens when beam make button clicked. Makes a new small window allowing
 		# manual entry of beam parameters
-		self.top_BeamMaker=Toplevel()
-		self.top_BeamMaker.title("Make a beam")
 
-		# give the new window a dark background colour
-		self.top_BeamMaker.configure(bg=self.darkcolour)
+		# first ensure that beam to be made has been given a name, and that this is 
+		# different than all other loaded beams
+		if not str(self.beamMakeName.get()).strip():
+			string = """No beam name has been given.\nPlease give a name to the beam that you wish to make.""" %()
+			tkMessageBox.showinfo( "No Beam Name", string)
+		elif str(self.beamMakeName.get()) in [beam.beamName for beam in self.beamList]:
+			tkMessageBox.showinfo( "Duplicate Beam Names",
+			"Beam name %s already exists. Please choose another name." %(self.beamMakeName.get()))
+		else:
+			# if a unique beam name has been given, proceed to produce pop-up window in which beam
+			# parameters can be set
+			self.top_BeamMaker=Toplevel()
+			self.top_BeamMaker.title("Make a beam")
 
-		# Beam inputs here:
-		l = Label(self.top_BeamMaker,text="Beam",style="labelFrameTitle.TLabel")
-		currentStrategyBeam = LabelFrame(self.top_BeamMaker,labelwidget=l,
-											style="MakeABeam.TFrame")
-		currentStrategyBeam.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
+			# give the new window a dark background colour
+			self.top_BeamMaker.configure(bg=self.darkcolour)
 
-		# Beam input 1 --> Beam type
-		BeaminputFrame1 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame1.grid(row=0,column=0)
-		BeaminputLabel1 = Label(BeaminputFrame1,text="Beam Type",style="inputBoxes.TLabel")
-		BeaminputLabel1.pack(side=LEFT,pady=5,padx=6)
-		self.BeamType = StringVar()
-		BeaminputBox1 = Entry(BeaminputFrame1,textvariable=self.BeamType,width=5)
-		BeaminputBox1.pack(side=LEFT,pady=5,padx=6)
+			# Beam inputs here:
+			l = Label(self.top_BeamMaker,text="Beam",style="labelFrameTitle.TLabel")
+			currentStrategyBeam = LabelFrame(self.top_BeamMaker,labelwidget=l,
+												style="MakeABeam.TFrame")
+			currentStrategyBeam.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
 
-		# Beam input 2 --> FWHM
-		BeaminputFrame2 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame2.grid(row=0,column=1)
-		BeaminputLabel2 = Label(BeaminputFrame2,text="FWHM",style="inputBoxes.TLabel")
-		BeaminputLabel2.pack(side=LEFT,pady=5,padx=6)
-		self.BeamFWHMVertical,self.BeamFWHMHorizontal, = StringVar(),StringVar()
-		BeamFWHMVerticalBox = Entry(BeaminputFrame2,textvariable=self.BeamFWHMVertical,width=5)
-		BeamFWHMVerticalBox.pack(side=LEFT,pady=5,padx=6)
-		BeamFWHMHorizontalBox = Entry(BeaminputFrame2,textvariable=self.BeamFWHMHorizontal,width=5)
-		BeamFWHMHorizontalBox.pack(side=LEFT,pady=5,padx=6)
+			# Beam input 1 --> Beam type
+			BeaminputFrame1 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
+			BeaminputFrame1.grid(row=0,column=0)
+			BeaminputLabel1 = Label(BeaminputFrame1,text="Beam Type",style="inputBoxes.TLabel")
+			BeaminputLabel1.pack(side=LEFT,pady=5,padx=6)
+			self.BeamType = StringVar()
+			BeaminputBox1 = Entry(BeaminputFrame1,textvariable=self.BeamType,width=5)
+			BeaminputBox1.pack(side=LEFT,pady=5,padx=6)
 
-		# Beam input 3 --> flux
-		BeaminputFrame3 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame3.grid(row=1,column=0)
-		BeaminputLabel3 = Label(BeaminputFrame3,text="Flux",style="inputBoxes.TLabel")
-		BeaminputLabel3.pack(side=LEFT,pady=5,padx=6)
-		self.BeamFlux = StringVar()
-		BeaminputBox3 = Entry(BeaminputFrame3,textvariable=self.BeamFlux,width=5)
-		BeaminputBox3.pack(side=LEFT,pady=5,padx=6)
+			# Beam input 2 --> FWHM
+			BeaminputFrame2 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
+			BeaminputFrame2.grid(row=0,column=1)
+			BeaminputLabel2 = Label(BeaminputFrame2,text="FWHM",style="inputBoxes.TLabel")
+			BeaminputLabel2.pack(side=LEFT,pady=5,padx=6)
+			self.BeamFWHMVertical,self.BeamFWHMHorizontal, = StringVar(),StringVar()
+			BeamFWHMVerticalBox = Entry(BeaminputFrame2,textvariable=self.BeamFWHMVertical,width=5)
+			BeamFWHMVerticalBox.pack(side=LEFT,pady=5,padx=6)
+			BeamFWHMHorizontalBox = Entry(BeaminputFrame2,textvariable=self.BeamFWHMHorizontal,width=5)
+			BeamFWHMHorizontalBox.pack(side=LEFT,pady=5,padx=6)
 
-		# Crystal input 4 --> Energy
-		BeaminputFrame4 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame4.grid(row=1,column=1)
-		BeaminputLabel4 = Label(BeaminputFrame4,text="Energy",style="inputBoxes.TLabel")
-		BeaminputLabel4.pack(side=LEFT,pady=5,padx=6)
-		self.BeamEnergy = StringVar()
-		BeaminputBox4 = Entry(BeaminputFrame4,textvariable=self.BeamEnergy,width=5)
-		BeaminputBox4.pack(side=LEFT,pady=5,padx=6)
+			# Beam input 3 --> flux
+			BeaminputFrame3 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
+			BeaminputFrame3.grid(row=1,column=0)
+			BeaminputLabel3 = Label(BeaminputFrame3,text="Flux",style="inputBoxes.TLabel")
+			BeaminputLabel3.pack(side=LEFT,pady=5,padx=6)
+			self.BeamFlux = StringVar()
+			BeaminputBox3 = Entry(BeaminputFrame3,textvariable=self.BeamFlux,width=5)
+			BeaminputBox3.pack(side=LEFT,pady=5,padx=6)
 
-		# Beam input 5 --> Rectangular Collimation
-		BeaminputFrame5 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame5.grid(row=2,column=0)
-		BeaminputLabel5 = Label(BeaminputFrame5,text="Rectangular Collimation",style="inputBoxes.TLabel")
-		BeaminputLabel5.pack(side=LEFT,pady=5,padx=6)
-		self.BeamRectCollVert,self.BeamRectCollHoriz, = StringVar(),StringVar()
-		BeamRectCollVertBox = Entry(BeaminputFrame5,textvariable=self.BeamRectCollVert,width=5)
-		BeamRectCollVertBox.pack(side=LEFT,pady=5,padx=6)
-		BeamRectCollHorizBox = Entry(BeaminputFrame5,textvariable=self.BeamRectCollHoriz,width=5)
-		BeamRectCollHorizBox.pack(side=LEFT,pady=5,padx=6)
+			# Beam input 4 --> Energy
+			BeaminputFrame4 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
+			BeaminputFrame4.grid(row=1,column=1)
+			BeaminputLabel4 = Label(BeaminputFrame4,text="Energy",style="inputBoxes.TLabel")
+			BeaminputLabel4.pack(side=LEFT,pady=5,padx=6)
+			self.BeamEnergy = StringVar()
+			BeaminputBox4 = Entry(BeaminputFrame4,textvariable=self.BeamEnergy,width=5)
+			BeaminputBox4.pack(side=LEFT,pady=5,padx=6)
 
-		# create a 'make' button here to add this beam to the list of added beams
-		beamMakeButton = Button(currentStrategyBeam,text="Make",command=self.addMadeBeam)
-		beamMakeButton.grid(row=3,column=0,columnspan=2,pady=5)
+			# Beam input 5 --> Rectangular Collimation
+			BeaminputFrame5 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
+			BeaminputFrame5.grid(row=2,column=0)
+			BeaminputLabel5 = Label(BeaminputFrame5,text="Rectangular Collimation",style="inputBoxes.TLabel")
+			BeaminputLabel5.pack(side=LEFT,pady=5,padx=6)
+			self.BeamRectCollVert,self.BeamRectCollHoriz, = StringVar(),StringVar()
+			BeamRectCollVertBox = Entry(BeaminputFrame5,textvariable=self.BeamRectCollVert,width=5)
+			BeamRectCollVertBox.pack(side=LEFT,pady=5,padx=6)
+			BeamRectCollHorizBox = Entry(BeaminputFrame5,textvariable=self.BeamRectCollHoriz,width=5)
+			BeamRectCollHorizBox.pack(side=LEFT,pady=5,padx=6)
+
+			# create a 'make' button here to add this beam to the list of added beams
+			beamMakeButton = Button(currentStrategyBeam,text="Make",command=self.addMadeBeam)
+			beamMakeButton.grid(row=3,column=0,columnspan=2,pady=5)
 
 	def addMadeBeam(self):
 		# make a new beam object from above entered parameters and add to both listbox beam list and
@@ -1853,6 +1970,10 @@ class barplotWindow(Frame):
 		# create frame for buttons and dose metric list
 		plotButtonFrame = Frame(self.plottingFrame,style="BodyGroovy.TFrame")
 		plotButtonFrame.pack(side=BOTTOM, fill=BOTH, expand=True)
+		# weight the 3 button columns to stretch across bottom of figure
+		plotButtonFrame.columnconfigure(0, weight=1)
+		plotButtonFrame.columnconfigure(1, weight=1)
+		plotButtonFrame.columnconfigure(2, weight=1)
 
 		# create quit button to leave plotting window
 		self.quitButton = Button(plotButtonFrame, text = 'Quit', width = 25, command = self.close_windows)
