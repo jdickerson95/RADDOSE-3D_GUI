@@ -7,11 +7,7 @@
 To do before 30th June 2015
 -***************************-
 
-
-- Add plotting capability for additional experiment summary values (Used Volume,
- Elastic Yield, Diffraction Efficiency, Dose Inefficiency)
-
-- Create new class for pop-up crystal/beam maker windows - make GUI class 
+- Create new class for pop-up crystal/beam maker windows - make GUI class
 too big currently
 
 - Modify crystal/beam maker windows such that they dynamics change input fields
@@ -24,10 +20,15 @@ summary/output window (csv format?) to a suitable working directory
 
 - change %s syntax to .format() throughout for consistency
 
+- Add capability to create an interactive dose contour plot (with axis)
+
 
 -***************************-
 To do at some point
 -***************************-
+
+- Need to add a check when experiments are run to see if any files are already
+in use by other programs.
 
 - Crystal and beam options need to check for sensible inputs.
 (i.e. numerical values are given for crystal dimensions)
@@ -38,8 +39,6 @@ made for inputs that can only take certain values or text.
 - Fix the scroll bars (they don't always seem to work)
 
 - Add more options to Help/Suggestion Dialogue
-
-- Add capability to create an interactive dose contour plot (with axis)
 
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
 
@@ -52,5 +51,5 @@ made for inputs that can only take certain values or text.
 - Add check to see if user have seaborn installed. If so then we can do pretty
 plots
 
-- check cross platform image functionality (pkg PIL runs into problems on anaconda 
+- check cross platform image functionality (pkg PIL runs into problems on anaconda
 python 2.7.9 on mac). Need to test on ubuntu also...
