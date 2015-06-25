@@ -1007,7 +1007,7 @@ class RADDOSEgui(Frame):
 			# give the new window a dark background colour
 			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
 			# finds separate class for secondary barplotting window
-			self.app = barplotWindow(self.top_summaryBarplotMaker, self.experimentDict, self.expNameList)
+			self.app = barplotWindow(self)
 
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
@@ -1792,8 +1792,10 @@ class barplotWindow(Frame):
 	# this is a secondary plotting window class here. It is where all the dose summary bar plots
 	# will be created
 
-	def __init__(self, master, currentExpDict, currentExpNameList):
-		self.master = master
+	def __init__(self,MainGui):
+		currentExpDict = MainGui.experimentDict
+		currentExpNameList = MainGui.expNameList
+		self.master = MainGui.top_summaryBarplotMaker
 		self.plottingFrame = Frame(self.master)
 		self.plottingFrame.pack()
 
