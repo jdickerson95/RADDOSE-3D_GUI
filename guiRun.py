@@ -1161,10 +1161,15 @@ class RADDOSEgui(Frame):
 		self.crystLoadBox.insert(0,self.crystLoad)
 
 	def readRD3DInputFileCrystInfo(self):
-		# reads in the crystal information from a RADDOSE-3D input file in order to create a new crystal object
+		# reads in the crystal information from a RADDOSE-3D input file in order to create a new crystal object.
+		# Currently relies on crystal-beam-wedge-beam-wedge-.. format of input file
 		RD3DinputFile = open(self.crystLoadBox.get(),'r').readlines()
 		for line in RD3DinputFile:
 			try:
+				# want to only read crystal input and stop at beam
+				if 'Beam' in line.split()[0]:
+					break
+				# read in crystal properties here
 				if 'Dimensions' in line.split()[0]:
 					self.CrystalDimX = line.split()[1]
 					self.CrystalDimY = line.split()[2]
