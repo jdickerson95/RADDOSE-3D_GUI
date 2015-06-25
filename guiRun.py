@@ -1180,8 +1180,9 @@ class RADDOSEgui(Frame):
 			CrystalinputLabel4 = Label(CrystalinputFrame4,text="Absorption Coefficient",style="inputBoxes.TLabel")
 			CrystalinputLabel4.pack(side=LEFT,pady=5,padx=6)
 			self.CrystalAbsorpCoeff = StringVar()
-			CrystalinputBox4 = Entry(CrystalinputFrame4,textvariable=self.CrystalAbsorpCoeff,width=5)
-			CrystalinputBox4.pack(side=LEFT,pady=5,padx=6)
+			crystAbsCoeffList = ['Average','RADDOSE']
+			crystAbsCoeffOptionMenu = OptionMenu(CrystalinputFrame4, self.CrystalAbsorpCoeff,crystAbsCoeffList[0],*crystAbsCoeffList)
+			crystAbsCoeffOptionMenu.pack(side=LEFT,pady=5,padx=6)
 
 			# create a 'make' button here to add this crystal to the list of added crystals
 			crystMakeButton = Button(currentStrategyCrystal,text="Make",command=self.addMadeCryst)
@@ -1396,8 +1397,9 @@ class RADDOSEgui(Frame):
 			BeaminputLabel1 = Label(BeaminputFrame1,text="Beam Type",style="inputBoxes.TLabel")
 			BeaminputLabel1.pack(side=LEFT,pady=5,padx=6)
 			self.BeamType = StringVar()
-			BeaminputBox1 = Entry(BeaminputFrame1,textvariable=self.BeamType,width=5)
-			BeaminputBox1.pack(side=LEFT,pady=5,padx=6)
+			beamTypeList = ['Gaussian','TopHat']
+			beamTypeListOptionMenu = OptionMenu(BeaminputFrame1, self.BeamType,beamTypeList[0],*beamTypeList)
+			beamTypeListOptionMenu.pack(side=LEFT,pady=5,padx=6)
 
 			# Beam input 2 --> FWHM
 			BeaminputFrame2 = Frame(currentStrategyBeam,style="inputBoxes.TFrame")
