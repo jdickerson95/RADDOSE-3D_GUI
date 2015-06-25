@@ -1137,8 +1137,9 @@ class RADDOSEgui(Frame):
 		CrystalinputLabel1 = Label(CrystalinputFrame1,text="Crystal Type",style="inputBoxes.TLabel")
 		CrystalinputLabel1.pack(side=LEFT,pady=5,padx=6)
 		self.CrystalType = StringVar()
-		CrystalinputBox1 = Entry(CrystalinputFrame1,textvariable=self.CrystalType,width=5)
-		CrystalinputBox1.pack(side=LEFT,pady=5,padx=6)
+		crystTypeList = ['Cuboid','Spherical','Polyhedron','Cylindrical']
+		crystTypeOptionMenu = OptionMenu(CrystalinputFrame1, self.CrystalType,crystTypeList[0],*crystTypeList)
+		crystTypeOptionMenu.pack(side=LEFT,pady=5,padx=6)
 
 		# Crystal input 2 --> crystal dimensions
 		CrystalinputFrame2 = Frame(currentStrategyCrystal,style="inputBoxes.TFrame")
