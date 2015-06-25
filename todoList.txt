@@ -7,16 +7,22 @@
 To do before 30th June 2015
 -***************************-
 
-- Need to add a "View Log" button so user can see the log file in the summary
-window.
 
-- Add properties to the experiment class that include more summary information
-these include:
-Used Volume
-Elastic Yield
-Diffraction Efficiency
-Dose Inefficiency
+- Add plotting capability for additional experiment summary values (Used Volume,
+ Elastic Yield, Diffraction Efficiency, Dose Inefficiency)
 
+- Create new class for pop-up crystal/beam maker windows - make GUI class 
+too big currently
+
+- Modify crystal/beam maker windows such that they dynamics change input fields
+dependent on crystal/beam type selected
+
+- add functionality to print/save any bar plots created to a suitable working directory
+
+- add functionaility to save summary of compared experiments currently loaded within
+summary/output window (csv format?) to a suitable working directory
+
+- change %s syntax to .format() throughout for consistency
 
 
 -***************************-
@@ -45,8 +51,6 @@ made for inputs that can only take certain values or text.
 
 - Add check to see if user have seaborn installed. If so then we can do pretty
 plots
-
-- functionality to print/save any bar plots created to a suitable working directory
 
 - check cross platform image functionality (pkg PIL runs into problems on anaconda 
 python 2.7.9 on mac). Need to test on ubuntu also...
