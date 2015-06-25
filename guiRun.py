@@ -1044,7 +1044,63 @@ class RADDOSEgui(Frame):
 			tkMessageBox.showinfo( "No experiments loaded", string)
 
 	def clickLogShow(self):
-		pass
+		""" Response to log button click within experiment summary window
+
+		Log button which calls displayLog when clicked, to print the currently 
+		selected experiment RADDOSE--3D log file to the summary text box
+		 within the left hand side summary window
+
+		=================
+		Keyword arguments
+		=================
+		No explicit user defined parameters. Only the object is required for
+		implicit input.
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		if self.expNameList:
+			expName = str(self.expChoice.get())
+			self.displayLog(expName)
+		else:
+			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+			""" %()
+			tkMessageBox.showinfo( "No experiments loaded", string)
+
+	def displayLog(self, expName):
+		"""Display RADDOSE-3D log file for currently selected experiment within summary window
+
+		The RADDOSE-3D log file for the currently selected experiment is printed to the summary 
+		text box within the left-hand side experiment summary window
+
+		=================
+		Keyword arguments
+		=================
+		expName:
+			a unique experiment name corresponding to a unique RADDOSE-3D run, 
+			located within a directory of the same name
+
+		=================
+		Return parameters
+		=================
+		No explicit return parameters
+		"""
+		# extract the experiment object corresponding to the chosen
+		# experiment in the list
+		expObject = self.experimentDict[expName]
+		# Write first line of the summary giving the experiment name
+		self.inputtxt.delete(1.0, END) #Delete any text already in the box
+		self.inputtxt.insert(1.0, "Log for experiment: %s\n\n"%(expName))
+
+		# Time stamp
+		self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
+		self.inputtxt.insert(END, "\n")
+
+		# RD3D log printed to summary text box here
+		self.inputtxt.insert(END,expObject.log)
+
 	def clickIsosurfaces(self):
 		pass
 	def clickExpShowSummary(self):
