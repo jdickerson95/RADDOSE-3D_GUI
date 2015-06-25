@@ -390,19 +390,28 @@ class RADDOSEgui(Frame):
 		self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
 		self.expChoiceMenu.grid(row=0, column=0, columnspan=1,pady=5, padx=3, sticky=W+E)
 
+		# create an experiment summary button here to refresh the summary output text bar (below) to
+		# show the details of the currently selected experiment (selected in expChoiceMenu)
 		expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.clickSummary)
 		expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-		# create button to plot dose metrics for currently loaded experiments within summary window
-		expBarplotterButton = Button(chooseExpFrame, text="Plot",command=self.clickBarplotter)
-		expBarplotterButton.grid(row=1, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+		# create button to remove currently selected experiment from list of loaded experiments
+		removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
+		removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create a button to display log file of currently selected experiment (in expChoiceMenu)
+		# within summary text box
+		expLogShowButton = Button(chooseExpFrame, text="Log",command=self.clickLogShow)
+		expLogShowButton.grid(row=1, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		#create text box with scrollbar to detail the summary output for currently selected experiment
+		expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
+		expSummaryTextFrame.pack(side=TOP,fill=BOTH,expand=1)
 		self.raddose3Dinputtxt = StringVar()
-		scrollbarRaddoseInputFile = Scrollbar(FrameBodyLeftBottom, orient=VERTICAL)
-		self.inputtxt = Text(FrameBodyLeftBottom, height=33,width=60,wrap=WORD,font=("Helvetica", 8))
+		scrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=VERTICAL)
+		self.inputtxt = Text(expSummaryTextFrame, height=27,width=60,wrap=WORD,font=("Helvetica", 8))
 		scrollbarRaddoseInputFile.pack(side=LEFT,fill=Y)
-		self.inputtxt.pack(side=LEFT,expand=True)
+		self.inputtxt.pack(side=TOP,expand=True)
 		scrollbarStrategyList.config(command=self.inputtxt.yview)
 		self.inputtxt.config(yscrollcommand=scrollbarRaddoseInputFile.set)
 		quote = self.raddose3Dinputtxt.get()
@@ -411,9 +420,30 @@ class RADDOSEgui(Frame):
 		self.inputtxt.delete(1.0, END)
 		self.inputtxt.insert(END, quote*2)
 
-		removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
-		removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
+		# make labelframe for the plotting buttons for the currently selected experiments
+		l = Label(FrameBodyLeftBottom,text="Compare Experiments",style="labelFrameTitle.TLabel")
+		ExpPlotButtonsFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
+		ExpPlotButtonsFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
+		ExpPlotButtonsFrame.columnconfigure(1, weight=1)
 
+
+		# create button to plot dose metrics for currently loaded experiments within summary window
+		expBarplotterButton = Button(ExpPlotButtonsFrame, text="Plot",command=self.clickBarplotter)
+		expBarplotterButton.grid(row=0, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create button to plot isosurfaces for currently loaded experiments within summary window
+		expIsosurfacesButton = Button(ExpPlotButtonsFrame, text="Dose Contours",command=self.clickIsosurfaces)
+		expIsosurfacesButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create button to display summary details to the summary text window for currently 
+		# loaded experiments within summary window
+		expSummaryShowButton = Button(ExpPlotButtonsFrame, text="Show Summary",command=self.clickExpShowSummary)
+		expSummaryShowButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+
+		# create button to save summary details to new directory for currently loaded experiments 
+		# within summary window
+		expSaveButton = Button(ExpPlotButtonsFrame, text="Save",command=self.clickExpSave)
+		expSaveButton.grid(row=0, column=3, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		#####################################################################################################
 		# for top middle body --> make-a-crystal window
@@ -1014,6 +1044,14 @@ class RADDOSEgui(Frame):
 			""" %()
 			tkMessageBox.showinfo( "No experiments loaded", string)
 
+	def clickLogShow(self):
+		pass
+	def clickIsosurfaces(self):
+		pass
+	def clickExpShowSummary(self):
+		pass
+	def clickExpSave(self):
+		pass
 
 	def deleteCryst(self):
 		# delete the selected crystal from the listbox of added crystals. Also remove the
