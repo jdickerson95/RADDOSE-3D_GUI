@@ -45,3 +45,8 @@ made for inputs that can only take certain values or text.
 
 - Add check to see if user have seaborn installed. If so then we can do pretty
 plots
+
+- functionality to print/save any bar plots created to a suitable working directory
+
+- check cross platform image functionality (pkg PIL runs into problems on anaconda 
+python 2.7.9 on mac). Need to test on ubuntu also...
