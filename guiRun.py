@@ -1186,7 +1186,7 @@ class RADDOSEgui(Frame):
 	def clickCrystAdd(self):
 		# what happens when crystal add button clicked:
 		# ensure that crystals added to GUI are given a name, and that this is different than all other loaded crystals
-		if not str(self.crystLoadName.get()):
+		if not str(self.crystLoadName.get()).strip():
 			string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to add.""" %()
 			tkMessageBox.showinfo( "No Crystal Name", string)
 		elif str(self.crystLoadName.get()) in [cryst.crystName for cryst in self.crystList]:
@@ -1378,7 +1378,7 @@ class RADDOSEgui(Frame):
 	def clickBeamAdd(self):
 		# what happens when beam add button clicked:
 		# ensure that beams added to GUI are given a name, and that this is different than all other loaded beams
-		if not str(self.beamLoadName.get()):
+		if not str(self.beamLoadName.get()).strip():
 			string = """No beam name has been given.\nPlease give a name to the beam that you wish to add.""" %()
 			tkMessageBox.showinfo( "No Beam Name", string)
 		elif str(self.beamLoadName.get()) in [beam.beamName for beam in self.beamList]:
