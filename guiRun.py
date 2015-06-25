@@ -1184,24 +1184,32 @@ class RADDOSEgui(Frame):
 				continue
 
 	def clickCrystAdd(self):
-		# what happens when crystal add button clicked
-		addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
-		if addQuery == 'yes':
-			self.crystListbox.insert(END, str(self.crystLoadName.get()))
-
-			# read in RADDOSE-3D style input file to get crystal properties
-			self.readRD3DInputFileCrystInfo()
-
-			# add a crystal object to the list of crystals (outside of listbox)
-			self.crystList.append(crystals(self.crystLoadName.get(),self.CrystalType,
-										   self.CrystalDimX,self.CrystalDimY,
-										   self.CrystalDimZ,self.CrystalpixPerMicron,
-										   self.CrystalAbsorpCoeff))
-
-			# also update list of crystal choices used in the right strategy window
-			self.refreshCrystChoices()
+		# what happens when crystal add button clicked:
+		# ensure that crystals added to GUI are given a name, and that this is different than all other loaded crystals
+		if not str(self.crystLoadName.get()):
+			string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to add.""" %()
+			tkMessageBox.showinfo( "No Crystal Name", string)
+		elif str(self.crystLoadName.get()) in [cryst.crystName for cryst in self.crystList]:
+			tkMessageBox.showinfo( "Duplicate Crystal Names",
+			"Crystal name %s already exists. Please choose another name." %(self.crystLoadName.get()))
 		else:
-			pass
+			addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
+			if addQuery == 'yes':
+				self.crystListbox.insert(END, str(self.crystLoadName.get()))
+
+				# read in RADDOSE-3D style input file to get crystal properties
+				self.readRD3DInputFileCrystInfo()
+
+				# add a crystal object to the list of crystals (outside of listbox)
+				self.crystList.append(crystals(self.crystLoadName.get(),self.CrystalType,
+											   self.CrystalDimX,self.CrystalDimY,
+											   self.CrystalDimZ,self.CrystalpixPerMicron,
+											   self.CrystalAbsorpCoeff))
+
+				# also update list of crystal choices used in the right strategy window
+				self.refreshCrystChoices()
+			else:
+				pass
 
 	# functions for the manipulation of beam files and parameters
 	def refreshBeamChoices(self):
@@ -1368,27 +1376,35 @@ class RADDOSEgui(Frame):
 				continue
 
 	def clickBeamAdd(self):
-		# what happens when beam add button clicked
-		addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
-		if addQuery == 'yes':
-			self.beamListbox.insert(END, str(self.beamLoadName.get()))
+		# what happens when beam add button clicked:
+		# ensure that beams added to GUI are given a name, and that this is different than all other loaded beams
+		if not str(self.beamLoadName.get()):
+			string = """No beam name has been given.\nPlease give a name to the beam that you wish to add.""" %()
+			tkMessageBox.showinfo( "No Beam Name", string)
+		elif str(self.beamLoadName.get()) in [beam.beamName for beam in self.beamList]:
+			tkMessageBox.showinfo( "Duplicate Beam Names",
+			"Beam name %s already exists. Please choose another name." %(self.beamLoadName.get()))
+		else:		
+			addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
+			if addQuery == 'yes':
+				self.beamListbox.insert(END, str(self.beamLoadName.get()))
 
-			# read in RADDOSE-3D style input file to get beam properties
-			self.readRD3DInputFileBeamInfo()
+				# read in RADDOSE-3D style input file to get beam properties
+				self.readRD3DInputFileBeamInfo()
 
-			# add a beam object to the list of beams (outside of listbox)
-			self.beamList.append(beams(self.beamLoadName.get(),
-				   					   self.BeamType,
-									  [self.BeamFWHMVertical,self.BeamFWHMHorizontal],
-									   self.BeamFlux,
-									   self.BeamEnergy,
-									  [self.BeamRectCollVert,self.BeamRectCollHoriz],
-									  [self.BeamPixelSizeX,self.BeamPixelSizeY]))
+				# add a beam object to the list of beams (outside of listbox)
+				self.beamList.append(beams(self.beamLoadName.get(),
+					   					   self.BeamType,
+										  [self.BeamFWHMVertical,self.BeamFWHMHorizontal],
+										   self.BeamFlux,
+										   self.BeamEnergy,
+										  [self.BeamRectCollVert,self.BeamRectCollHoriz],
+										  [self.BeamPixelSizeX,self.BeamPixelSizeY]))
 
-			# also update list of beam choices used in the right strategy window
-			self.refreshBeamChoices()
-		else:
-			pass
+				# also update list of beam choices used in the right strategy window
+				self.refreshBeamChoices()
+			else:
+				pass
 
 	def onSelect(self, val):
 		# what happens when select button clicked
