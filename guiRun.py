@@ -426,7 +426,6 @@ class RADDOSEgui(Frame):
 		ExpPlotButtonsFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
 		ExpPlotButtonsFrame.columnconfigure(1, weight=1)
 
-
 		# create button to plot dose metrics for currently loaded experiments within summary window
 		expBarplotterButton = Button(ExpPlotButtonsFrame, text="Plot",command=self.clickBarplotter)
 		expBarplotterButton.grid(row=0, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
@@ -1861,6 +1860,10 @@ class barplotWindow(Frame):
 		# create frame for buttons and dose metric list
 		plotButtonFrame = Frame(self.plottingFrame,style="BodyGroovy.TFrame")
 		plotButtonFrame.pack(side=BOTTOM, fill=BOTH, expand=True)
+		# weight the 3 button columns to stretch across bottom of figure
+		plotButtonFrame.columnconfigure(0, weight=1)
+		plotButtonFrame.columnconfigure(1, weight=1)
+		plotButtonFrame.columnconfigure(2, weight=1)
 
 		# create quit button to leave plotting window
 		self.quitButton = Button(plotButtonFrame, text = 'Quit', width = 25, command = self.close_windows)
