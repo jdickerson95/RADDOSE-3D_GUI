@@ -1865,7 +1865,7 @@ class barplotWindow(Frame):
 		plt.setp(xtickNames, rotation=0, fontsize=16)
 		self.axBarplot.set_ylim(0, y.max()*(1.2))
 		self.axBarplot.set_xlabel('Strategy', fontsize=24)
-		self.axBarplot.set_ylabel('Dose (Mgy)', fontsize=24)
+		self.axBarplot.set_ylabel('Dose (MGy)', fontsize=24)
 		self.axBarplot.set_title('Average Diffraction Weighted Dose',fontsize=24)
 
 		self.canvasForBarplot.draw()
