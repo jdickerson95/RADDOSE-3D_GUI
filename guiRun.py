@@ -76,13 +76,19 @@ class Experiments(object):
 		self.crystal = crystal
 		self.beamList = beamList
 		self.wedgeList = wedgeList
-		dwd, maxDose, avgDose = self.parseRaddoseOutput(pathToRaddose3dLog)
+		dwd, maxDose, avgDose, elasYield, diffEff, usedVol, absEnergy, doseIneff = self.parseRaddoseOutput(pathToRaddose3dLog)
 		self.dwd = dwd
 		self.maxDose = maxDose
 		self.avgDose = avgDose
+		self.elasticYield = elasYield
+		self.diffractionEfficiency = diffEff
+		self.usedVolume = usedVol
+		self.absEnergy = absEnergy
+		self.doseInefficiency = doseIneff
 		ts = time.time()
 		self.timestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 		self.log = log
+
 
 	def parseRaddoseOutput(self,pathToRaddose3dLog):
 		"""Parses the RADDOSE-3D log and returns the specified dose value.
@@ -90,9 +96,14 @@ class Experiments(object):
 
 		raddoseOutput = open(pathToRaddose3dLog,'r')
 
-		parseDoseDWD = "Average Diffraction Weighted Dose"
-		parseDoseMax = "Max Dose"
-		parseDoseAvg = "Average Dose (Whole Crystal)"
+		parseDoseDWD   = "Average Diffraction Weighted Dose"
+		parseDoseMax   = "Max Dose"
+		parseDoseAvg   = "Average Dose (Whole Crystal)"
+		parseElasYield = "Elastic Yield "
+		parseDiffEff   = "Diffraction Efficiency"
+		parseUsedVol   = "Used Volume"
+		parseAbsEnergy = "Absorbed Energy"
+		parseDoseIneff = "Dose Inefficiency"
 
 		for line in raddoseOutput:
 			if parseDoseDWD in line and "MGy" in line:
@@ -101,20 +112,34 @@ class Experiments(object):
 				maxDose = self.parseRaddoseLine(line)
 			elif parseDoseAvg in line and "MGy" in line:
 				avgDose = self.parseRaddoseLine(line)
+			elif parseElasYield in line:
+				elasYield = self.parseRaddoseLine(line)
+			elif parseDiffEff in line:
+				diffEff = self.parseRaddoseLine(line)
+			elif parseUsedVol in line:
+				usedVol = self.parseRaddoseLine(line)
+			elif parseAbsEnergy in line:
+				absEnergy = self.parseRaddoseLine(line)
+			elif parseDoseIneff in line:
+				doseIneff = self.parseRaddoseLine(line)
 
 		raddoseOutput.close()
 
-		return (dwdDose, maxDose, avgDose)
+		return (dwdDose, maxDose, avgDose, elasYield, diffEff, usedVol, absEnergy, doseIneff)
 
 	def parseRaddoseLine(self, raddoseLine):
 		"""Parses a line from the RADDDOSE-3D and returns the laast numerical
 		value from the line.
 		"""
+		value = 0
 		splitLine = raddoseLine.split(" ")
 		for element in splitLine:
 			if self.isfloat(element):
 				value = float(element)
-
+			elif "%" in splitLine[-1]:
+				strValue = splitLine[-1]
+				strippedVal = strValue.strip()
+				value = float(strippedVal[0:-1])
 		return value
 
 	def isfloat(self, value):
@@ -434,12 +459,12 @@ class RADDOSEgui(Frame):
 		expIsosurfacesButton = Button(ExpPlotButtonsFrame, text="Dose Contours",command=self.clickIsosurfaces)
 		expIsosurfacesButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-		# create button to display summary details to the summary text window for currently 
+		# create button to display summary details to the summary text window for currently
 		# loaded experiments within summary window
 		expSummaryShowButton = Button(ExpPlotButtonsFrame, text="Show Summary",command=self.clickExpShowSummary)
 		expSummaryShowButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-		# create button to save summary details to new directory for currently loaded experiments 
+		# create button to save summary details to new directory for currently loaded experiments
 		# within summary window
 		expSaveButton = Button(ExpPlotButtonsFrame, text="Save",command=self.clickExpSave)
 		expSaveButton.grid(row=0, column=3, columnspan=1, pady=5, padx=3, sticky=W+E)
@@ -1010,6 +1035,11 @@ class RADDOSEgui(Frame):
 		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Diffraction Weighted Dose (DWD)",expObject.dwd))
 		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Maximum Dose",expObject.maxDose))
 		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
+		self.inputtxt.insert(END, "%-50s: %-.2e photons\n"%("Elastic Yield",expObject.elasticYield))
+		self.inputtxt.insert(END, "%-50s: %-.2e photons/MGy\n"%("Diffraction Efficiency (Elastic Yield/DWD)",expObject.diffractionEfficiency))
+		self.inputtxt.insert(END, "%-50s: %-.1f%%\n"%("Used Volume",expObject.usedVolume))
+		self.inputtxt.insert(END, "%-50s: %-.2e J\n"%("Absorbed Energy",expObject.absEnergy))
+		self.inputtxt.insert(END, "%-50s: %-.2e J\n"%("Dose Inefficiency (Max Dose/mj Absorbed)",expObject.doseInefficiency))
 		self.inputtxt.insert(END, "\n")
 
 		self.inputtxt.insert(END, "Experiment parameters:\n"%())
@@ -1046,7 +1076,7 @@ class RADDOSEgui(Frame):
 	def clickLogShow(self):
 		""" Response to log button click within experiment summary window
 
-		Log button which calls displayLog when clicked, to print the currently 
+		Log button which calls displayLog when clicked, to print the currently
 		selected experiment RADDOSE--3D log file to the summary text box
 		 within the left hand side summary window
 
@@ -1072,14 +1102,14 @@ class RADDOSEgui(Frame):
 	def displayLog(self, expName):
 		"""Display RADDOSE-3D log file for currently selected experiment within summary window
 
-		The RADDOSE-3D log file for the currently selected experiment is printed to the summary 
+		The RADDOSE-3D log file for the currently selected experiment is printed to the summary
 		text box within the left-hand side experiment summary window
 
 		=================
 		Keyword arguments
 		=================
 		expName:
-			a unique experiment name corresponding to a unique RADDOSE-3D run, 
+			a unique experiment name corresponding to a unique RADDOSE-3D run,
 			located within a directory of the same name
 
 		=================
@@ -1120,7 +1150,7 @@ class RADDOSEgui(Frame):
 		# what happens when crystal make button clicked. Makes a new small window allowing
 		# manual entry of crystal parameters
 
-		# first ensure that crystal to be made has been given a name, and that this is 
+		# first ensure that crystal to be made has been given a name, and that this is
 		# different than all other loaded crystals
 		if not str(self.crystMakeName.get()).strip():
 			string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to make.""" %()
@@ -1128,7 +1158,7 @@ class RADDOSEgui(Frame):
 		elif str(self.crystMakeName.get()) in [cryst.crystName for cryst in self.crystList]:
 			tkMessageBox.showinfo( "Duplicate Crystal Names",
 			"Crystal name %s already exists. Please choose another name." %(self.crystMakeName.get()))
-		else:		
+		else:
 			# if unique crystal name was given, create new pop-up window, in which to set crystal properties
 			self.top_CrystMaker=Toplevel()
 			self.top_CrystMaker.title("Make a crystal")
@@ -1352,9 +1382,9 @@ class RADDOSEgui(Frame):
 		tkMessageBox.showinfo( "View Beam Information", beamInfo)
 
 	def extractBeamInfo(self, beamObject):
-		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %s (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
+		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %.1e (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
 """%(str(beamObject.beamName),str(beamObject.type),
-		          		str(beamObject.fwhm),str(beamObject.flux),
+		          		str(beamObject.fwhm), beamObject.flux,
 		          		str(beamObject.energy),str(beamObject.collimation))
 		return string
 
@@ -1368,7 +1398,7 @@ class RADDOSEgui(Frame):
 		# what happens when beam make button clicked. Makes a new small window allowing
 		# manual entry of beam parameters
 
-		# first ensure that beam to be made has been given a name, and that this is 
+		# first ensure that beam to be made has been given a name, and that this is
 		# different than all other loaded beams
 		if not str(self.beamMakeName.get()).strip():
 			string = """No beam name has been given.\nPlease give a name to the beam that you wish to make.""" %()
@@ -1503,7 +1533,7 @@ class RADDOSEgui(Frame):
 		elif str(self.beamLoadName.get()) in [beam.beamName for beam in self.beamList]:
 			tkMessageBox.showinfo( "Duplicate Beam Names",
 			"Beam name %s already exists. Please choose another name." %(self.beamLoadName.get()))
-		else:		
+		else:
 			addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
 			if addQuery == 'yes':
 				self.beamListbox.insert(END, str(self.beamLoadName.get()))
