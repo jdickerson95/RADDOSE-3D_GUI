@@ -764,7 +764,7 @@ class RADDOSEgui(Frame):
 		#the current folder.if it does then ask the user if they want to
 		#overwrite the previous experiment.
 		#Otherwise create the experiment directory and run the experiment.
-		if not expName:
+		if not expName.strip():
 			string = """No experiment name has been given.\nPlease give a name to the experiment that you wish to run in the 'Experiment Name' field.
 			""" %()
 			tkMessageBox.showinfo( "No Experiment Name", string)
