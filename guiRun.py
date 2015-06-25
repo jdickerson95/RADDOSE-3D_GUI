@@ -1980,22 +1980,47 @@ class barplotWindow(Frame):
 
 		# create option list to select which dose metric to plot
 		self.doseMetricToPlot = StringVar()
-		self.MetricNameListDict = {'DWD':"Average Diffraction Weighted Dose",
-								   'maxDose':"Max Dose",
-								   'avgDose':"Average Dose (Whole Crystal)"}
+		self.MetricNameListDict = {'DWD'       : "Average Diffraction Weighted Dose",
+								   'maxDose'   : "Max Dose",
+								   'avgDose'   : "Average Dose (Whole Crystal)",
+								   'elasYield' : "Elastic Yield",
+								   'diffEff'   : "Diffraction Efficiency (Elastic Yield/DWD)",
+								   'usedVol'   : "Used Volume",
+								   'absEnergy' : "Absorbed Energy (last wedge of data)",
+								   'doseIneff' : "Dose Inefficiency (Max Dose/mJ Absorbed)"}
+
+		self.unitsDict = {'DWD'       : 'Dose (MGy)',
+						  'maxDose'   : 'Dose (MGy)',
+					      'avgDose'   : 'Dose (MGy)',
+						  'elasYield' : "Photons",
+						  'diffEff'   : "Photons/MGy",
+						  'usedVol'   : "Percent (%)",
+						  'absEnergy' : "Joules (J)",
+						  'doseIneff' : "1/grams"}
+
 		self.doseMetricToPlot.set(self.MetricNameListDict['DWD']) # default value to show in option list
 		doseMetricOptionMenu = OptionMenu(plotButtonFrame, self.doseMetricToPlot,self.MetricNameListDict['DWD'],
 					   self.MetricNameListDict['DWD'],
 					   self.MetricNameListDict['maxDose'],
-					   self.MetricNameListDict['avgDose'])
+					   self.MetricNameListDict['avgDose'],
+					   self.MetricNameListDict['elasYield'],
+					   self.MetricNameListDict['diffEff'],
+					   self.MetricNameListDict['usedVol'],
+					   self.MetricNameListDict['absEnergy'],
+					   self.MetricNameListDict['doseIneff'])
 
-		# create lists of dose metrics over all currently loaded strategies
-		self.DoseListDict = {'DWD':[],'maxDose':[],'avgDose':[]}
+		# create lists of metrics over all currently loaded strategies
+		self.metricListDict = {'DWD':[],'maxDose':[],'avgDose':[], 'elasYield':[], 'diffEff':[], 'usedVol':[], 'absEnergy':[], 'doseIneff':[]}
 		for expName in currentExpNameList:
 			expObject = currentExpDict[expName]
-			self.DoseListDict['DWD'].append(expObject.dwd)
-			self.DoseListDict['maxDose'].append(expObject.maxDose)
-			self.DoseListDict['avgDose'].append(expObject.avgDose)
+			self.metricListDict['DWD'].append(expObject.dwd)
+			self.metricListDict['maxDose'].append(expObject.maxDose)
+			self.metricListDict['avgDose'].append(expObject.avgDose)
+			self.metricListDict['elasYield'].append(expObject.elasticYield)
+			self.metricListDict['diffEff'].append(expObject.diffractionEfficiency)
+			self.metricListDict['usedVol'].append(expObject.usedVolume)
+			self.metricListDict['absEnergy'].append(expObject.absEnergy)
+			self.metricListDict['doseIneff'].append(expObject.doseInefficiency)
 
 		# a matlibplot figure axis should be created here
 		doseCompareFig = plt.Figure(figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
@@ -2007,7 +2032,7 @@ class barplotWindow(Frame):
 		# bar plot parameters for DWD bar plot
 		bar_width = 0.35
 		opacity = 0.4
-		y = np.array(self.DoseListDict['DWD'])
+		y = np.array(self.metricListDict['DWD'])
 		x = np.arange(len(y))
 		self.doseBarplot = self.axBarplot.bar(x,y,bar_width,alpha=opacity,color='b')
 		xTickMarks = [str(expName) for expName in currentExpNameList]
@@ -2032,22 +2057,45 @@ class barplotWindow(Frame):
 	def refreshPlot(self):
 		# when a new dose metric is selected from dropdown option list, click to refresh bar plot
 		currentDoseMetric = self.doseMetricToPlot.get()
-		print currentDoseMetric
 		if currentDoseMetric == self.MetricNameListDict['DWD']:
-			y = np.array(self.DoseListDict['DWD'])
+			y = np.array(self.metricListDict['DWD'])
 			x = np.arange(len(y))
+			ylabel = self.unitsDict['DWD']
 		elif currentDoseMetric == self.MetricNameListDict['maxDose']:
-			y = np.array(self.DoseListDict['maxDose'])
+			y = np.array(self.metricListDict['maxDose'])
 			x = np.arange(len(y))
+			ylabel = self.unitsDict['maxDose']
 		elif currentDoseMetric == self.MetricNameListDict['avgDose']:
-			y = np.array(self.DoseListDict['avgDose'])
+			y = np.array(self.metricListDict['avgDose'])
 			x = np.arange(len(y))
+			ylabel = self.unitsDict['avgDose']
+		elif currentDoseMetric == self.MetricNameListDict['elasYield']:
+			y = np.array(self.metricListDict['elasYield'])
+			x = np.arange(len(y))
+			ylabel = self.unitsDict['elasYield']
+		elif currentDoseMetric == self.MetricNameListDict['diffEff']:
+			y = np.array(self.metricListDict['diffEff'])
+			x = np.arange(len(y))
+			ylabel = self.unitsDict['diffEff']
+		elif currentDoseMetric == self.MetricNameListDict['usedVol']:
+			y = np.array(self.metricListDict['usedVol'])
+			x = np.arange(len(y))
+			ylabel = self.unitsDict['usedVol']
+		elif currentDoseMetric == self.MetricNameListDict['absEnergy']:
+			y = np.array(self.metricListDict['absEnergy'])
+			x = np.arange(len(y))
+			ylabel = self.unitsDict['absEnergy']
+		elif currentDoseMetric == self.MetricNameListDict['doseIneff']:
+			y = np.array(self.metricListDict['doseIneff'])
+			x = np.arange(len(y))
+			ylabel = self.unitsDict['doseIneff']
 
 		# update bars with new dose metric values here
 		for bar, x in zip(self.doseBarplot,y):
 			bar.set_height(x)
 		self.axBarplot.set_ylim(0, y.max()*(1.2))
 		self.axBarplot.set_title(str(currentDoseMetric),fontsize=24)
+		self.axBarplot.set_ylabel(ylabel, fontsize=24)
 		# replot figure by redrawing canvas
 		self.canvasForBarplot.draw()
 
