@@ -23,6 +23,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
+import platform
 
 #####################################################################################################
 class beams(object):
@@ -325,10 +326,12 @@ class RADDOSEgui(Frame):
 		FrameBody.pack(fill=BOTH,expand=1)
 
 		# add a RADDOSE-3D logo here
-		raddoseLogoImg = ImageTk.PhotoImage(Image.open("raddoseLogo.png"))
-		raddoseLogolabel = Label(FrameHeader,image = raddoseLogoImg)
-		raddoseLogolabel.image = raddoseLogoImg # keep a reference!
-		raddoseLogolabel.pack(side = LEFT)
+		if platform.system() != 'Darwin':
+			print 'yarrh'
+			raddoseLogoImg = ImageTk.PhotoImage(Image.open("raddoseLogo.png"))
+			raddoseLogolabel = Label(FrameHeader,image = raddoseLogoImg)
+			raddoseLogolabel.image = raddoseLogoImg # keep a reference!
+			raddoseLogolabel.pack(side = LEFT)
 
 		# make a label in the header frame
 		labelHeader = Label(FrameHeader,text="Data Collection Dose Stategy GUI",style="Title.TLabel")
