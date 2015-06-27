@@ -327,7 +327,6 @@ class RADDOSEgui(Frame):
 
 		# add a RADDOSE-3D logo here
 		if platform.system() != 'Darwin':
-			print 'yarrh'
 			raddoseLogoImg = ImageTk.PhotoImage(Image.open("raddoseLogo.png"))
 			raddoseLogolabel = Label(FrameHeader,image = raddoseLogoImg)
 			raddoseLogolabel.image = raddoseLogoImg # keep a reference!
