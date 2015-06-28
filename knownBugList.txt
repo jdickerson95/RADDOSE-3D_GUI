@@ -11,3 +11,11 @@ the run button still works.
 - If the same pre-made input file is loaded twice then the crystals and beams
 with the same names are loaded twice. We may want this but I thought it would be
 good to dicuss
+
+- Beam parsers currently search for pixelsize and FWHM values irrespective of beam type.
+This means that any added beams must have all properties specified regardless of beam type, 
+or parsers will crash
+
+- If pre-made RD3D file read for full experiment, or just to input beam parameters, the
+PixelSize property must be present, otherwise this causes a crash within the clickBeamAdd method,
+where it is assumed to habe been read in..
