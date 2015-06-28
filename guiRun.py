@@ -1180,7 +1180,7 @@ class RADDOSEgui(Frame):
 		self.beamLoadBox.delete(0,END)
 		self.beamLoadBox.insert(0,self.beamLoad)
 
-	def readRD3DInputFileBeamInfo(self,newBeam):
+	def readRD3DInputFileBeamInfo(self):
 		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object (newBeam)
 		# Make a new beam object
 		newBeam = beams()
@@ -1216,7 +1216,7 @@ class RADDOSEgui(Frame):
 			addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
 			if addQuery == 'yes':
 				# read in RADDOSE-3D style input file to get beam properties
-				newBeam = self.readRD3DInputFileBeamInfo(newBeam)
+				newBeam = self.readRD3DInputFileBeamInfo()
 				newBeam.beamName = str(self.beamLoadName.get())
 
 				# check correct beam properties have been read from RD3D input file
