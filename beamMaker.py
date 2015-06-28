@@ -1,6 +1,7 @@
 from Tkinter import *
 from ttk import *
 from beams import beams
+import tkMessageBox
 
 class beamMakerWindow(Frame):
 	# this is a secondary beam-maker window class here.
@@ -113,7 +114,14 @@ class beamMakerWindow(Frame):
 						[self.BeamFWHMVertical.get(),self.BeamFWHMHorizontal.get()],
 						self.BeamFlux.get(),self.BeamEnergy.get(),
 						[self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])
-		MainGui.addBeamToList(newBeam)
 
-		# once this function runs, the toplevel window should be exited
-		self.master.destroy()
+		# check the beams parameters are valid
+		ErrorMessage = MainGui.checkBeamInputs(newBeam)
+		if ErrorMessage != "":
+					tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+		else:
+			# add new beam to list of loaded beams
+			MainGui.addBeamToList(newBeam)
+
+			# once this function runs, the toplevel window should be exited
+			self.master.destroy()
