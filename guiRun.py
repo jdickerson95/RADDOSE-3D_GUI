@@ -1165,28 +1165,29 @@ class RADDOSEgui(Frame):
 		self.beamLoadBox.insert(0,self.beamLoad)
 
 	def readRD3DInputFileBeamInfo(self):
-		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object
+		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object (newBeam)
+		newBeam = beams()
 		RD3DinputFile = open(self.beamLoadBox.get(),'r').readlines()
 		for line in RD3DinputFile:
 			try:
 				if 'FWHM' in line.split()[0]:
-					self.BeamFWHMVertical = line.split()[1]
-					self.BeamFWHMHorizontal = line.split()[2]
+					newBeam.fwhm.append(line.split()[1])
+					newBeam.fwhm.append(line.split()[2])
 				elif 'energy' in line.split()[0]:
-					self.BeamEnergy = line.split()[1]
+					newBeam.energy = line.split()[1]
 				elif 'flux' in line.split()[0]:
-					self.BeamFlux = line.split()[1]
+					newBeam.flux = line.split()[1]
 				elif 'Collimation' in line.split()[0]:
-					self.BeamCollimationType = line.split()[1]
-					self.BeamRectCollVert = line.split()[2]
-					self.BeamRectCollHoriz = line.split()[3]
+					newBeam.collimation.append(line.split()[2])
+					newBeam.collimation.append(line.split()[3])
 				elif 'type' in line.split()[0]:
-					self.BeamType = line.split()[1]
+					newBeam.type = line.split()[1]
 				elif 'PixelSize' in line.split()[0]:
-					self.BeamPixelSizeX = line.split()[1]
-					self.BeamPixelSizeY = line.split()[2]
+					newBeam.pixelSize.append(line.split()[1])
+					newBeam.pixelSize.append(line.split()[2])
 			except IndexError:
 				continue
+		return newBeam
 
 	def clickBeamAdd(self):
 		# what happens when beam add button clicked:
@@ -1203,16 +1204,11 @@ class RADDOSEgui(Frame):
 				self.beamListbox.insert(END, str(self.beamLoadName.get()))
 
 				# read in RADDOSE-3D style input file to get beam properties
-				self.readRD3DInputFileBeamInfo()
-
+				newBeam = self.readRD3DInputFileBeamInfo()
+				newBeam.beamName = str(self.beamLoadName.get())
+				
 				# add a beam object to the list of beams (outside of listbox)
-				self.beamList.append(beams(self.beamLoadName.get(),
-					   					   self.BeamType,
-										  [self.BeamFWHMVertical,self.BeamFWHMHorizontal],
-										   self.BeamFlux,
-										   self.BeamEnergy,
-										  [self.BeamRectCollVert,self.BeamRectCollHoriz],
-										  [self.BeamPixelSizeX,self.BeamPixelSizeY]))
+				self.beamList.append(newBeam)
 
 				# also update list of beam choices used in the right strategy window
 				self.refreshBeamChoices()
