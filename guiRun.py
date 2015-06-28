@@ -1054,31 +1054,6 @@ class RADDOSEgui(Frame):
 				continue
 		return newCrystal
 
-	def readRD3DInputFileBeamInfo(self):
-		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object (newBeam)
-		newBeam = beams()
-		RD3DinputFile = open(self.beamLoadBox.get(),'r').readlines()
-		for line in RD3DinputFile:
-			try:
-				if 'FWHM' in line.split()[0]:
-					newBeam.fwhm.append(line.split()[1])
-					newBeam.fwhm.append(line.split()[2])
-				elif 'energy' in line.split()[0]:
-					newBeam.energy = line.split()[1]
-				elif 'flux' in line.split()[0]:
-					newBeam.flux = line.split()[1]
-				elif 'Collimation' in line.split()[0]:
-					newBeam.collimation.append(line.split()[2])
-					newBeam.collimation.append(line.split()[3])
-				elif 'type' in line.split()[0]:
-					newBeam.type = line.split()[1]
-				elif 'PixelSize' in line.split()[0]:
-					newBeam.pixelSize.append(line.split()[1])
-					newBeam.pixelSize.append(line.split()[2])
-			except IndexError:
-				continue
-		return newBeam
-
 	def clickCrystAdd(self):
 		# what happens when crystal add button clicked:
 		# ensure that crystals added to GUI are given a name, and that this is different than all other loaded crystals
