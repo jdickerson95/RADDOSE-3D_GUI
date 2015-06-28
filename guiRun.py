@@ -1066,19 +1066,35 @@ class RADDOSEgui(Frame):
 		else:
 			addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
 			if addQuery == 'yes':
-				self.crystListbox.insert(END, str(self.crystLoadName.get()))
-
 				# read in RADDOSE-3D style input file to get crystal properties
 				newCrystal = self.readRD3DInputFileCrystInfo()
 				newCrystal.crystName = str(self.crystLoadName.get())
 
-				# add a crystal object to the list of crystals (outside of listbox)
-				self.crystList.append(newCrystal)
+				# check correct crystal properties have been read from RD3D input file
+				ErrorMessage = self.checkCrystInputs(newCrystal)
+				if ErrorMessage != "":
+					tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+				else:
+					# add crystal name to loaded crystal list
+					self.crystListbox.insert(END, str(self.crystLoadName.get()))
+					# add a crystal object to the list of crystals (outside of listbox)
+					self.crystList.append(newCrystal)
 
-				# also update list of crystal choices used in the right strategy window
-				self.refreshCrystChoices()
+					# also update list of crystal choices used in the right strategy window
+					self.refreshCrystChoices()
 			else:
 				pass
+
+	def checkCrystInputs(self,newCrystal):
+		# additional check to ensure correct crystal properties have been read successively 
+		# from premade RD3D input file
+		ErrorMessage = ""
+		if newCrystal.type not in ('Cuboid','Spherical','Cylindrical','Polyhedron'):
+			ErrorMessage = ErrorMessage +  'Crystal type %s not of compatible format.\n' %(newCrystal.type)
+		if newCrystal.absCoefCalc not in ('Average','RADDOSE'):
+			ErrorMessage = ErrorMessage + 'Crystal absCoefCalc %s not of compatible format.\n' %(newCrystal.absCoefCalc)
+
+		return ErrorMessage
 
 	# functions for the manipulation of beam files and parameters
 	def refreshBeamChoices(self):
@@ -1164,27 +1180,25 @@ class RADDOSEgui(Frame):
 		self.beamLoadBox.delete(0,END)
 		self.beamLoadBox.insert(0,self.beamLoad)
 
-	def readRD3DInputFileBeamInfo(self):
+	def readRD3DInputFileBeamInfo(self,newBeam):
 		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object (newBeam)
+		# Make a new beam object
 		newBeam = beams()
 		RD3DinputFile = open(self.beamLoadBox.get(),'r').readlines()
 		for line in RD3DinputFile:
 			try:
 				if 'FWHM' in line.split()[0]:
-					newBeam.fwhm.append(line.split()[1])
-					newBeam.fwhm.append(line.split()[2])
+					newBeam.fwhm = [line.split()[1],line.split()[2]]
 				elif 'energy' in line.split()[0]:
 					newBeam.energy = line.split()[1]
 				elif 'flux' in line.split()[0]:
 					newBeam.flux = line.split()[1]
 				elif 'Collimation' in line.split()[0]:
-					newBeam.collimation.append(line.split()[2])
-					newBeam.collimation.append(line.split()[3])
+					newBeam.collimation = [line.split()[2],line.split()[3]]
 				elif 'type' in line.split()[0]:
 					newBeam.type = line.split()[1]
 				elif 'PixelSize' in line.split()[0]:
-					newBeam.pixelSize.append(line.split()[1])
-					newBeam.pixelSize.append(line.split()[2])
+					newBeam.pixelSize = [line.split()[1],line.split()[2]]
 			except IndexError:
 				continue
 		return newBeam
@@ -1201,19 +1215,42 @@ class RADDOSEgui(Frame):
 		else:
 			addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
 			if addQuery == 'yes':
-				self.beamListbox.insert(END, str(self.beamLoadName.get()))
-
 				# read in RADDOSE-3D style input file to get beam properties
-				newBeam = self.readRD3DInputFileBeamInfo()
+				newBeam = self.readRD3DInputFileBeamInfo(newBeam)
 				newBeam.beamName = str(self.beamLoadName.get())
 
-				# add a beam object to the list of beams (outside of listbox)
-				self.beamList.append(newBeam)
+				# check correct beam properties have been read from RD3D input file
+				ErrorMessage = self.checkBeamInputs(newBeam)
+				if ErrorMessage != "":
+					tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+				else:
+					# add beam name to loaded beam list
+					self.beamListbox.insert(END, str(self.beamLoadName.get()))
+					# add a beam object to the list of beams (outside of listbox)
+					self.beamList.append(newBeam)
 
-				# also update list of beam choices used in the right strategy window
-				self.refreshBeamChoices()
+					# also update list of beam choices used in the right strategy window
+					self.refreshBeamChoices()
 			else:
 				pass
+
+	def checkBeamInputs(self,newBeam):
+		# additional check to ensure correct beam properties have been read successively 
+		# from premade RD3D input file
+		ErrorMessage = ""
+		if newBeam.type not in ('Gaussian','TopHat'):
+			print 'wahhh 1'
+			ErrorMessage = ErrorMessage +  'Beam type %s not of compatible format.\n' %(newBeam.type)
+		if newBeam.type == 'Gaussian' and len(newBeam.fwhm) != 2:
+			print 'wahhh 2'
+			print len(newBeam.fwhm)
+			ErrorMessage = ErrorMessage + 'Gaussian beam type specified, but invalid FWHM inputs found.\n'
+		if len(newBeam.collimation) != 2:
+			print 'wahhh 3'
+			print len(newBeam.collimation)
+			ErrorMessage = ErrorMessage + 'Rectangular collimation inputs of invalid format.\n'
+		
+		return ErrorMessage
 
 	def onSelect(self, val):
 		# what happens when select button clicked
