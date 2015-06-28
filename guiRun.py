@@ -1094,6 +1094,20 @@ class RADDOSEgui(Frame):
 		if newCrystal.absCoefCalc not in ('Average','RADDOSE'):
 			ErrorMessage = ErrorMessage + 'Crystal absCoefCalc %s not of compatible format.\n' %(newCrystal.absCoefCalc)
 
+		# check that crystal dimensions can be converted to float format (from string format)
+		try:
+			float(newCrystal.crystDimX)
+			float(newCrystal.crystDimY)
+			float(newCrystal.crystDimZ)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal dimensions not of compatible float format.\n'
+
+		# check that crystal pixelsPerMicron can be converted to float format (from string format)
+		try:
+			float(newCrystal.pixelsPerMicron)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal pixelsPerMicron input not of compatible float format.\n'
+
 		return ErrorMessage
 
 	# functions for the manipulation of beam files and parameters
