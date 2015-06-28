@@ -2,6 +2,7 @@ from Tkinter import *
 from ttk import *
 import os
 from crystals import crystals
+import tkMessageBox
 
 class crystalMakerWindow(Frame):
 	# this is a secondary crystal-maker window class here.
@@ -72,8 +73,8 @@ class crystalMakerWindow(Frame):
 			CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
 			CrystalinputBox2X = Entry(self.CrystalinputFrame2,textvariable=self.CrystalDimX,width=5)
 			CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
-			self.CrystalDimY.set("")
-			self.CrystalDimZ.set("")
+			self.CrystalDimY.set(0)
+			self.CrystalDimZ.set(0)
 
 	def crystalPixPerMicInputs(self):		
 		# Crystal input 3 --> pixels per Micron
@@ -119,7 +120,14 @@ class crystalMakerWindow(Frame):
 		newCryst = crystals(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 							self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 							self.CrystalAbsorpCoeff.get())
-		MainGui.addCrystalToList(newCryst)
 
-		# once this function runs, the toplevel window should be exited
-		self.master.destroy()
+		# check the crystal parameters are valid
+		ErrorMessage = MainGui.checkCrystInputs(newCryst)
+		if ErrorMessage != "":
+					tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+		else:
+			# add new crystal to list of loaded crystals
+			MainGui.addCrystalToList(newCryst)
+
+			# once this function runs, the toplevel window should be exited
+			self.master.destroy()
