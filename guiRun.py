@@ -1030,8 +1030,9 @@ class RADDOSEgui(Frame):
 		self.crystLoadBox.insert(0,self.crystLoad)
 
 	def readRD3DInputFileCrystInfo(self):
-		# reads in the crystal information from a RADDOSE-3D input file in order to create a new crystal object.
+		# reads in the crystal information from a RADDOSE-3D input file in order to create a new crystal object (newCrystal).
 		# Currently relies on crystal-beam-wedge-beam-wedge-.. format of input file
+		newCrystal = crystals()
 		RD3DinputFile = open(self.crystLoadBox.get(),'r').readlines()
 		for line in RD3DinputFile:
 			try:
@@ -1040,17 +1041,43 @@ class RADDOSEgui(Frame):
 					break
 				# read in crystal properties here
 				if 'Dimensions' in line.split()[0]:
-					self.CrystalDimX = line.split()[1]
-					self.CrystalDimY = line.split()[2]
-					self.CrystalDimZ = line.split()[3]
+					newCrystal.crystDimX = line.split()[1]
+					newCrystal.crystDimY = line.split()[2]
+					newCrystal.crystDimZ = line.split()[3]
 				elif 'type' in line.split()[0]:
-					self.CrystalType = line.split()[1]
+					newCrystal.type = line.split()[1]
 				elif 'absCoefCalc' in line.split()[0]:
-					self.CrystalAbsorpCoeff = line.split()[1]
+					newCrystal.absCoefCalc = line.split()[1]
 				elif 'pixelsPerMicron' in line.split()[0]:
-					self.CrystalpixPerMicron = line.split()[1]
+					newCrystal.pixelsPerMicron = line.split()[1]
 			except IndexError:
 				continue
+		return newCrystal
+
+	def readRD3DInputFileBeamInfo(self):
+		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object (newBeam)
+		newBeam = beams()
+		RD3DinputFile = open(self.beamLoadBox.get(),'r').readlines()
+		for line in RD3DinputFile:
+			try:
+				if 'FWHM' in line.split()[0]:
+					newBeam.fwhm.append(line.split()[1])
+					newBeam.fwhm.append(line.split()[2])
+				elif 'energy' in line.split()[0]:
+					newBeam.energy = line.split()[1]
+				elif 'flux' in line.split()[0]:
+					newBeam.flux = line.split()[1]
+				elif 'Collimation' in line.split()[0]:
+					newBeam.collimation.append(line.split()[2])
+					newBeam.collimation.append(line.split()[3])
+				elif 'type' in line.split()[0]:
+					newBeam.type = line.split()[1]
+				elif 'PixelSize' in line.split()[0]:
+					newBeam.pixelSize.append(line.split()[1])
+					newBeam.pixelSize.append(line.split()[2])
+			except IndexError:
+				continue
+		return newBeam
 
 	def clickCrystAdd(self):
 		# what happens when crystal add button clicked:
@@ -1060,20 +1087,18 @@ class RADDOSEgui(Frame):
 			tkMessageBox.showinfo( "No Crystal Name", string)
 		elif str(self.crystLoadName.get()) in [cryst.crystName for cryst in self.crystList]:
 			tkMessageBox.showinfo( "Duplicate Crystal Names",
-			"Crystal name %s already exists. Please choose another name." %(self.crystLoadName.get()))
+								   "Crystal name %s already exists. Please choose another name." %(self.crystLoadName.get()))
 		else:
 			addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
 			if addQuery == 'yes':
 				self.crystListbox.insert(END, str(self.crystLoadName.get()))
 
 				# read in RADDOSE-3D style input file to get crystal properties
-				self.readRD3DInputFileCrystInfo()
+				newCrystal = self.readRD3DInputFileCrystInfo()
+				newCrystal.crystName = str(self.crystLoadName.get())
 
 				# add a crystal object to the list of crystals (outside of listbox)
-				self.crystList.append(crystals(self.crystLoadName.get(),self.CrystalType,
-											   self.CrystalDimX,self.CrystalDimY,
-											   self.CrystalDimZ,self.CrystalpixPerMicron,
-											   self.CrystalAbsorpCoeff))
+				self.crystList.append(newCrystal)
 
 				# also update list of crystal choices used in the right strategy window
 				self.refreshCrystChoices()
@@ -1206,7 +1231,7 @@ class RADDOSEgui(Frame):
 				# read in RADDOSE-3D style input file to get beam properties
 				newBeam = self.readRD3DInputFileBeamInfo()
 				newBeam.beamName = str(self.beamLoadName.get())
-				
+
 				# add a beam object to the list of beams (outside of listbox)
 				self.beamList.append(newBeam)
 
