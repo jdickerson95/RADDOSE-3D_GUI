@@ -1239,17 +1239,40 @@ class RADDOSEgui(Frame):
 		# from premade RD3D input file
 		ErrorMessage = ""
 		if newBeam.type not in ('Gaussian','TopHat'):
-			print 'wahhh 1'
 			ErrorMessage = ErrorMessage +  'Beam type %s not of compatible format.\n' %(newBeam.type)
-		if newBeam.type == 'Gaussian' and len(newBeam.fwhm) != 2:
-			print 'wahhh 2'
-			print len(newBeam.fwhm)
-			ErrorMessage = ErrorMessage + 'Gaussian beam type specified, but invalid FWHM inputs found.\n'
+		if newBeam.type == 'Gaussian':
+			if len(newBeam.fwhm) != 2:
+				ErrorMessage = ErrorMessage + 'Gaussian beam type specified, but invalid FWHM inputs found.\n'
+			else:
+				# check that beam FWHM can be converted to float format (from string format)
+				try:
+					float(newBeam.fwhm[0])
+					float(newBeam.fwhm[1])
+				except ValueError:
+					ErrorMessage = ErrorMessage + 'Beam FWHM not of compatible float format.\n'
+
 		if len(newBeam.collimation) != 2:
-			print 'wahhh 3'
-			print len(newBeam.collimation)
 			ErrorMessage = ErrorMessage + 'Rectangular collimation inputs of invalid format.\n'
+		else:
+			# check that beam collimation can be converted to float format (from string format)
+			try:
+				float(newBeam.collimation[0])
+				float(newBeam.collimation[1])
+			except ValueError:
+				ErrorMessage = ErrorMessage + 'Beam collimation not of compatible float format.\n'
+
+		# check that beam energy can be converted to float format (from string format)
+		try:
+			float(newBeam.energy)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Beam energy not of compatible float format.\n'
 		
+		# check that beam flux can be converted to float format (from string format)
+		try:
+			float(newBeam.flux)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Beam flux not of compatible float format.\n'
+
 		return ErrorMessage
 
 	def onSelect(self, val):
