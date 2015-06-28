@@ -6,6 +6,16 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
+import imp
+try:
+    imp.find_module('seaborn')
+    foundSeaborn = True
+except ImportError:
+    foundSeaborn = False
+
+if foundSeaborn == True:
+	import seaborn as sns
+
 class barplotWindow(Frame):
 	# this is a secondary plotting window class here. It is where all the dose summary bar plots
 	# will be created
@@ -19,11 +29,10 @@ class barplotWindow(Frame):
 
 		# create frame for buttons and dose metric list
 		plotButtonFrame = Frame(self.plottingFrame,style="BodyGroovy.TFrame")
-		plotButtonFrame.pack(side=BOTTOM, fill=BOTH, expand=True)
-		# weight the 3 button columns to stretch across bottom of figure
+		plotButtonFrame.pack(side=TOP,padx=10, pady=0, fill=BOTH, expand=True)
+		# weight the 2 button columns to stretch across bottom of figure
 		plotButtonFrame.columnconfigure(0, weight=1)
 		plotButtonFrame.columnconfigure(1, weight=1)
-		plotButtonFrame.columnconfigure(2, weight=1)
 
 		# create quit button to leave plotting window
 		self.quitButton = Button(plotButtonFrame, text = 'Quit', width = 25, command = self.close_windows)
@@ -57,7 +66,8 @@ class barplotWindow(Frame):
 					   self.MetricNameListDict['diffEff'],
 					   self.MetricNameListDict['usedVol'],
 					   self.MetricNameListDict['absEnergy'],
-					   self.MetricNameListDict['doseIneff'])
+					   self.MetricNameListDict['doseIneff'],
+					   command= lambda x: self.refreshPlot(currentExpNameList))
 
 		# create lists of metrics over all currently loaded strategies
 		self.metricListDict = {'DWD':[],'maxDose':[],'avgDose':[], 'elasYield':[], 'diffEff':[], 'usedVol':[], 'absEnergy':[], 'doseIneff':[]}
@@ -72,39 +82,46 @@ class barplotWindow(Frame):
 			self.metricListDict['absEnergy'].append(expObject.absEnergy)
 			self.metricListDict['doseIneff'].append(expObject.doseInefficiency)
 
+		# create an initial barplot figure here
+		# bar plot parameters for specified bar plot
+		y = np.array(self.metricListDict['DWD'])
+		ylabel = self.unitsDict['DWD']
+		self.plotBarplot(self.doseMetricToPlot.get(),currentExpNameList,ylabel,y)
+
+		# put buttons and dose metric selection list within plottingFrame frame
+		doseMetricOptionMenu.grid(row=0, column=0,pady=10, padx=10, sticky=W)
+		self.quitButton.grid(row=0, column=1,pady=10, padx=10, sticky=E)
+
+	def plotBarplot(self,currentDoseMetric,currentExpNameList,ylabel,y):
 		# a matlibplot figure axis should be created here
-		doseCompareFig = plt.Figure(figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
-		self.canvasForBarplot = FigureCanvasTkAgg(doseCompareFig, master=self.plottingFrame)
+		self.doseCompareFig = plt.Figure(figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')		
+		self.canvasForBarplot = FigureCanvasTkAgg(self.doseCompareFig, master=self.plottingFrame)
 		self.canvasForBarplot.show()
 		self.canvasForBarplot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
-		self.axBarplot = doseCompareFig.add_subplot(111)
+		self.axBarplot = self.doseCompareFig.add_subplot(111)
 
-		# bar plot parameters for DWD bar plot
-		bar_width = 0.35
-		opacity = 0.4
-		y = np.array(self.metricListDict['DWD'])
+		# create x axis array here
 		x = np.arange(len(y))
-		self.doseBarplot = self.axBarplot.bar(x,y,bar_width,alpha=opacity,color='b')
+		if foundSeaborn == 'False':
+			bar_width = 0.35
+			opacity = 0.4
+			self.doseBarplot = self.axBarplot.bar(x,y,bar_width,alpha=opacity,color='b')
+		else:
+			bar_width = 0
+			self.doseBarplot = sns.barplot(x,y,ax=self.axBarplot)
+
 		xTickMarks = [str(expName) for expName in currentExpNameList]
 		self.axBarplot.set_xticks(x+0.5*bar_width)
 		xtickNames = self.axBarplot.set_xticklabels(xTickMarks)
 		plt.setp(xtickNames, rotation=0, fontsize=16)
 		self.axBarplot.set_ylim(0, y.max()*(1.2))
 		self.axBarplot.set_xlabel('Strategy', fontsize=24)
-		self.axBarplot.set_ylabel('Dose (MGy)', fontsize=24)
-		self.axBarplot.set_title('Average Diffraction Weighted Dose',fontsize=24)
+		self.axBarplot.set_ylabel(str(ylabel), fontsize=24)
+		self.axBarplot.set_title(str(currentDoseMetric),fontsize=24)
 
 		self.canvasForBarplot.draw()
 
-		# create a plot refresh button for when the selected dose metric is changed
-		self.plotRefreshButton = Button(plotButtonFrame, text = 'Refresh', width = 25, command = self.refreshPlot)
-
-		# put buttons and dose metric selection list within plottingFrame frame
-		doseMetricOptionMenu.grid(row=0, column=0,pady=5, padx=5, sticky=W+E)
-		self.plotRefreshButton.grid(row=0, column=1,pady=5, padx=5, sticky=W+E)
-		self.quitButton.grid(row=0, column=2,pady=5, padx=5, sticky=W+E)
-
-	def refreshPlot(self):
+	def refreshPlot(self,currentExpNameList):
 		# when a new dose metric is selected from dropdown option list, click to refresh bar plot
 		currentDoseMetric = self.doseMetricToPlot.get()
 		if currentDoseMetric == self.MetricNameListDict['DWD']:
@@ -139,15 +156,12 @@ class barplotWindow(Frame):
 			y = np.array(self.metricListDict['doseIneff'])
 			x = np.arange(len(y))
 			ylabel = self.unitsDict['doseIneff']
+	
+		self.killOldFig()
+		self.plotBarplot(currentDoseMetric,currentExpNameList,ylabel,y)
 
-		# update bars with new dose metric values here
-		for bar, x in zip(self.doseBarplot,y):
-			bar.set_height(x)
-		self.axBarplot.set_ylim(0, y.max()*(1.2))
-		self.axBarplot.set_title(str(currentDoseMetric),fontsize=24)
-		self.axBarplot.set_ylabel(ylabel, fontsize=24)
-		# replot figure by redrawing canvas
-		self.canvasForBarplot.draw()
+	def killOldFig(self):
+		self.canvasForBarplot.get_tk_widget().destroy()
 
 	def close_windows(self):
 		self.master.destroy()
