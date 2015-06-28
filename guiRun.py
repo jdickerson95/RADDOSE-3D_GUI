@@ -1117,7 +1117,7 @@ class RADDOSEgui(Frame):
 	def extractBeamInfo(self, beamObject):
 		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %.1e (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
 """%(str(beamObject.beamName),str(beamObject.type),
-		          		str(beamObject.fwhm), beamObject.flux,
+		          		str(beamObject.fwhm), float(beamObject.flux),
 		          		str(beamObject.energy),str(beamObject.collimation))
 		return string
 
