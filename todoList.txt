@@ -7,9 +7,9 @@
 To do before 30th June 2015
 -***************************-
 
-- Modify crystal/beam maker windows such that they dynamics change input fields
-dependent on crystal/beam type selected - Done for crystal cuboid and spherical types, 
-needs to be extended to other crystal types, and beam types within beamMaker class
+- Modify crystal maker windows such that they dynamics change input fields
+dependent on crystal type selected - Done for crystal cuboid and spherical types, 
+needs to be extended to other crystal types
 
 - add functionality to print/save any bar plots created to a suitable working directory
 
