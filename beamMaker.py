@@ -42,24 +42,22 @@ class beamMakerWindow(Frame):
 		
 	def beamTypeInputs(self,MainGui):
 		# Beam input 1 --> Beam type
-		BeaminputFrame1 = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame1.grid(row=0,column=0)
-		BeaminputLabel1 = Label(BeaminputFrame1,text="Beam Type",style="inputBoxes.TLabel")
-		BeaminputLabel1.pack(side=LEFT,pady=5,padx=6)
+		BeaminputLabel1 = Label(self.currentStrategyBeam,text="Beam Type",style="inputBoxes.TLabel")
+		BeaminputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
 		beamTypeList = ['Gaussian','TopHat']
-		beamTypeListOptionMenu = OptionMenu(BeaminputFrame1, self.BeamType,self.BeamType.get(),*beamTypeList,command= lambda x: self.update(self.BeamType,MainGui))
-		beamTypeListOptionMenu.pack(side=LEFT,pady=5,padx=6)
+		beamTypeListOptionMenu = OptionMenu(self.currentStrategyBeam, self.BeamType,self.BeamType.get(),*beamTypeList,command= lambda x: self.update(self.BeamType,MainGui))
+		beamTypeListOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 
 	def beamFWHMInputs(self,beamType):
 		# Beam input 2 --> FWHM
 		if beamType.get() == 'Gaussian':
-			BeaminputFrame2 = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-			BeaminputFrame2.grid(row=0,column=1)
-			BeaminputLabel2 = Label(BeaminputFrame2,text="FWHM",style="inputBoxes.TLabel")
-			BeaminputLabel2.pack(side=LEFT,pady=5,padx=6)
-			BeamFWHMVerticalBox = Entry(BeaminputFrame2,textvariable=self.BeamFWHMVertical,width=5)
+			BeaminputLabel2 = Label(self.currentStrategyBeam,text="FWHM",style="inputBoxes.TLabel")
+			BeaminputLabel2.grid(row=1,column=0,sticky=E)
+			BeamFWHMInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
+			BeamFWHMInputsFrame.grid(row=1,column=1,sticky=W)
+			BeamFWHMVerticalBox = Entry(BeamFWHMInputsFrame,textvariable=self.BeamFWHMVertical,width=5)
 			BeamFWHMVerticalBox.pack(side=LEFT,pady=5,padx=6)
-			BeamFWHMHorizontalBox = Entry(BeaminputFrame2,textvariable=self.BeamFWHMHorizontal,width=5)
+			BeamFWHMHorizontalBox = Entry(BeamFWHMInputsFrame,textvariable=self.BeamFWHMHorizontal,width=5)
 			BeamFWHMHorizontalBox.pack(side=LEFT,pady=5,padx=6)
 		elif beamType.get() == 'TopHat':
 			self.BeamFWHMVertical.set("")
@@ -67,31 +65,27 @@ class beamMakerWindow(Frame):
 
 	def beamFluxInputs(self):
 		# Beam input 3 --> flux
-		BeaminputFrame3 = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame3.grid(row=1,column=0)
-		BeaminputLabel3 = Label(BeaminputFrame3,text="Flux",style="inputBoxes.TLabel")
-		BeaminputLabel3.pack(side=LEFT,pady=5,padx=6)
-		BeaminputBox3 = Entry(BeaminputFrame3,textvariable=self.BeamFlux,width=5)
-		BeaminputBox3.pack(side=LEFT,pady=5,padx=6)
+		BeaminputLabel3 = Label(self.currentStrategyBeam,text="Flux",style="inputBoxes.TLabel")
+		BeaminputLabel3.grid(row=2,column=0,sticky=E,pady=5,padx=6)
+		BeaminputBox3 = Entry(self.currentStrategyBeam,textvariable=self.BeamFlux,width=5)
+		BeaminputBox3.grid(row=2,column=1,sticky=W,pady=5,padx=6)
 
 	def beamEnergyInputs(self):
 		# Beam input 4 --> Energy
-		BeaminputFrame4 = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame4.grid(row=1,column=1)
-		BeaminputLabel4 = Label(BeaminputFrame4,text="Energy",style="inputBoxes.TLabel")
-		BeaminputLabel4.pack(side=LEFT,pady=5,padx=6)
-		BeaminputBox4 = Entry(BeaminputFrame4,textvariable=self.BeamEnergy,width=5)
-		BeaminputBox4.pack(side=LEFT,pady=5,padx=6)
+		BeaminputLabel4 = Label(self.currentStrategyBeam,text="Energy",style="inputBoxes.TLabel")
+		BeaminputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
+		BeaminputBox4 = Entry(self.currentStrategyBeam,textvariable=self.BeamEnergy,width=5)
+		BeaminputBox4.grid(row=3,column=1,sticky=W,pady=5,padx=6)
 
 	def beamRectCollInputs(self):
 		# Beam input 5 --> Rectangular Collimation
-		BeaminputFrame5 = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-		BeaminputFrame5.grid(row=2,column=0)
-		BeaminputLabel5 = Label(BeaminputFrame5,text="Rectangular Collimation",style="inputBoxes.TLabel")
-		BeaminputLabel5.pack(side=LEFT,pady=5,padx=6)
-		BeamRectCollVertBox = Entry(BeaminputFrame5,textvariable=self.BeamRectCollVert,width=5)
+		BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
+		BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+		BeamRectCollInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
+		BeamRectCollInputsFrame.grid(row=4,column=1,sticky=W)
+		BeamRectCollVertBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollVert,width=5)
 		BeamRectCollVertBox.pack(side=LEFT,pady=5,padx=6)
-		BeamRectCollHorizBox = Entry(BeaminputFrame5,textvariable=self.BeamRectCollHoriz,width=5)
+		BeamRectCollHorizBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollHoriz,width=5)
 		BeamRectCollHorizBox.pack(side=LEFT,pady=5,padx=6)
 
 	def update(self,beamType,MainGui):
@@ -108,8 +102,9 @@ class beamMakerWindow(Frame):
 		self.beamMakeButton(MainGui)
 
 	def beamMakeButton(self,MainGui):
+		# create a 'make' button here to add this beam to the list of added beams
 		beamMakeButton = Button(self.currentStrategyBeam,text="Make",command= lambda: self.addMadeBeam(MainGui))
-		beamMakeButton.grid(row=3,column=0,columnspan=2,pady=5)
+		beamMakeButton.grid(row=5,column=0,columnspan=3,pady=5)
 
 	def addMadeBeam(self,MainGui):
 		# make a new beam object from above entered parameters and add to both listbox beam list and
