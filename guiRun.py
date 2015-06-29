@@ -1214,13 +1214,13 @@ class RADDOSEgui(Frame):
 			try:
 				if 'FWHM' in line.split()[0]:
 					newBeam.fwhm = [line.split()[1],line.split()[2]]
-				elif 'energy' in line.split()[0]:
+				elif 'Energy' in line.split()[0]:
 					newBeam.energy = line.split()[1]
-				elif 'flux' in line.split()[0]:
+				elif 'Flux' in line.split()[0]:
 					newBeam.flux = line.split()[1]
 				elif 'Collimation' in line.split()[0]:
 					newBeam.collimation = [line.split()[2],line.split()[3]]
-				elif 'type' in line.split()[0]:
+				elif 'Type' in line.split()[0]:
 					newBeam.type = line.split()[1]
 				elif 'PixelSize' in line.split()[0]:
 					newBeam.pixelSize = [line.split()[1],line.split()[2]]
@@ -1616,9 +1616,14 @@ class RADDOSEgui(Frame):
 		#loop through each entry in the dictionary, create a string of the key
 		#and value from the dictionary and append that to the list created above
 		for beamProp in beamPropertyDict:
-			if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName':
-				string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
-				beamLines.append(string)
+			if beamObj.type == 'Gaussian':
+				if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName':
+					string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
+					beamLines.append(string)
+			elif beamObj.type == 'TopHat':
+				if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'FWHM':
+					string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
+					beamLines.append(string)
 
 		#write list entries as a single text block with each list entry joined
 		#by a new line character
