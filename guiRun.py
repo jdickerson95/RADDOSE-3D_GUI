@@ -1566,7 +1566,7 @@ class RADDOSEgui(Frame):
 		crystLines = [] #Inialise empty list
 		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
 		crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and corresponding values
-
+		print crystPropertyDict
 		#Add a dictionary entry that puts all three crystal dimension values into a string
 		crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
 
@@ -1574,7 +1574,7 @@ class RADDOSEgui(Frame):
 		#and value from the dictionary and append that to the list created above
 		for crystProp in crystPropertyDict:
 			if crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName':
-				string = '{} {}'.format(crystProp,str(crystPropertyDict[crystProp]))
+				string = '{} {}'.format(crystProp.title(),str(crystPropertyDict[crystProp]))
 				crystLines.append(string)
 
 		#write list entries as a single text block with each list entry joined
@@ -1618,7 +1618,7 @@ class RADDOSEgui(Frame):
 		#and value from the dictionary and append that to the list created above
 		for beamProp in beamPropertyDict:
 			if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName':
-				string = '{} {}'.format(beamProp,str(beamPropertyDict[beamProp]))
+				string = '{} {}'.format(beamProp.title(),str(beamPropertyDict[beamProp]))
 				beamLines.append(string)
 
 		#write list entries as a single text block with each list entry joined
