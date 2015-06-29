@@ -1431,20 +1431,7 @@ class RADDOSEgui(Frame):
 			pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
 			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput)
 			self.addCrystalToList(crystalObject)
-			uniqueBeamCounter = 1
-			for i in xrange(0,len(beamList)):
-				beam = copy.deepcopy(beamList[i])
-				if i == 0:
-					beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
-					self.addBeamToList(beam)
-				elif i > 0:
-					for j in xrange(0,i):
-						if beam.__eq__(beamList[j]):
-							break
-						elif j == i-1:
-							uniqueBeamCounter += 1
-							beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
-							self.addBeamToList(beam)
+			self.addRD3DInputBeamsToList(beamList,experimentName)
 			experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
 
 		self.experimentDict[experimentName] = copy.deepcopy(experiment)
@@ -1452,6 +1439,24 @@ class RADDOSEgui(Frame):
 
 		# Print a summary of the RADDOSE-3D run.
 		self.displaySummary(experimentName)
+
+	def addRD3DInputBeamsToList(self,beamList,experimentName):
+		# for each beam object found in RD3D input file, give beam an unique name 
+		# and add to list of loaded beams
+		uniqueBeamCounter = 1
+		for i in xrange(0,len(beamList)):
+			beam = copy.deepcopy(beamList[i])
+			if i == 0:
+				beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+				self.addBeamToList(beam)
+			elif i > 0:
+				for j in xrange(0,i):
+					if beam.__eq__(beamList[j]):
+						break
+					elif j == i-1:
+						uniqueBeamCounter += 1
+						beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+						self.addBeamToList(beam)
 
 	def parseRaddoseInput(self,pathToRaddoseInput):
 		"""Parses the RADDOSE-3D Input file and returns the a crystal object, a
