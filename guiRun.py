@@ -1150,10 +1150,17 @@ class RADDOSEgui(Frame):
 		tkMessageBox.showinfo( "View Beam Information", beamInfo)
 
 	def extractBeamInfo(self, beamObject):
-		string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %.1e (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
+		# determine current beam object properties, dependent on beam type
+		if str(beamObject.type) == 'Gaussian':
+			string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %.1e (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
 """%(str(beamObject.beamName),str(beamObject.type),
 		          		str(beamObject.fwhm), float(beamObject.flux),
 		          		str(beamObject.energy),str(beamObject.collimation))
+		elif str(beamObject.type) == 'TopHat':
+			string = """Beam Name: %s\nType: %s\nFlux: %.1e (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
+"""%(str(beamObject.beamName),str(beamObject.type),
+		          		float(beamObject.flux),str(beamObject.energy),
+		          		str(beamObject.collimation))
 		return string
 
 	def deleteBeam(self):
