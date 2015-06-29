@@ -742,8 +742,7 @@ class RADDOSEgui(Frame):
 		Index = self.BeamStratTree.insert("" , len(self.treeviewIndexlist),    text=str(len(self.treeviewIndexlist)+1),
 								 values=(self.beamChoice.get(),currentWedge.angStart,currentWedge.angStop,currentWedge.exposureTime))
 		self.treeviewIndexlist.append(Index)
-		print self.treeviewIndexlist
-
+		
 		# get the index of the selected beam from the list of added beams (in the optionmenu list)
 		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
 		# get the selected beam object here
