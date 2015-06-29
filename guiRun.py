@@ -1616,13 +1616,12 @@ class RADDOSEgui(Frame):
 		#loop through each entry in the dictionary, create a string of the key
 		#and value from the dictionary and append that to the list created above
 		for beamProp in beamPropertyDict:
-			if beamObj.type == 'Gaussian':
-				if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName':
+			if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'FWHM':
 					string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
 					beamLines.append(string)
-			elif beamObj.type == 'TopHat':
-				if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'FWHM':
-					string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
+			# include FWHM for Gaussian beam type
+			if beamObj.type == 'Gaussian' and beamProp == 'FWHM':
+					string = '{} {}'.format(beamProp,str(beamPropertyDict[beamProp]))
 					beamLines.append(string)
 
 		#write list entries as a single text block with each list entry joined

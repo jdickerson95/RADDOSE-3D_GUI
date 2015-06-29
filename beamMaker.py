@@ -61,8 +61,8 @@ class beamMakerWindow(Frame):
 			BeamFWHMHorizontalBox = Entry(BeamFWHMInputsFrame,textvariable=self.BeamFWHMHorizontal,width=5)
 			BeamFWHMHorizontalBox.pack(side=LEFT,pady=5,padx=6)
 		elif beamType.get() == 'TopHat':
-			self.BeamFWHMVertical.set("0")
-			self.BeamFWHMHorizontal.set("0")
+			self.BeamFWHMVertical.set("")
+			self.BeamFWHMHorizontal.set("")
 
 	def beamFluxInputs(self):
 		# Beam input 3 --> flux

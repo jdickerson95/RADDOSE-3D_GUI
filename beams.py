@@ -1,6 +1,6 @@
 class beams(object):
 	# this class is for beam parameters for a loaded or created beam
-	def __init__(self,beamName="",beamType="",beamFWHM=[],
+	def __init__(self,beamName="",beamType="",beamFWHM=[0,0],
 				 beamFlux=0,beamEnergy=0,beamRectColl=[], beamPixelSize=[0,0]):
 		self.beamName     	= beamName
 		self.type         	= beamType
