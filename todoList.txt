@@ -7,11 +7,9 @@
 To do before 30th June 2015
 -***************************-
 
-- Modify crystal maker windows such that they dynamics change input fields
+- Modify crystal maker windows such that they dynamically change input fields
 dependent on crystal type selected - Done for crystal cuboid and spherical types, 
 needs to be extended to other crystal types
-
-- add functionality to print/save any bar plots created to a suitable working directory
 
 - add functionaility to save summary of compared experiments currently loaded within
 summary/output window (csv format?) to a suitable working directory
@@ -28,12 +26,6 @@ To do at some point
 - Need to add a check when experiments are run to see if any files are already
 in use by other programs.
 
-- Crystal and beam options need to check for sensible inputs.
-(i.e. numerical values are given for crystal dimensions)
-
-- to continue the previous point, drop down boxes of RADDOSE-3D inputs should be
-made for inputs that can only take certain values or text.
-
 - Fix the scroll bars (they don't always seem to work)
 
 - Add more options to Help/Suggestion Dialogue
@@ -42,12 +34,7 @@ made for inputs that can only take certain values or text.
 
 - Add more RADDOSE-3D input options (inc PDB)
 
-- Split guiRUN.py into smaller scripts to make it more managable
-
 - Checks for inputs in a pre-made RADDOSE-3D file
-
-- Add check to see if user have seaborn installed. If so then we can do pretty
-plots
 
 - check cross platform image functionality (pkg PIL runs into problems on anaconda
 python 2.7.9 on mac). Need to test on ubuntu also...

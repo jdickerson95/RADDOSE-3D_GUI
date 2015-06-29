@@ -229,6 +229,7 @@ class RADDOSEgui(Frame):
 		#create text box with scrollbar to detail the summary output for currently selected experiment
 		expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
 		expSummaryTextFrame.pack(side=TOP,fill=BOTH,expand=1)
+
 		self.raddose3Dinputtxt = StringVar()
 		scrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=VERTICAL)
 		self.inputtxt = Text(expSummaryTextFrame, height=27,width=60,wrap=WORD,font=("Helvetica", 8))
