@@ -1566,7 +1566,7 @@ class RADDOSEgui(Frame):
 		crystLines = [] #Inialise empty list
 		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
 		crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and corresponding values
-		print crystPropertyDict
+
 		#Add a dictionary entry that puts all three crystal dimension values into a string
 		crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
 
