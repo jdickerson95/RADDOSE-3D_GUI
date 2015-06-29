@@ -967,9 +967,10 @@ class RADDOSEgui(Frame):
 			self.app = crystalMakerWindow(self)
 
 	def addCrystalToList(self, crystal):
+		# add a crystal object to the list of crystals (outside of listbox)
 		self.crystList.append(crystal)
+		# add crystal name to loaded crystal list
 		self.crystListbox.insert(END, str(crystal.crystName))
-
 		# refresh the option menu of added crystals to keep it up to date
 		self.refreshCrystChoices()
 
@@ -1033,31 +1034,6 @@ class RADDOSEgui(Frame):
 		self.crystLoadBox.delete(0,END)
 		self.crystLoadBox.insert(0,self.crystLoad)
 
-	def readRD3DInputFileCrystInfo(self):
-		# reads in the crystal information from a RADDOSE-3D input file in order to create a new crystal object (newCrystal).
-		# Currently relies on crystal-beam-wedge-beam-wedge-.. format of input file
-		newCrystal = crystals()
-		RD3DinputFile = open(self.crystLoadBox.get(),'r').readlines()
-		for line in RD3DinputFile:
-			try:
-				# want to only read crystal input and stop at beam
-				if 'Beam' in line.split()[0]:
-					break
-				# read in crystal properties here
-				if 'Dimensions' in line.split()[0]:
-					newCrystal.crystDimX = line.split()[1]
-					newCrystal.crystDimY = line.split()[2]
-					newCrystal.crystDimZ = line.split()[3]
-				elif 'type' in line.split()[0]:
-					newCrystal.type = line.split()[1]
-				elif 'absCoefCalc' in line.split()[0]:
-					newCrystal.absCoefCalc = line.split()[1]
-				elif 'pixelsPerMicron' in line.split()[0]:
-					newCrystal.pixelsPerMicron = line.split()[1]
-			except IndexError:
-				continue
-		return newCrystal
-
 	def clickCrystAdd(self):
 		# what happens when crystal add button clicked:
 		# ensure that crystals added to GUI are given a name, and that this is different than all other loaded crystals
@@ -1071,7 +1047,7 @@ class RADDOSEgui(Frame):
 			addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
 			if addQuery == 'yes':
 				# read in RADDOSE-3D style input file to get crystal properties
-				newCrystal = self.readRD3DInputFileCrystInfo()
+				newCrystal = self.parseRaddoseInput(self.crystLoadBox.get(),'crystal')
 				newCrystal.crystName = str(self.crystLoadName.get())
 
 				# check correct crystal properties have been read from RD3D input file
@@ -1079,13 +1055,8 @@ class RADDOSEgui(Frame):
 				if ErrorMessage != "":
 					tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
 				else:
-					# add crystal name to loaded crystal list
-					self.crystListbox.insert(END, str(self.crystLoadName.get()))
-					# add a crystal object to the list of crystals (outside of listbox)
-					self.crystList.append(newCrystal)
-
-					# also update list of crystal choices used in the right strategy window
-					self.refreshCrystChoices()
+					# add crystal to loaded crystal list
+					self.addCrystalToList(newCrystal)
 			else:
 				pass
 
@@ -1193,10 +1164,11 @@ class RADDOSEgui(Frame):
 			self.app = beamMakerWindow(self)
 
 	def addBeamToList(self, beam):
+		# add beam name to loaded beam list
+		self.beamListbox.insert(END, beam.beamName)
+		# add a beam object to the list of beams (outside of listbox)
 		self.beamList.append(beam)
-		self.beamListbox.insert(END, str(beam.beamName))
-
-		# refresh the option menu of added beams to keep it up to date
+		# also update list of beam choices used in the right strategy window
 		self.refreshBeamChoices()
 
 	def clickBeamLoad(self):
@@ -1204,29 +1176,6 @@ class RADDOSEgui(Frame):
 		self.beamLoad = tkFileDialog.askopenfilename(parent=self,title='Open beam file to load')
 		self.beamLoadBox.delete(0,END)
 		self.beamLoadBox.insert(0,self.beamLoad)
-
-	def readRD3DInputFileBeamInfo(self):
-		# reads in the beam information from a RADDOSE-3D input file in order to create a new beam object (newBeam)
-		# Make a new beam object
-		newBeam = beams()
-		RD3DinputFile = open(self.beamLoadBox.get(),'r').readlines()
-		for line in RD3DinputFile:
-			try:
-				if 'FWHM' in line.split()[0]:
-					newBeam.fwhm = [line.split()[1],line.split()[2]]
-				elif 'Energy' in line.split()[0]:
-					newBeam.energy = line.split()[1]
-				elif 'Flux' in line.split()[0]:
-					newBeam.flux = line.split()[1]
-				elif 'Collimation' in line.split()[0]:
-					newBeam.collimation = [line.split()[2],line.split()[3]]
-				elif 'Type' in line.split()[0]:
-					newBeam.type = line.split()[1]
-				elif 'PixelSize' in line.split()[0]:
-					newBeam.pixelSize = [line.split()[1],line.split()[2]]
-			except IndexError:
-				continue
-		return newBeam
 
 	def clickBeamAdd(self):
 		# what happens when beam add button clicked:
@@ -1241,21 +1190,17 @@ class RADDOSEgui(Frame):
 			addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
 			if addQuery == 'yes':
 				# read in RADDOSE-3D style input file to get beam properties
-				newBeam = self.readRD3DInputFileBeamInfo()
-				newBeam.beamName = str(self.beamLoadName.get())
+				newBeamList = self.parseRaddoseInput(self.beamLoadBox.get(),'beam')
 
 				# check correct beam properties have been read from RD3D input file
-				ErrorMessage = self.checkBeamInputs(newBeam)
-				if ErrorMessage != "":
-					tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
-				else:
-					# add beam name to loaded beam list
-					self.beamListbox.insert(END, str(self.beamLoadName.get()))
-					# add a beam object to the list of beams (outside of listbox)
-					self.beamList.append(newBeam)
-
-					# also update list of beam choices used in the right strategy window
-					self.refreshBeamChoices()
+				beamError = False
+				for newBeam in newBeamList:
+					ErrorMessage = self.checkBeamInputs(newBeam)
+					if ErrorMessage != "":
+						tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+						beamError = True
+				if beamError == False:
+					self.addRD3DInputBeamsToList(newBeamList,str(self.beamLoadName.get()))
 			else:
 				pass
 
@@ -1429,7 +1374,10 @@ class RADDOSEgui(Frame):
 			experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
 		elif self.strategyType == 'Premade':
 			pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
-			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput)
+			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
+
+			# give crystal object a name here
+			crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal" 
 			self.addCrystalToList(crystalObject)
 			self.addRD3DInputBeamsToList(beamList,experimentName)
 			experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
@@ -1458,9 +1406,11 @@ class RADDOSEgui(Frame):
 						beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
 						self.addBeamToList(beam)
 
-	def parseRaddoseInput(self,pathToRaddoseInput):
+	def parseRaddoseInput(self,pathToRaddoseInput,returnType):
 		"""Parses the RADDOSE-3D Input file and returns the a crystal object, a
-		list of beam objects and a list of wedge objects
+		list of beam objects and a list of wedge objects. returnType specifies
+		which objects should be returned ('crystal': crystal, 'beam': beam list,
+		 'all': everything)
 		"""
 		commentChars = ['#','!']
 
@@ -1481,7 +1431,7 @@ class RADDOSEgui(Frame):
 				crystalBlock = True
 				beamBlock    = False
 				wedgeBlock   = False
-				crystal.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
+
 			elif "Beam" in line:
 				crystalBlock = False
 				beamBlock    = True
@@ -1543,7 +1493,12 @@ class RADDOSEgui(Frame):
 		wedgeList.append(copy.deepcopy(wedge)) #append final wedge
 		raddoseInput.close()
 
-		return (crystal, beamList, wedgeList)
+		if returnType == 'all':
+			return (crystal, beamList, wedgeList)
+		if returnType == 'crystal':
+			return (crystal)
+		if returnType == 'beam':
+			return (beamList)
 
 
 	def writeCrystalBlock(self, crystalObj):
