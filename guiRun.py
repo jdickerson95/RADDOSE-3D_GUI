@@ -1573,7 +1573,7 @@ class RADDOSEgui(Frame):
 		#and value from the dictionary and append that to the list created above
 		for crystProp in crystPropertyDict:
 			if crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName':
-				string = '{} {}'.format(crystProp.title(),str(crystPropertyDict[crystProp]))
+				string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
 				crystLines.append(string)
 
 		#write list entries as a single text block with each list entry joined
@@ -1617,7 +1617,7 @@ class RADDOSEgui(Frame):
 		#and value from the dictionary and append that to the list created above
 		for beamProp in beamPropertyDict:
 			if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName':
-				string = '{} {}'.format(beamProp.title(),str(beamPropertyDict[beamProp]))
+				string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
 				beamLines.append(string)
 
 		#write list entries as a single text block with each list entry joined
