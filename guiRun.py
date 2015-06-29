@@ -139,28 +139,32 @@ class RADDOSEgui(Frame):
 		FrameBodyRight = Frame(FrameBody,style="BodyBackground.TFrame")
 		FrameBodyRight.pack(side=LEFT,fill=BOTH,expand=1)
 
+		# specify padding between frames within GUI window
+		xWidth = 5
+		yWidth = 5
+
 		# in left body frame make a top and bottom
 		l = Label(FrameBodyLeft,text="Help/Suggestion Dialogue",style="labelFrameTitle.TLabel")
 		FrameBodyLeftTop = LabelFrame(FrameBodyLeft,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyLeftTop.pack(side=TOP,padx=10, pady=10,fill=BOTH)
+		FrameBodyLeftTop.pack(side=TOP,padx=xWidth, pady=yWidth,fill=BOTH)
 
 		l = Label(FrameBodyLeft,text="Summary/Output Window",style="labelFrameTitle.TLabel")
 		FrameBodyLeftBottom = LabelFrame(FrameBodyLeft,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyLeftBottom.pack(side=BOTTOM,padx=10, pady=10,fill=BOTH,expand=1)
+		FrameBodyLeftBottom.pack(side=BOTTOM,padx=xWidth, pady=yWidth,fill=BOTH,expand=1)
 
 		# in middle body frame make a top and bottom
 		l = Label(FrameBodyMiddle,text="Make-a-crystal",style="labelFrameTitle.TLabel")
 		FrameBodyMiddleTop = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyMiddleTop.pack(side=TOP,padx=10, pady=10)
+		FrameBodyMiddleTop.pack(side=TOP,padx=xWidth, pady=yWidth)
 
 		l = Label(FrameBodyMiddle,text="Make-a-beam",style="labelFrameTitle.TLabel")
 		FrameBodyMiddleBottom = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-		FrameBodyMiddleBottom.pack(side=TOP,padx=10, pady=10)
+		FrameBodyMiddleBottom.pack(side=TOP,padx=xWidth, pady=yWidth)
 
 		# in right body frame make a LabelFrame in which a strategy can be created and run
 		l = Label(FrameBodyRight,text="Design-a-strategy",style="labelFrameTitle.TLabel")
 		LabelFrameBodyRight = LabelFrame(FrameBodyRight,labelwidget=l,style="BodyGroovy.TFrame")
-		LabelFrameBodyRight.pack(side=TOP,padx=10, pady=10)
+		LabelFrameBodyRight.pack(side=TOP,padx=xWidth, pady=yWidth)
 
 
 		#####################################################################################################
