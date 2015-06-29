@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
-
+import os
 import imp
 try:
     imp.find_module('seaborn')
@@ -33,6 +33,9 @@ class barplotWindow(Frame):
 		# weight the 2 button columns to stretch across bottom of figure
 		plotButtonFrame.columnconfigure(0, weight=1)
 		plotButtonFrame.columnconfigure(1, weight=1)
+
+		# create figure save button to save currently displayed plot
+		self.saveButton = Button(plotButtonFrame, text = 'Save', width = 25, command = self.savePlot)
 
 		# create quit button to leave plotting window
 		self.quitButton = Button(plotButtonFrame, text = 'Quit', width = 25, command = self.close_windows)
@@ -90,7 +93,8 @@ class barplotWindow(Frame):
 
 		# put buttons and dose metric selection list within plottingFrame frame
 		doseMetricOptionMenu.grid(row=0, column=0,pady=10, padx=10, sticky=W)
-		self.quitButton.grid(row=0, column=1,pady=10, padx=10, sticky=E)
+		self.saveButton .grid(row=0, column=1,pady=10, padx=10, sticky=W+E)
+		self.quitButton.grid(row=0, column=2,pady=10, padx=10, sticky=E)
 
 	def plotBarplot(self,currentDoseMetric,currentExpNameList,ylabel,y):
 		# a matlibplot figure axis should be created here
@@ -165,3 +169,12 @@ class barplotWindow(Frame):
 
 	def close_windows(self):
 		self.master.destroy()
+
+	def savePlot(self):
+		plotDirName = 'StrategyComparisionPlots'
+		# make directory to hold comparison plots if it does not exist
+		if os.path.exists(plotDirName) == False:
+			os.mkdir(plotDirName)
+
+		# save plot to the plot directory
+		self.doseCompareFig.savefig('./%s/%s.png' %(plotDirName,self.doseMetricToPlot.get()))
