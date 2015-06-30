@@ -42,6 +42,15 @@ class RADDOSEgui(Frame):
 	def initUI(self):
 		# this is to delegate the creation of the user interface to the initUI() method
 
+		####################################################
+		# set heights for list boxes here
+		loadListHeight = 4
+		# specify padding between frames within GUI window
+		xWidth = 5
+		yWidth = 5
+		treeViewHeight = 4
+		####################################################
+
 		# define the colourscheme here
 		self.darkcolour = "#383838"
 		self.lightcolour = "#2d5867"
@@ -138,10 +147,6 @@ class RADDOSEgui(Frame):
 		FrameBodyMiddle.pack(side=LEFT,fill=BOTH,expand=1)
 		FrameBodyRight = Frame(FrameBody,style="BodyBackground.TFrame")
 		FrameBodyRight.pack(side=LEFT,fill=BOTH,expand=1)
-
-		# specify padding between frames within GUI window
-		xWidth = 5
-		yWidth = 5
 
 		# in left body frame make a top and bottom
 		l = Label(FrameBodyLeft,text="Help/Suggestion Dialogue",style="labelFrameTitle.TLabel")
@@ -319,7 +324,7 @@ class RADDOSEgui(Frame):
 		exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,'Average')
 		self.crystList = [exampleCryst,exampleCryst2]
 
-		self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=8)
+		self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=loadListHeight)
 		for cryst in self.crystList:
 		    self.crystListbox.insert(END, cryst.crystName)
 		self.crystListbox.update_idletasks()
@@ -390,7 +395,7 @@ class RADDOSEgui(Frame):
 		exampleBeam2 = beams('Example beam 2',"TopHat",[50,50],20000000000,12,[120,120],[1,1])
 		self.beamList = [exampleBeam,exampleBeam2]
 
-		self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=8)
+		self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=loadListHeight)
 		for beam in self.beamList:
 		    self.beamListbox.insert(END, beam.beamName)
 		self.beamListbox.update_idletasks()
@@ -446,7 +451,7 @@ class RADDOSEgui(Frame):
 		beamStratButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
 
 		# make a treeview to show coupled beam and wedge strategies to be used with the specified crystal above
-		self.BeamStratTree = Treeview(chooseBeamStratFrame)
+		self.BeamStratTree = Treeview(chooseBeamStratFrame,height=treeViewHeight)
 		self.BeamStratTree["columns"]=("one","two","three","four")
 		self.BeamStratTree.column("#0",width=30)
 		self.BeamStratTree.column("one", width=100 )
