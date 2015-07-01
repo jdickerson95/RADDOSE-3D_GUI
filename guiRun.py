@@ -44,11 +44,11 @@ class RADDOSEgui(Frame):
 
 		####################################################
 		# set heights for list boxes here
-		loadListHeight = 4
+		loadListHeight = 5
 		# specify padding between frames within GUI window
 		xWidth = 5
 		yWidth = 5
-		treeViewHeight = 4
+		treeViewHeight = 5
 		####################################################
 
 		# define the colourscheme here
@@ -237,7 +237,7 @@ class RADDOSEgui(Frame):
 
 		self.raddose3Dinputtxt = StringVar()
 		scrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=VERTICAL)
-		self.inputtxt = Text(expSummaryTextFrame, height=27,width=60,wrap=WORD,font=("Helvetica", 8))
+		self.inputtxt = Text(expSummaryTextFrame, height=20,width=60,wrap=WORD,font=("Helvetica", 8))
 		scrollbarRaddoseInputFile.pack(side=LEFT,fill=Y)
 		self.inputtxt.pack(side=TOP,expand=True)
 		scrollbarStrategyList.config(command=self.inputtxt.yview)
@@ -747,7 +747,7 @@ class RADDOSEgui(Frame):
 		Index = self.BeamStratTree.insert("" , len(self.treeviewIndexlist),    text=str(len(self.treeviewIndexlist)+1),
 								 values=(self.beamChoice.get(),currentWedge.angStart,currentWedge.angStop,currentWedge.exposureTime))
 		self.treeviewIndexlist.append(Index)
-		
+
 		# get the index of the selected beam from the list of added beams (in the optionmenu list)
 		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
 		# get the selected beam object here
@@ -1066,7 +1066,7 @@ class RADDOSEgui(Frame):
 				pass
 
 	def checkCrystInputs(self,newCrystal):
-		# additional check to ensure correct crystal properties have been read successively 
+		# additional check to ensure correct crystal properties have been read successively
 		# from premade RD3D input file
 		ErrorMessage = ""
 		if newCrystal.type not in ('Cuboid','Spherical','Cylindrical','Polyhedron'):
@@ -1210,7 +1210,7 @@ class RADDOSEgui(Frame):
 				pass
 
 	def checkBeamInputs(self,newBeam):
-		# additional check to ensure correct beam properties have been read successively 
+		# additional check to ensure correct beam properties have been read successively
 		# from premade RD3D input file
 		ErrorMessage = ""
 		if newBeam.type not in ('Gaussian','TopHat'):
@@ -1241,7 +1241,7 @@ class RADDOSEgui(Frame):
 			float(newBeam.energy)
 		except ValueError:
 			ErrorMessage = ErrorMessage + 'Beam energy not of compatible float format.\n'
-		
+
 		# check that beam flux can be converted to float format (from string format)
 		try:
 			float(newBeam.flux)
@@ -1382,7 +1382,7 @@ class RADDOSEgui(Frame):
 			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
 
 			# give crystal object a name here
-			crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal" 
+			crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
 			self.addCrystalToList(crystalObject)
 			self.addRD3DInputBeamsToList(beamList,experimentName)
 			experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
@@ -1394,7 +1394,7 @@ class RADDOSEgui(Frame):
 		self.displaySummary(experimentName)
 
 	def addRD3DInputBeamsToList(self,beamList,experimentName):
-		# for each beam object found in RD3D input file, give beam an unique name 
+		# for each beam object found in RD3D input file, give beam an unique name
 		# and add to list of loaded beams
 		uniqueBeamCounter = 1
 		for i in xrange(0,len(beamList)):
