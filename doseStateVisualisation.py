@@ -1,15 +1,30 @@
-import numpy as np
+from scitools.std import *
+from mayavi import mlab
 
-doseStateFile = "output-DoseState.csv" #file path of dose state csv
+def parseCrystalSizeLine(line):
+    colonIndex = line.find(':')
+    splitLine = line[colonIndex+1:-1].split()
+    crystDims = (int(splitLine[0]), int(splitLine[2]), int(splitLine[4]))
+    return crystDims
 
-isoValues = np.array([63,64,65,66,67]) #values for the isosurfaces
+def getDoseStateFromR(filename):
+    with open(filename, "r") as rCode:
+        for line in rCode:
+            if "Crystal size" in line:
+                crystalDims = parseCrystalSizeLine(line)
+                crystalDose = zeros(crystalDims)
+            elif "dose[,," in line:
+                for zDim in xrange(1, crystalDims[2] + 1):
+                    string = "dose[,,{}]".format(zDim)
+                    if string in line:
+                        openBracketIndex = line.find("(")
+                        closeBracketIndex = line.find(")")
+                        zDimTuple = eval(line[openBracketIndex:closeBracketIndex+1])
+                        zDimArray = array(zDimTuple)
+                        crystalDose[:,:,zDim-1] = zDimArray.reshape(crystalDims[1],crystalDims[0]).transpose()
+    return crystalDose
 
-data = np.genfromtxt(doseStateFile, delimiter=",")
-
-x_pos = np.unique(data[:,0])
-y_pos = np.unique(data[:,1])
-z_pos = np.unique(data[:,2])
-
-X, Y, Z = np.meshgrid(x_pos, y_pos, z_pos)
-
-dose = data[:,3].reshape(X.shape)
+dose = getDoseStateFromR("output-DoseState.R")
+mlab.contour3d(dose, colormap='hot', contours=[0.1, 20, 30], transparent=False, opacity=0.5, vmin=0, vmax=30)
+mlab.outline()
+mlab.colorbar(orientation='vertical')
