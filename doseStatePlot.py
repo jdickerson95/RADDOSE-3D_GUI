@@ -3,7 +3,7 @@
 # License: BSD Style.
 
 # Standard imports.
-from numpy import sqrt, sin, mgrid
+from numpy import zeros, array
 
 # Enthought imports.
 from traits.api import HasTraits, Instance, Property, Enum
@@ -12,7 +12,6 @@ from tvtk.pyface.scene_editor import SceneEditor
 from mayavi.core.ui.engine_view import EngineView
 from mayavi.tools.mlab_scene_model import MlabSceneModel
 from enthought.mayavi.modules.orientation_axes import OrientationAxes
-from scitools.std import *
 
 
 ######################################################################
