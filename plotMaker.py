@@ -7,12 +7,12 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import os
 import imp
+# look for seaborn module to import
 try:
     imp.find_module('seaborn')
     foundSeaborn = True
 except ImportError:
     foundSeaborn = False
-
 if foundSeaborn == True:
 	import seaborn as sns
 
@@ -106,13 +106,16 @@ class barplotWindow(Frame):
 
 		# create x axis array here
 		x = np.arange(len(y))
-		if foundSeaborn == 'False':
+		if not foundSeaborn:
 			bar_width = 0.35
 			opacity = 0.4
 			self.doseBarplot = self.axBarplot.bar(x,y,bar_width,alpha=opacity,color='b')
 		else:
 			bar_width = 0
+			# try:
 			self.doseBarplot = sns.barplot(x,y,ax=self.axBarplot)
+			# except NameError:
+			# 	pass
 
 		xTickMarks = [str(expName) for expName in currentExpNameList]
 		self.axBarplot.set_xticks(x+0.5*bar_width)
