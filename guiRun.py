@@ -29,7 +29,7 @@ from beams import beams
 from wedges import wedges
 from experiments import Experiments
 from customMadeWidgets import *
-from doseStatePlot import doseStatePlotWindow
+from doseStatePlot import doseStatePlot
 
 class RADDOSEgui(Frame):
 	# this is the main RADDOSE gui class here
@@ -881,14 +881,8 @@ class RADDOSEgui(Frame):
 		# then create a separate window for a bar plot comparing dose metrics for all strategies
 		# currently loaded within summary window
 		if self.expNameList:
-			# Makes a new window allowing which will contain bar plots
-			self.top_doseStatePlotMaker=Toplevel()
-			self.top_doseStatePlotMaker.title("Crystal Dose State")
-			# give the new window a dark background colour
-			self.top_doseStatePlotMaker.configure(bg=self.darkcolour)
-			# finds separate class for secondary barplotting window
-			self.app = doseStatePlotWindow(self)
-
+			m = doseStatePlot(self)
+			m.configure_traits()
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
 			""" %()

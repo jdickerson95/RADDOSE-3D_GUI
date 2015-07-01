@@ -1,66 +1,108 @@
-from Tkinter import *
-from ttk import *
+# Authors: Prabhu Ramachandran <prabhu [at] aero.iitb.ac.in>
+# Copyright (c) 2007, Enthought, Inc.
+# License: BSD Style.
+
+# Standard imports.
+from numpy import sqrt, sin, mgrid
+
+# Enthought imports.
+from traits.api import HasTraits, Instance, Property, Enum
+from traitsui.api import View, Item, HSplit, VSplit, InstanceEditor
+from tvtk.pyface.scene_editor import SceneEditor
+from mayavi.core.ui.engine_view import EngineView
+from mayavi.tools.mlab_scene_model import MlabSceneModel
+from enthought.mayavi.modules.orientation_axes import OrientationAxes
 from scitools.std import *
-import numpy as np
-from mayavi import mlab
 
-class doseStatePlotWindow(Frame):
-	# this is a secondary plotting window class here. It is where all the dose
-    # state plot is created
 
-	def __init__(self,MainGui):
-        currentExpNameList = MainGui.expNameList
-		self.master = MainGui.top_doseStatePlotMaker
-		self.plottingFrame = Frame(self.master)
-		self.plottingFrame.pack()
+######################################################################
+class doseStatePlot(HasTraits):
 
-        # create frame for buttons and dose metric list
-		plotButtonFrame = Frame(self.plottingFrame,style="BodyGroovy.TFrame")
-		plotButtonFrame.pack(side=TOP,padx=10, pady=0, fill=BOTH, expand=True)
-		# weight the 2 button columns to stretch across bottom of figure
-		plotButtonFrame.columnconfigure(0, weight=1)
-		plotButtonFrame.columnconfigure(1, weight=1)
+    # The scene model.
+    scene = Instance(MlabSceneModel, ())
 
-        # create figure save button to save currently displayed plot
-		self.saveButton = Button(plotButtonFrame, text = 'Save', width = 25, command = self.savePlot)
+    # The mayavi engine view.
+    engine_view = Instance(EngineView)
 
-		# create quit button to leave plotting window
-		self.quitButton = Button(plotButtonFrame, text = 'Quit', width = 25, command = self.close_windows)
+    # The current selection in the engine tree view.
+    current_selection = Property
 
-        # Create option menu to select which crystal dose state to plot
-        self.crystalStateToPlot = StringVar()
-        self.crystalStateToPlot.set(expName = str(MainGui.expChoice.get())) # get currently selected experiment name
-		crystalStateOptionMenu = OptionMenu(plotButtonFrame, self.crystalStateToPlot, currentExpNameList,
-					   command= lambda x: self.refreshPlot())
 
-        # create dose state here
-		self.plotDoseState(self.doseMetricToPlot.get())
+    ######################
+    view = View(HSplit(VSplit(Item(name='engine_view',
+                                   style='custom',
+                                   resizable=True,
+                                   show_label=False
+                                   ),
+                              Item(name='current_selection',
+                                   editor=InstanceEditor(),
+                                   enabled_when='current_selection is not None',
+                                   style='custom',
+                                   springy=True,
+                                   show_label=False),
+                                   ),
+                               Item(name='scene',
+                                    editor=SceneEditor(),
+                                    show_label=False,
+                                    resizable=True,
+                                    height=500,
+                                    width=500),
+                        ),
+                resizable=True,
+                scrollable=True
+                )
 
-		# put buttons and dose metric selection list within plottingFrame frame
-		crystalStateOptionMenu.grid(row=0, column=0,pady=10, padx=10, sticky=W)
-		self.saveButton.grid(row=0, column=1,pady=10, padx=10, sticky=W+E)
-		self.quitButton.grid(row=0, column=2,pady=10, padx=10, sticky=E)
+    def __init__(self, mainGUI, **traits):
+        HasTraits.__init__(self, **traits)
+        self.engine_view = EngineView(engine=self.scene.engine)
 
-    def plotDoseState(self,currentExp):
-        self.doseStateFig = mlab.figure(figsize=(10, 10), dpi=80, facecolor='w', edgecolor='k')
-		self.canvasForDoseStatePlot = FigureCanvasTkAgg(self.doseStateFig, master=self.plottingFrame)
-		self.canvasForDoseStatePlot.show()
-		self.canvasForDoseStatePlot.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
+        # Hook up the current_selection to change when the one in the engine
+        # changes.  This is probably unnecessary in Traits3 since you can show
+        # the UI of a sub-object in T3.
+        self.scene.engine.on_trait_change(self._selection_change,
+                                          'current_selection')
 
-        rfilename = "{}/output-DoseState.R".format(currentExp)
-        dose = getDoseStateFromR(rfilename)
-        mlab.contour3d(dose, colormap='hot', contours=[dose.min(), (dose.max()-dose.min())/2.0, dose.max()], transparent=False, opacity=0.5, vmin=0, vmax=30)
-        mlab.outline()
-        mlab.colorbar(orientation='vertical')
+        self.generate_data_mayavi(mainGUI)
 
-    def refreshPlot(self):
-        # when a new dose metric is selected from dropdown option list, click to refresh bar plot
-    	currentExp = self.crystalStateToPlot.get()
-        self.killOldFig()
-		self.plotBarplot(currentExp)
+    def generate_data_mayavi(self, mainGUI):
+        """Shows how you can generate data using mayavi instead of mlab."""
+        expName = str(mainGUI.expChoice.get())
+        doseState = self.getDoseStateFromR("{}/output-DoseState.R".format(expName))
+        self.scene.mlab.contour3d(doseState, colormap='hot', contours=[doseState.min(), (doseState.max() + doseState.min())/2.0, doseState.max()], transparent=True, opacity=0.5, vmin=0, vmax=doseState.max())
+        self.scene.mlab.outline()
+        self.scene.mlab.orientation_axes()
+        self.scene.mlab.title("Final dose state of crystal from experiment: {}".format(expName))
 
-	def close_windows(self):
-		self.master.destroy()
+    def _selection_change(self, old, new):
+        self.trait_property_changed('current_selection', old, new)
 
-	def savePlot(self):
-		pass
+    def _get_current_selection(self):
+        return self.scene.engine.current_selection
+
+    def parseCrystalSizeLine(self, line):
+        colonIndex = line.find(':')
+        splitLine = line[colonIndex+1:-1].split()
+        crystDims = (int(splitLine[0]), int(splitLine[2]), int(splitLine[4]))
+        return crystDims
+
+    def getDoseStateFromR(self, filename):
+        with open(filename, "r") as rCode:
+            for line in rCode:
+                if "Crystal size" in line:
+                    crystalDims = self.parseCrystalSizeLine(line)
+                    crystalDose = zeros(crystalDims)
+                elif "dose[,," in line:
+                    for zDim in xrange(1, crystalDims[2] + 1):
+                        string = "dose[,,{}]".format(zDim)
+                        if string in line:
+                            openBracketIndex = line.find("(")
+                            closeBracketIndex = line.find(")")
+                            zDimTuple = eval(line[openBracketIndex:closeBracketIndex+1])
+                            zDimArray = array(zDimTuple)
+                            crystalDose[:,:,zDim-1] = zDimArray.reshape(crystalDims[1],crystalDims[0]).transpose()
+        return crystalDose
+
+
+#if __name__ == '__main__':
+    #m = Mayavi()
+    #m.configure_traits()
