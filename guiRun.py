@@ -29,6 +29,7 @@ from beams import beams
 from wedges import wedges
 from experiments import Experiments
 from customMadeWidgets import *
+from doseStatePlot import doseStatePlotWindow
 
 class RADDOSEgui(Frame):
 	# this is the main RADDOSE gui class here
@@ -259,7 +260,7 @@ class RADDOSEgui(Frame):
 		expBarplotterButton.grid(row=0, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		# create button to plot isosurfaces for currently loaded experiments within summary window
-		expIsosurfacesButton = Button(ExpPlotButtonsFrame, text="Dose Contours",command=self.clickIsosurfaces)
+		expIsosurfacesButton = Button(ExpPlotButtonsFrame, text="Dose Contours",command=self.clickDoseContours)
 		expIsosurfacesButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
 		# create button to display summary details to the summary text window for currently
@@ -875,6 +876,24 @@ class RADDOSEgui(Frame):
 			""" %()
 			tkMessageBox.showinfo( "No experiments loaded", string)
 
+	def clickDoseContours(self):
+		# button to first check whether any strategies are loaded within summary window and
+		# then create a separate window for a bar plot comparing dose metrics for all strategies
+		# currently loaded within summary window
+		if self.expNameList:
+			# Makes a new window allowing which will contain bar plots
+			self.top_doseStatePlotMaker=Toplevel()
+			self.top_doseStatePlotMaker.title("Crystal Dose State")
+			# give the new window a dark background colour
+			self.top_doseStatePlotMaker.configure(bg=self.darkcolour)
+			# finds separate class for secondary barplotting window
+			self.app = doseStatePlotWindow(self)
+
+		else:
+			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+			""" %()
+			tkMessageBox.showinfo( "No experiments loaded", string)
+
 	def clickLogShow(self):
 		""" Response to log button click within experiment summary window
 
@@ -933,8 +952,6 @@ class RADDOSEgui(Frame):
 		# RD3D log printed to summary text box here
 		self.inputtxt.insert(END,expObject.log)
 
-	def clickIsosurfaces(self):
-		pass
 	def clickExpShowSummary(self):
 		pass
 	def clickExpSave(self):

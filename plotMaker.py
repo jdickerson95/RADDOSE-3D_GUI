@@ -163,7 +163,7 @@ class barplotWindow(Frame):
 			y = np.array(self.metricListDict['doseIneff'])
 			x = np.arange(len(y))
 			ylabel = self.unitsDict['doseIneff']
-	
+
 		self.killOldFig()
 		self.plotBarplot(currentDoseMetric,currentExpNameList,ylabel,y)
 
