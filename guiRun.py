@@ -20,6 +20,7 @@ import time
 import datetime
 import copy
 import platform
+import imp
 
 from plotMaker import barplotWindow
 from beamMaker import beamMakerWindow
@@ -29,7 +30,14 @@ from beams import beams
 from wedges import wedges
 from experiments import Experiments
 from customMadeWidgets import *
-from doseStatePlot import doseStatePlot
+
+try:
+    imp.find_module('mayavi')
+    foundMayaMod = True
+except ImportError:
+    foundMayaMod = False
+if foundMayaMod:
+	from doseStatePlot import doseStatePlot
 
 class RADDOSEgui(Frame):
 	# this is the main RADDOSE gui class here
@@ -881,8 +889,13 @@ class RADDOSEgui(Frame):
 		# then create a separate window for a bar plot comparing dose metrics for all strategies
 		# currently loaded within summary window
 		if self.expNameList:
-			m = doseStatePlot(self)
-			m.configure_traits()
+			if foundMayaMod:
+				m = doseStatePlot(self)
+				m.configure_traits()
+			else:
+				string = """The Mayavi module is required to view dose contour plots but hasn't been found on your system.\nPlease check that you have it or visit \n\"http://docs.enthought.com/mayavi/mayavi/installation.html\" for installation notes.
+				""" %()
+				tkMessageBox.showinfo( "Mayavi Not Found", string)
 		else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
 			""" %()
