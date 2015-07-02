@@ -19,6 +19,8 @@ import subprocess
 import copy
 import platform
 import imp
+import datetime
+import time
 
 from plotMaker import barplotWindow
 from beamMaker import beamMakerWindow
@@ -552,7 +554,9 @@ class RADDOSEgui(Frame):
         premadeRD3DRunButton = Button(runPremadeRD3DStrategyFrame,text="Run",command=self.runPremadeRD3DExperiment)
         premadeRD3DRunButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
 
-        self.stratCompDir = "StrategyComparisons" #Name of directory where strategy comparison files will be stored
+        ts = time.time()
+        dirTimestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+        self.expCompDir = "ExpComp_"+dirTimestamp #Name of directory where strategy comparison files will be stored
         self.RADDOSEfilename = 'RADDOSE-3D-input.txt' #Create RADDOSE3D input file name
 
 	#####################################################################################################
@@ -975,12 +979,12 @@ class RADDOSEgui(Frame):
 		#Check to see if there are experiments loaded in the summary window
         if self.expNameList:
             #Check if Experiment compasion directory exists
-            if not os.path.exists(self.stratCompDir):
-                os.mkdir(self.stratCompDir)
+            if not os.path.exists(self.expCompDir):
+                os.mkdir(self.expCompDir)
             #Create the file name for the summary table
             expsToCompare = "_".join(self.expNameList)
             summaryFileName = "summaryTable_"+expsToCompare+".txt"
-            fullpath = "{}/{}".format(self.stratCompDir, summaryFileName)
+            fullpath = "{}/{}".format(self.expCompDir, summaryFileName)
             #Write the table to summary file
             summaryFile = open(fullpath, 'w')
             for row in self.tableRowEntries:

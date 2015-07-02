@@ -23,7 +23,7 @@ class barplotWindow(Frame):
     def __init__(self,MainGui):
     	currentExpDict = MainGui.experimentDict
     	currentExpNameList = MainGui.expNameList
-        self.compPlotDir = "{}/{}".format(MainGui.stratCompDir, "Plots")
+        self.compPlotDir = "{}/{}".format(MainGui.expCompDir, "Plots")
         self.master = MainGui.top_summaryBarplotMaker
         self.plottingFrame = Frame(self.master)
         self.plottingFrame.pack()
