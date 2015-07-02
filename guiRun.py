@@ -962,12 +962,30 @@ class RADDOSEgui(Frame):
     def clickExpShowSummary(self):
         #Check to see if there are experiments loaded in the summary window
         if self.expNameList:
-            #Create the summary table
-            self.createSummaryTable()
             #Write the table
-            self.inputtxt.delete(1.0, END) #Delete any text already in the bo
+            self.inputtxt.delete(1.0, END) #Delete any text already in the box
             for row in self.tableRowEntries:
                 self.inputtxt.insert(END, "{:s}\n".format(row))
+        else:
+			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+			""" %()
+			tkMessageBox.showinfo( "No experiments loaded", string)
+
+    def clickExpSave(self):
+		#Check to see if there are experiments loaded in the summary window
+        if self.expNameList:
+            #Check if Experiment compasion directory exists
+            if not os.path.exists(self.stratCompDir):
+                os.mkdir(self.stratCompDir)
+            #Create the file name for the summary table
+            expsToCompare = "_".join(self.expNameList)
+            summaryFileName = "summaryTable_"+expsToCompare+".txt"
+            fullpath = "{}/{}".format(self.stratCompDir, summaryFileName)
+            #Write the table to summary file
+            summaryFile = open(fullpath, 'w')
+            for row in self.tableRowEntries:
+                summaryFile.write(row+"\n")
+            summaryFile.close()
         else:
 			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
 			""" %()
@@ -1013,9 +1031,6 @@ class RADDOSEgui(Frame):
             diffEffEntry, usedVolEntry, absEnEntry, doseInEffEntry]
             tableEntry = separator.join(entryList)
             self.tableRowEntries.append(tableEntry)
-
-    def clickExpSave(self):
-		pass
 
     def deleteCryst(self):
 		# delete the selected crystal from the listbox of added crystals. Also remove the
@@ -1180,20 +1195,22 @@ class RADDOSEgui(Frame):
 	        self.beamChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.beamChoice, choice))
 
     def refreshExperimentChoices(self):
-		# delete all options from menu
-		self.expChoiceMenu['menu'].delete(0, 'end')
-		# get a list of all of the current keys from the dictionary of experiments
-		new_expChoices = self.expNameList
-		# Insert list of new options
-		for choice in new_expChoices:
-			self.expChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.expChoice, choice))
-		#Check if there any experiments loaded. If so then choose the first key
-		#in the experiment dictionary as an option. Otherwise let the user know
-		#that there are no loaded experiments
-		if self.expNameList:
-			self.expChoice.set(self.expNameList[0])
-		else:
-			self.expChoice.set('No existing experiments')
+    	# delete all options from menu
+    	self.expChoiceMenu['menu'].delete(0, 'end')
+    	# get a list of all of the current keys from the dictionary of experiments
+    	new_expChoices = self.expNameList
+    	# Insert list of new options
+    	for choice in new_expChoices:
+    		self.expChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.expChoice, choice))
+    	#Check if there any experiments loaded. If so then choose the first key
+    	#in the experiment dictionary as an option and create the comparison
+        #summary table. Otherwise let the user know
+    	#that there are no loaded experiments
+        if self.expNameList:
+            self.expChoice.set(self.expNameList[0])
+            self.createSummaryTable()
+    	else:
+    		self.expChoice.set('No existing experiments')
 
     def clickBeamView(self):
 		# what happens when beam view button clicked
