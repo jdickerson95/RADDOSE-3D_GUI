@@ -848,7 +848,7 @@ class RADDOSEgui(Frame):
 		self.inputtxt.insert(END, "%-50s: %-.2e photons/MGy\n"%("Diffraction Efficiency (Elastic Yield/DWD)",expObject.diffractionEfficiency))
 		self.inputtxt.insert(END, "%-50s: %-.1f%%\n"%("Used Volume",expObject.usedVolume))
 		self.inputtxt.insert(END, "%-50s: %-.2e J\n"%("Absorbed Energy",expObject.absEnergy))
-		self.inputtxt.insert(END, "%-50s: %-.2e J\n"%("Dose Inefficiency (Max Dose/mj Absorbed)",expObject.doseInefficiency))
+		self.inputtxt.insert(END, "%-50s: %-.2e 1/g\n"%("Dose Inefficiency (Max Dose/mj Absorbed)",expObject.doseInefficiency))
 		self.inputtxt.insert(END, "\n")
 
 		self.inputtxt.insert(END, "Experiment parameters:\n"%())
@@ -958,7 +958,8 @@ class RADDOSEgui(Frame):
 		self.inputtxt.insert(END,expObject.log)
 
     def clickExpShowSummary(self):
-		pass
+        pass
+
     def clickExpSave(self):
 		pass
 
