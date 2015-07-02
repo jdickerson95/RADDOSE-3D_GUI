@@ -657,42 +657,47 @@ class RADDOSEgui(Frame):
 			self.runStrategy()
 
     def runStrategy(self):
-		"""Run RADDOSE-3D given specified crystal, beam and wedge objects
+        """Run RADDOSE-3D given specified crystal, beam and wedge objects
 
-		For a manually defined strategy, this function writes an input file
-		from the given crystal, beam and wedge objects. For a premade RD3D
-		input file, the suitable input file is copied into the working directory
-		for the experimental run. Then it runs RADDOSE-3D with that input
-		file and puts all of the output files in the corresponding experiment folder.
+        For a manually defined strategy, this function writes an input file
+        from the given crystal, beam and wedge objects. For a premade RD3D
+        input file, the suitable input file is copied into the working directory
+        for the experimental run. Then it runs RADDOSE-3D with that input
+        file and puts all of the output files in the corresponding experiment folder.
 
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
+        =================
+        Keyword arguments
+        =================
+        No explicit user defined parameters. Only the object is required for
+        implicit input.
 
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
-		"""
-		# for manual strategy need to write RD3D input file. for premade RD3D input file
-		# need to copy file to new working directory for experiment and rename the file
-		# to the standard input file name.
-		expName = str(self.CurrentexpLoadName.get())
-		if self.strategyType == 'Manual':
-			self.writeRaddose3DInputFile()
-		elif self.strategyType == 'Premade':
-			shutil.copy(self.RD3DinputLoad, expName)
-			oldFilename = '{}/{}'.format(expName, self.RD3DinputLoad.split("/")[-1])
-			newFilename = '{}/{}'.format(expName, self.RADDOSEfilename)
-			os.rename(oldFilename, newFilename)
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
+        """
+        # for manual strategy need to write RD3D input file. for premade RD3D input file
+        # need to copy file to new working directory for experiment and rename the file
+        # to the standard input file name.
+        expName = str(self.CurrentexpLoadName.get())
+        if self.strategyType == 'Manual':
+            if not self.crystList or not self.beamList2Run or not self.wedgeList2Run:
+                string = """An object required to run RADDOSE-3D has not been selected for input.\nCheck that you have selected at least one crystal, beam and wedge.
+        		""" %()
+                tkMessageBox.showinfo( "Missing object required for RADDOSE-3D input", string)
+            else:
+                self.writeRaddose3DInputFile()
+        elif self.strategyType == 'Premade':
+        	shutil.copy(self.RD3DinputLoad, expName)
+        	oldFilename = '{}/{}'.format(expName, self.RD3DinputLoad.split("/")[-1])
+        	newFilename = '{}/{}'.format(expName, self.RADDOSEfilename)
+        	os.rename(oldFilename, newFilename)
 
-		self.runRaddose3D()
-		#Update the experiment list in the strategy window
-		self.addToExperimentList()
-		#Update experiments loaded to summary window
-		self.refreshExperimentChoices()
+        self.runRaddose3D()
+        #Update the experiment list in the strategy window
+        self.addToExperimentList()
+        #Update experiments loaded to summary window
+        self.refreshExperimentChoices()
 
     def clickAddBeamStrategy(self):
 		# what happens when add beam strategy button clicked. Makes a new small window allowing
