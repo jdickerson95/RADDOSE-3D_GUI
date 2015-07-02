@@ -552,8 +552,8 @@ class RADDOSEgui(Frame):
         premadeRD3DRunButton = Button(runPremadeRD3DStrategyFrame,text="Run",command=self.runPremadeRD3DExperiment)
         premadeRD3DRunButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
 
-
-        self.RADDOSEfilename = 'RADDOSE-3D-input.txt'
+        self.stratCompDir = "StrategyComparisons" #Name of directory where strategy comparison files will be stored
+        self.RADDOSEfilename = 'RADDOSE-3D-input.txt' #Create RADDOSE3D input file name
 
 	#####################################################################################################
 	# below is a list of button actions in the gui
