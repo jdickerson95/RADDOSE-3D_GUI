@@ -11,8 +11,9 @@ from traitsui.api import View, Item, HSplit, VSplit, InstanceEditor
 from tvtk.pyface.scene_editor import SceneEditor
 from mayavi.core.ui.engine_view import EngineView
 from mayavi.tools.mlab_scene_model import MlabSceneModel
-from enthought.mayavi.modules.orientation_axes import OrientationAxes
-
+# currently can't find enthought module on efg7 computer, so line commented out
+# from enthought.mayavi.modules.orientation_axes import OrientationAxes
+from mayavi.modules.orientation_axes import OrientationAxes
 
 ######################################################################
 class doseStatePlot(HasTraits):
