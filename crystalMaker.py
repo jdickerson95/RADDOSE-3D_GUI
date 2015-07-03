@@ -42,7 +42,7 @@ class crystalMakerWindow(Frame):
 		CrystalinputFrame1.grid(row=0,column=0)
 		CrystalinputLabel1 = Label(CrystalinputFrame1,text="Crystal Type",style="inputBoxes.TLabel")
 		CrystalinputLabel1.pack(side=LEFT,pady=5,padx=6)
-		crystTypeList = ['Cuboid','Spherical','Polyhedron','Cylindrical']
+		crystTypeList = ['Cuboid','Spherical', 'Cylindrical', 'Polyhedron']
 		crystTypeOptionMenu = OptionMenu(CrystalinputFrame1, self.CrystalType,self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,MainGui))
 		crystTypeOptionMenu.pack(side=LEFT,pady=5,padx=6)
 
@@ -68,11 +68,22 @@ class crystalMakerWindow(Frame):
 			CrystalinputBox2Z.pack(side=LEFT,pady=5,padx=6)
 
 		elif value.get() == 'Spherical':
-			CrystalDimXLabel = Label(self.CrystalinputFrame2,text="r = ",style="inputBoxes.TLabel")
+			CrystalDimXLabel = Label(self.CrystalinputFrame2,text="Diameter = ",style="inputBoxes.TLabel")
 			CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
 			CrystalinputBox2X = Entry(self.CrystalinputFrame2,textvariable=self.CrystalDimX,width=5)
 			CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
 			self.CrystalDimY.set(0)
+			self.CrystalDimZ.set(0)
+
+		elif value.get() == 'Cylindrical':
+			CrystalDimXLabel = Label(self.CrystalinputFrame2,text="Diameter = ",style="inputBoxes.TLabel")
+			CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
+			CrystalinputBox2X = Entry(self.CrystalinputFrame2,textvariable=self.CrystalDimX,width=5)
+			CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
+			CrystalDimXLabel = Label(self.CrystalinputFrame2,text="Height = ",style="inputBoxes.TLabel")
+			CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
+			CrystalinputBox2X = Entry(self.CrystalinputFrame2,textvariable=self.CrystalDimY,width=5)
+			CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
 			self.CrystalDimZ.set(0)
 
 	def crystalPixPerMicInputs(self):
