@@ -4,37 +4,34 @@
 
 
 -***************************-
-To do before 30th June 2015
+To do before release (Aim for August 1st)
 -***************************-
 
-- Modify crystal maker windows such that they dynamically change input fields
-dependent on crystal type selected - Done for crystal cuboid and spherical types, 
-needs to be extended to other crystal types
+- Add more RADDOSE-3D input options for the manual input.
 
 - add functionaility to save summary of compared experiments currently loaded within
-summary/output window (csv format?) to a suitable working directory
+summary window - Do we want CSV format for output?
 
 - change %s syntax to .format() throughout for consistency
 
-- Add capability to create an interactive dose contour plot (with axis)
-
-
--***************************-
-To do at some point
--***************************-
+- Checks for inputs in a pre-made RADDOSE-3D file
 
 - Need to add a check when experiments are run to see if any files are already
 in use by other programs.
 
 - Fix the scroll bars (they don't always seem to work)
 
+- Create user guide
+
 - Add more options to Help/Suggestion Dialogue
-
-- Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
-
-- Add more RADDOSE-3D input options (inc PDB)
-
-- Checks for inputs in a pre-made RADDOSE-3D file
 
 - check cross platform image functionality (pkg PIL runs into problems on anaconda
 python 2.7.9 on mac). Need to test on ubuntu also...
+
+-***************************-
+To do at some point
+-***************************-
+
+- Add help buttons for each of the RADDDOSE-3D inputs
+
+- Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
