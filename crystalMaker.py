@@ -52,7 +52,7 @@ class crystalMakerWindow(Frame):
 		# Crystal input 2 --> crystal dimensions
 		if value.get() in ('Cuboid','Spherical','Cylindrical'):
 
-			CrystalinputLabel2 = Label(self.currentStrategyCrystal,text="Crystal Dimensions (microns)",style="inputBoxes.TLabel")
+			CrystalinputLabel2 = Label(self.currentStrategyCrystal,text="Crystal Dimensions (microns):",style="inputBoxes.TLabel")
 			CrystalinputLabel2.grid(row=0,column=2,sticky=E,pady=5,padx=6)
 
 			self.CrystalDimsInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
@@ -92,15 +92,15 @@ class crystalMakerWindow(Frame):
 				self.CrystalDimZ.set(0)
 
 		elif value.get() == 'Polyhedron':
-			CrystalWireFrameTypeLabel = Label(self.currentStrategyCrystal,text="WireFrameType = ",style="inputBoxes.TLabel")
-			CrystalWireFrameTypeLabel.grid(row=0,column=2,sticky=E,pady=5,padx=6)
-			crystWireFrameTypeList = ['obj']
-			crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalWireFrameType, self.crystalWireFrameType.get(), *crystWireFrameTypeList)
-			crystTypeOptionMenu.grid(row=0,column=3,sticky=W,pady=5,padx=6)
-			CrystalModelFileLabel = Label(self.currentStrategyCrystal,text="Model File = ",style="inputBoxes.TLabel")
-			CrystalModelFileLabel.grid(row=0,column=4,sticky=E,pady=5,padx=6)
-			CrystalModelFileInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalModelFile,width=5)
-			CrystalModelFileInputBox.grid(row=0,column=5,sticky=W,pady=5,padx=6)
+			# CrystalWireFrameTypeLabel = Label(self.currentStrategyCrystal,text="WireFrameType = ",style="inputBoxes.TLabel")
+			# CrystalWireFrameTypeLabel.grid(row=0,column=2,sticky=E,pady=5,padx=6)
+			# crystWireFrameTypeList = ['obj']
+			# crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalWireFrameType, self.crystalWireFrameType.get(), *crystWireFrameTypeList)
+			# crystTypeOptionMenu.grid(row=0,column=3,sticky=W,pady=5,padx=6)
+			CrystalModelFileLabel = Label(self.currentStrategyCrystal,text="Model File (.obj) = ",style="inputBoxes.TLabel")
+			CrystalModelFileLabel.grid(row=0,column=2,sticky=E,pady=5,padx=6)
+			CrystalModelFileInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalModelFile,width=14)
+			CrystalModelFileInputBox.grid(row=0,column=3,sticky=W,pady=5,padx=6)
 			self.CrystalDimX.set(0)
 			self.CrystalDimY.set(0)
 			self.CrystalDimZ.set(0)
