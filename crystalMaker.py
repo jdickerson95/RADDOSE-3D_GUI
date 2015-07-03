@@ -17,19 +17,23 @@ class crystalMakerWindow(Frame):
 											style="MakeABeam.TFrame")
 		self.currentStrategyCrystal.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
 
-		# Crystal input 1 --> crystal type
+		# Crystal input --> crystal type
 		self.CrystalType = StringVar()
 		self.CrystalType.set('Cuboid')
 		self.crystalTypeInputs(MainGui)
 
-		# Crystal input 2 --> default cuboid crystal dimensions
+		# Crystal input --> default cuboid crystal dimensions
 		self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
 		self.crystalDimInputs(self.CrystalType)
 
-		# Crystal input 3 --> pixels per Micron
+		# Crystal input --> wireframe type and model file for a polyhedron crystal
+		self.crystalWireFrameType, self.crystalModelFile, = StringVar(),StringVar(),
+		self.crystalDimInputs(self.CrystalType)
+
+		# Crystal input --> pixels per Micron
 		self.crystalPixPerMicInputs()
 
-		# Crystal input 4 --> absorption coefficient
+		# Crystal input --> absorption coefficient
 		self.crystalAbsCoeffInputs()
 
 		# create a 'make' button here to add this crystal to the list of added crystals
@@ -85,6 +89,21 @@ class crystalMakerWindow(Frame):
 			CrystalinputBox2X = Entry(self.CrystalinputFrame2,textvariable=self.CrystalDimY,width=5)
 			CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
 			self.CrystalDimZ.set(0)
+
+		elif value.get() == 'Polyhedron':
+			CrystalWireFrameTypeLabel = Label(self.CrystalinputFrame2,text="WireFrameType = ",style="inputBoxes.TLabel")
+			CrystalWireFrameTypeLabel.pack(side=LEFT,pady=5,padx=6)
+			crystWireFrameTypeList = ['obj']
+			crystTypeOptionMenu = OptionMenu(self.CrystalinputFrame2, self.crystalWireFrameType, self.crystalWireFrameType.get(), *crystWireFrameTypeList)
+			crystTypeOptionMenu.pack(side=LEFT,pady=5,padx=6)
+			CrystalModelFileLabel = Label(self.CrystalinputFrame2,text="Model File = ",style="inputBoxes.TLabel")
+			CrystalModelFileLabel.pack(side=LEFT,pady=5,padx=6)
+			CrystalModelFileInputBox = Entry(self.CrystalinputFrame2,textvariable=self.crystalModelFile,width=5)
+			CrystalModelFileInputBox.pack(side=LEFT,pady=5,padx=6)
+			self.CrystalDimX.set(0)
+			self.CrystalDimY.set(0)
+			self.CrystalDimZ.set(0)
+			self.crystalWireFrameType.set("obj")
 
 	def crystalPixPerMicInputs(self):
 		# Crystal input 3 --> pixels per Micron
