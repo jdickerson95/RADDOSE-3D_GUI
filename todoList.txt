@@ -32,6 +32,11 @@ python 2.7.9 on mac). Need to test on ubuntu also...
 To do at some point
 -***************************-
 
+- If you don't put valid inputs in for the crystal and you try to make a crystal
+it wont let you make that crystal but the crystal maker window closes and you
+lose the inputs that you did have. This needs to be changed so that the window
+doesn't close and you keep the inputs that you did have.
+
 - Add help buttons for each of the RADDDOSE-3D inputs
 
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
