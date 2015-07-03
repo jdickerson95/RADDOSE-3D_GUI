@@ -1,6 +1,5 @@
 from Tkinter import *
 from ttk import *
-import os
 from crystals import crystals
 import tkMessageBox
 
@@ -37,7 +36,7 @@ class crystalMakerWindow(Frame):
 		self.crystalMakeButton(MainGui)
 
 
-	def crystalTypeInputs(self,MainGui):	
+	def crystalTypeInputs(self,MainGui):
 		# Crystal input 1 --> crystal type
 		CrystalinputFrame1 = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 		CrystalinputFrame1.grid(row=0,column=0)
@@ -76,7 +75,7 @@ class crystalMakerWindow(Frame):
 			self.CrystalDimY.set(0)
 			self.CrystalDimZ.set(0)
 
-	def crystalPixPerMicInputs(self):		
+	def crystalPixPerMicInputs(self):
 		# Crystal input 3 --> pixels per Micron
 		CrystalinputFrame3 = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 		CrystalinputFrame3.grid(row=1,column=0)
