@@ -50,7 +50,7 @@ class crystalMakerWindow(Frame):
 		# Crystal input 2 --> crystal dimensions
 		self.CrystalinputFrame2 = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 		self.CrystalinputFrame2.grid(row=0,column=1)
-		CrystalinputLabel2 = Label(self.CrystalinputFrame2,text="Crystal Dimensions",style="inputBoxes.TLabel")
+		CrystalinputLabel2 = Label(self.CrystalinputFrame2,text="Crystal Dimensions (microns)",style="inputBoxes.TLabel")
 		CrystalinputLabel2.pack(side=LEFT,pady=5,padx=6)
 
 		if value.get() == 'Cuboid':
