@@ -28,6 +28,12 @@ in use by other programs.
 - check cross platform image functionality (pkg PIL runs into problems on anaconda
 python 2.7.9 on mac). Need to test on ubuntu also...
 
+- Increase width of model file box in crystal maker window when polyhedron crystal is
+selected.
+
+-Remove compulsory wireframe type set to obj in crystal maker window when polyhedron
+crystal is set.
+
 -***************************-
 To do at some point
 -***************************-
