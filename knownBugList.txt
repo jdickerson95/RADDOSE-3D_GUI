@@ -13,9 +13,14 @@ with the same names are loaded twice. We may want this but I thought it would be
 good to dicuss
 
 - Beam parsers currently search for pixelsize and FWHM values irrespective of beam type.
-This means that any added beams must have all properties specified regardless of beam type, 
+This means that any added beams must have all properties specified regardless of beam type,
 or parsers will crash
 
 - If pre-made RD3D file read for full experiment, or just to input beam parameters, the
 PixelSize property must be present, otherwise this causes a crash within the clickBeamAdd method,
-where it is assumed to habe been read in..
+where it is assumed to habe been read in.
+
+- The crystal maker will not work!!! This is because I've set the labels to be
+understandable for the user (as much as possible anyway) rather than set them to
+be the same as for the RADDOSE-3D input. I will sort this out when I've finished
+sorting out all of the inputs and help comments (Jonny)

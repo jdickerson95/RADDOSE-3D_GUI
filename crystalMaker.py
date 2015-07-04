@@ -25,8 +25,13 @@ class crystalMakerWindow(Frame):
 		self.crystalAbsCoeffType = StringVar()
 		self.crystalAbsCoeffType.set('Average protein composition')
 
+		#Crystal input --> container type
+		self.containerType = StringVar()
+		self.containerType.set("No container")
+
 		self.crystalTypeInputs(MainGui)
 		self.crystalAbsCoeffTypeInputs(MainGui)
+		self.sampleContainerTypeInputs(MainGui)
 
 		# Crystal input --> default cuboid crystal dimensions
 		self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
@@ -62,6 +67,12 @@ class crystalMakerWindow(Frame):
 		self.sequenceFile = StringVar()
 		self.crystalCompositionInputs(self.crystalAbsCoeffType)
 
+		self.materialMixture = StringVar()
+		self.materialElements = StringVar()
+		self.containerThickness = StringVar()
+		self.containerDensity = StringVar()
+		self.containerTypeInputs(self.containerType)
+
 		# create a 'make' button here to add this crystal to the list of added crystals
 		self.crystalMakeButton(MainGui)
 
@@ -70,7 +81,7 @@ class crystalMakerWindow(Frame):
 		CrystalinputLabel1 = Label(self.currentStrategyCrystal,text="Crystal Type",style="inputBoxes.TLabel")
 		CrystalinputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
 		crystTypeList = ['Cuboid','Spherical', 'Cylindrical', 'Polyhedron']
-		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,MainGui))
+		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystTypeOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 
 	def crystalDimInputs(self,crystTypeValue):
@@ -166,7 +177,7 @@ class crystalMakerWindow(Frame):
 		CrystalinputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
 		crystAbsCoeffList = ['Average protein composition', 'Using PDB code', 'User defined composition',
 		'RADDOSE version 2', 'using sequence file', 'SAXS (user defined composition)', 'SAXS (sequence file)']
-		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType, self.crystalAbsCoeffType, MainGui))
+		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystAbsCoeffOptionMenu.grid(row=3,column=1,sticky=W,pady=5,padx=6)
 
 	def crystalCompositionInputs(self, absCoeffTypeValue):
@@ -478,9 +489,117 @@ class crystalMakerWindow(Frame):
 			self.numMonomers.set("0")
 			self.sequenceFile.set("0")
 
+		elif 'SAXS (sequence file)' in absCoeffTypeValue.get():
+			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Protein concentration",style="inputBoxes.TLabel")
+			CrystalNumMonLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			CrystalNumMonInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinConc,width=14)
+			CrystalNumMonInputBox.grid(row=4,column=1,sticky=W,pady=5,padx=6)
+
+			CrystalNumResLabel = Label(self.currentStrategyCrystal,text="Sequence file",style="inputBoxes.TLabel")
+			CrystalNumResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.sequenceFile,width=14)
+			CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
+
+			CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
+			CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
+			CrystalHeavyProtInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinHeavyAtoms,width=14)
+			CrystalHeavyProtInputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
+
+			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Concentration of heavy elements in solvent (optional)",style="inputBoxes.TLabel")
+			CrystalHeavySolLabel.grid(row=6,column=2,sticky=E,pady=5,padx=6)
+			CrystalHeavySolInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
+			CrystalHeavySolInputBox.grid(row=6,column=3,sticky=W,pady=5,padx=6)
+
+			CrystalSolFracLabel = Label(self.currentStrategyCrystal,text="Solvent fraction (optional)",style="inputBoxes.TLabel")
+			CrystalSolFracLabel.grid(row=7,column=0,sticky=E,pady=5,padx=6)
+			CrystalSolFracInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventFraction,width=14)
+			CrystalSolFracInputBox.grid(row=7,column=1,sticky=W,pady=5,padx=6)
+
+			CrystalUnitcellLabel = Label(self.currentStrategyCrystal,text="Unit Cell Dimensions (optional)",style="inputBoxes.TLabel")
+			CrystalUnitcellLabel.grid(row=8,column=0,sticky=E,pady=5,padx=6)
+			self.UnitcellInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
+			self.UnitcellInputsFrame.grid(row=8,column=1,sticky=W,pady=5,padx=6)
+			unitCellALabel = Label(self.UnitcellInputsFrame,text="a = ",style="inputBoxes.TLabel")
+			unitCellALabel.grid(row=0,column=0,sticky=E,pady=5,padx=6)
+			unitCellABox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_a,width=5)
+			unitCellABox.grid(row=0,column=1,sticky=W,pady=5,padx=6)
+			unitCellBLabel = Label(self.UnitcellInputsFrame,text="b = ",style="inputBoxes.TLabel")
+			unitCellBLabel.grid(row=1,column=0,sticky=E,pady=5,padx=6)
+			unitCellBBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_b,width=5)
+			unitCellBBox.grid(row=1,column=1,sticky=W,pady=5,padx=6)
+			unitCellCLabel = Label(self.UnitcellInputsFrame,text="c = ",style="inputBoxes.TLabel")
+			unitCellCLabel.grid(row=2,column=0,sticky=E,pady=5,padx=6)
+			unitCellCBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_c,width=5)
+			unitCellCBox.grid(row=2,column=1,sticky=W,pady=5,padx=6)
+			unitCellAlphaLabel = Label(self.UnitcellInputsFrame,text="alpha = ",style="inputBoxes.TLabel")
+			unitCellAlphaLabel.grid(row=0,column=2,sticky=E,pady=5,padx=6)
+			unitCellAlphaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_alpha,width=5)
+			unitCellAlphaBox.grid(row=0,column=3,sticky=W,pady=5,padx=6)
+			unitCellBetaLabel = Label(self.UnitcellInputsFrame,text="beta = ",style="inputBoxes.TLabel")
+			unitCellBetaLabel.grid(row=1,column=2,sticky=E,pady=5,padx=6)
+			unitCellBetaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_beta,width=5)
+			unitCellBetaBox.grid(row=1,column=3,sticky=W,pady=5,padx=6)
+			unitCellGammaLabel = Label(self.UnitcellInputsFrame,text="gamma = ",style="inputBoxes.TLabel")
+			unitCellGammaLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
+			unitCellGammaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_gamma,width=5)
+			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
+			self.pdbcode.set("0")
+			self.numMonomers.set("0")
+			self.numResidues.set("0")
+			self.numRNA.set("0")
+			self.numDNA.set("0")
+
+	def sampleContainerTypeInputs(self, MainGui):
+		# Crystal input  --> Sample container type
+		containerTypeInputLabel = Label(self.currentStrategyCrystal,text="Type of sample container",style="inputBoxes.TLabel")
+		containerTypeInputLabel.grid(row=9,column=0,sticky=E,pady=5,padx=6)
+		containerTypeList = ['No container', 'Specify mixture', 'Specify elemental composition']
+		containerTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.containerType, self.containerType.get(), *containerTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
+		containerTypeOptionMenu.grid(row=9,column=1,sticky=W,pady=5,padx=6)
+
+	def containerTypeInputs(self, containerTypeValue):
+			if 'No container' in containerTypeValue.get():
+				self.materialMixture.set("0")
+				self.materialElements.set("Na 0")
+				self.containerThickness.set("0")
+				self.containerDensity.set("0")
+
+			elif 'Specify mixture' in containerTypeValue.get():
+				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
+				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialMixture,width=14)
+				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+
+				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
+				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
+				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
+
+				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
+				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
+				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+				self.materialElements.set("Na 0")
+
+			elif 'Specify elemental composition' in containerTypeValue.get():
+				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Elemental composition",style="inputBoxes.TLabel")
+				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialElements,width=14)
+				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+
+				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
+				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
+				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
+
+				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
+				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
+				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+				self.materialMixture.set("0")
 
 
-	def update(self, crystTypeValue, absCoeffTypeValue, MainGui):
+	def update(self, crystTypeValue, absCoeffTypeValue, containerTypeValue, MainGui):
 
 		# remove all widgets within the current crystal-maker frame
 		for widget in self.currentStrategyCrystal.winfo_children():
@@ -488,16 +607,18 @@ class crystalMakerWindow(Frame):
 
 		self.crystalTypeInputs(MainGui)
 		self.crystalAbsCoeffTypeInputs(MainGui)
+		self.sampleContainerTypeInputs(MainGui)
 		self.crystalDimInputs(crystTypeValue)
 		self.crystalPixPerMicInputs()
 		self.crystalAngleInputs()
 		self.crystalMakeButton(MainGui)
 		self.crystalCompositionInputs(absCoeffTypeValue)
+		self.containerTypeInputs(containerTypeValue)
 
 	def crystalMakeButton(self,MainGui):
 		# create a 'make' button here to add this crystal to the list of added crystals
 		crystMakeButton = Button(self.currentStrategyCrystal,text="Make",command= lambda: self.addMadeCryst(MainGui))
-		crystMakeButton.grid(row=9,columnspan=3,pady=5)
+		crystMakeButton.grid(row=12,columnspan=3,pady=5)
 
 	def addMadeCryst(self,MainGui):
 		# make a new crystal object from above entered parameters and add to both listbox crystal list and
