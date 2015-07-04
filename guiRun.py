@@ -1369,15 +1369,6 @@ class RADDOSEgui(Frame):
 		value = sender.get(idx)
 		self.var3.set(value)
 
-    def readHelpFile(self):
-		# read in a txt file to add to helpBox in top left body frame. Currently the txt file
-		# 'sampletxt.txt' is just a template file, but will eventually contain all the suggested
-		# output from each RADDOSE run
-		fileOpen = open('sampletxt.txt','r')
-		filelines = fileOpen.readlines()
-		fileString = ' '.join(filelines)
-		self.varHelpBox.set(fileString)
-
     def updateHelp(self):
         self.helpObj.getAdvice()
         self.varHelpBox.set(self.helpObj.advice)
