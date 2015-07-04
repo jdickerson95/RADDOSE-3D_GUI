@@ -42,6 +42,11 @@ class beamMakerWindow(Frame):
 		self.beamFile = StringVar()
 		self.beamFileInput(self.BeamType)
 
+		# Beam input --> x and y size of the pixels in the image.
+		self.beamPixSizeX = StringVar()
+		self.beamPixSizeY = StringVar()
+		self.beamPixelSizeInput(self.BeamType)
+
 		# create a 'make' button here to add this beam to the list of added beams
 		self.beamMakeButton(MainGui)
 
@@ -103,12 +108,27 @@ class beamMakerWindow(Frame):
 	def beamFileInput(self,beamType):
 		# Beam input 2 --> FWHM
 		if beamType.get() == 'Experimental':
-			BeaminputLabel3 = Label(self.currentStrategyBeam,text="File",style="inputBoxes.TLabel")
-			BeaminputLabel3.grid(row=4,column=0,sticky=E,pady=5,padx=6)
-			BeaminputBox3 = Entry(self.currentStrategyBeam,textvariable=self.beamFile,width=5)
-			BeaminputBox3.grid(row=4,column=1,columnspan=3,sticky=W,pady=5,padx=6)
+			BeamFileInputLabel = Label(self.currentStrategyBeam,text="File",style="inputBoxes.TLabel")
+			BeamFileInputLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			BeamFileInputBox = Entry(self.currentStrategyBeam,textvariable=self.beamFile,width=5)
+			BeamFileInputBox.grid(row=4,column=1,columnspan=3,sticky=W,pady=5,padx=6)
 		else:
 			self.beamFile.set("")
+
+	def beamPixelSizeInput(self,beamType):
+		# Beam input 2 --> FWHM
+		if beamType.get() == 'Experimental':
+			BeamPixelSizeInputLabel = Label(self.currentStrategyBeam,text="Pixel Size (x, y - microns)",style="inputBoxes.TLabel")
+			BeamPixelSizeInputLabel.grid(row=5,column=0,sticky=E,pady=5,padx=6)
+			BeamPixelSizeInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
+			BeamPixelSizeInputsFrame.grid(row=5,column=1,sticky=W)
+			BeamPixelSizeXBox = Entry(BeamPixelSizeInputsFrame,textvariable=self.beamPixSizeX,width=5)
+			BeamPixelSizeXBox.pack(side=LEFT,pady=5,padx=6)
+			BeamPixelSizeYBox = Entry(BeamPixelSizeInputsFrame,textvariable=self.beamPixSizeY,width=5)
+			BeamPixelSizeYBox.pack(side=LEFT,pady=5,padx=6)
+		else:
+			self.beamPixSizeX.set("0")
+			self.beamPixSizeY.set("0")
 
 	def update(self,beamType,MainGui):
 		# remove all widgets within the current beam-maker frame
@@ -122,12 +142,13 @@ class beamMakerWindow(Frame):
 		self.beamEnergyInputs()
 		self.beamRectCollInputs(self.BeamType)
 		self.beamFileInput(self.BeamType)
+		self.beamPixelSizeInput(self.BeamType)
 		self.beamMakeButton(MainGui)
 
 	def beamMakeButton(self,MainGui):
 		# create a 'make' button here to add this beam to the list of added beams
 		beamMakeButton = Button(self.currentStrategyBeam,text="Make",command= lambda: self.addMadeBeam(MainGui))
-		beamMakeButton.grid(row=5,column=0,columnspan=3,pady=5)
+		beamMakeButton.grid(row=6,column=0,columnspan=3,pady=5)
 
 	def addMadeBeam(self,MainGui):
 		# make a new beam object from above entered parameters and add to both listbox beam list and
