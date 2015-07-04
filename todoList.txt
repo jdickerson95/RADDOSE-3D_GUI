@@ -34,7 +34,10 @@ opposed to setting the values to some default (often .set("0"))
 
 - Add units to the crystal input labels
 
--Add help comments when mouse is hovered over RADDOSE-3D inputs
+- Add help comments when mouse is hovered over RADDOSE-3D inputs
+
+- Increase width of the "File" field in the Beam Maker window when the
+"Experimental" beam type is selected.
 
 -***************************-
 To do at some point
