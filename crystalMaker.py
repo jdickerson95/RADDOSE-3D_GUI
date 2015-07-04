@@ -20,7 +20,13 @@ class crystalMakerWindow(Frame):
 		# Crystal input --> crystal type
 		self.CrystalType = StringVar()
 		self.CrystalType.set('Cuboid')
+
+		# Crystal input --> absorption coefficient
+		self.crystalAbsCoeffType = StringVar()
+		self.crystalAbsCoeffType.set('Average protein composition')
+
 		self.crystalTypeInputs(MainGui)
+		self.crystalAbsCoeffInputs(MainGui)
 
 		# Crystal input --> default cuboid crystal dimensions
 		self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
@@ -36,19 +42,19 @@ class crystalMakerWindow(Frame):
 		#orientation of the crystal with respect to the beam and rotation axis.
 		self.crystalAngleInputs()
 
-		# Crystal input --> absorption coefficient
-		self.crystalAbsCoeffInputs()
+		#Crystal input --> Inputs for crystal composition. This is dependent on
+		#Absorption Coefficient (AbsCoeff) type chosen
+		self.crystalCompositionInputs(self.crystalAbsCoeffType)
 
 		# create a 'make' button here to add this crystal to the list of added crystals
 		self.crystalMakeButton(MainGui)
-
 
 	def crystalTypeInputs(self,MainGui):
 		# Crystal input 1 --> crystal type
 		CrystalinputLabel1 = Label(self.currentStrategyCrystal,text="Crystal Type",style="inputBoxes.TLabel")
 		CrystalinputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
 		crystTypeList = ['Cuboid','Spherical', 'Cylindrical', 'Polyhedron']
-		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType,self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,MainGui))
+		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,MainGui))
 		crystTypeOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 
 	def crystalDimInputs(self,crystTypeValue):
@@ -138,27 +144,35 @@ class crystalMakerWindow(Frame):
 		CrystalAnglePInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalAngleL,width=5)
 		CrystalAnglePInputBox.grid(row=1,column=5,sticky=W,pady=5,padx=6)
 
-	def crystalAbsCoeffInputs(self):
+	def crystalAbsCoeffInputs(self, MainGui):
 		# Crystal input 4 --> absorption coefficient
 		CrystalinputLabel4 = Label(self.currentStrategyCrystal,text="Absorption Coefficient",style="inputBoxes.TLabel")
 		CrystalinputLabel4.grid(row=2,column=0,sticky=E,pady=5,padx=6)
-		self.CrystalAbsorpCoeff = StringVar()
-		crystAbsCoeffList = ['Average','RADDOSE']
-		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalAbsorpCoeff,crystAbsCoeffList[0],*crystAbsCoeffList)
+		crystAbsCoeffList = ['Average protein composition', 'Using PDB code', 'User defined composition',
+		'RADDOSE version 2', 'using sequence file', 'SAXS (user defined composition)', 'SAXS (sequence file)']
+		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType, self.crystalAbsCoeffType, MainGui))
 		crystAbsCoeffOptionMenu.grid(row=2,column=1,sticky=W,pady=5,padx=6)
 
-	def update(self,crystTypeValue,MainGui):
+	def crystalCompositionInputs(self, absCoeffTypeValue):
+		if 'Using PDB code' in absCoeffTypeValue.get():
+			CrystalPDBLabel = Label(self.currentStrategyCrystal,text="PDB code",style="inputBoxes.TLabel")
+			CrystalPDBLabel.grid(row=3,column=0,sticky=E,pady=5,padx=6)
+			CrystalPDBInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalModelFile,width=14)
+			CrystalPDBInputBox.grid(row=3,column=1,sticky=W,pady=5,padx=6)
+
+	def update(self, crystTypeValue, absCoeffTypeValue, MainGui):
 
 		# remove all widgets within the current crystal-maker frame
 		for widget in self.currentStrategyCrystal.winfo_children():
 			widget.destroy()
 
 		self.crystalTypeInputs(MainGui)
+		self.crystalAbsCoeffInputs(MainGui)
 		self.crystalDimInputs(crystTypeValue)
 		self.crystalPixPerMicInputs()
-		self.crystalAbsCoeffInputs()
 		self.crystalAngleInputs()
 		self.crystalMakeButton(MainGui)
+		self.crystalCompositionInputs(absCoeffTypeValue)
 
 	def crystalMakeButton(self,MainGui):
 		# create a 'make' button here to add this crystal to the list of added crystals
@@ -170,7 +184,7 @@ class crystalMakerWindow(Frame):
 		# also list of crystal objects
 		newCryst = crystals(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 							self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
-							self.CrystalAbsorpCoeff.get())
+							"average")
 
 		# check the crystal parameters are valid
 		ErrorMessage = MainGui.checkCrystInputs(newCryst)
