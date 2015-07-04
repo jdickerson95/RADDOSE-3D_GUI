@@ -11,11 +11,10 @@ class help(object):
 
 	def welcomeMessage(self):
 		# this is the welcome message for when gui opened
-		self.advice = """ Welcome to the RADDOSE-3D interface. 
-					  Currently 2 model crystals and 2 model beams are loaded.
-					  Please first create/load a new crystal or beam for your experiment.
-					  Alternatively use the ready-made crystal and beams to design a strategy.
-					  """
+		self.advice = ('Welcome to the RADDOSE-3D interface.\n' 
+					  'Currently 2 model crystals and 2 model beams are loaded.\n'
+					  'Please first create/load a new crystal or beam for your experiment.\n'
+					  'Alternatively use the ready-made crystal and beams to design a strategy.\n')
 
 	def getAdvice(self):
 		# when interface first opened, display welcome message
@@ -24,25 +23,46 @@ class help(object):
 			self.updateMessageNumber()
 		else:
 			self.updateMessageNumber()
-			self.advice = ""
-			# update help advice depending on whether crystals, beams, strategies are loaded
-			if self.crystAdded == False:
-				self.advice += 'No crystal found. Please load a premade crystal file or make a crystal using the make-a-crystal window.\n'
-				return
-			elif self.crystAdded == True:
-				self.advice += 'Crystal found.\n' 
+			# obtain current text for help text box
+			adviceSummary,adviceBreakdown = self.createAdviceString()
+			# combine the advice summary and breakdown sections to create full advice string
+			self.advice = adviceSummary + '\nAdvice:\n' + adviceBreakdown
 
-			if self.beamAdded == False:
-				self.advice += 'No beam found. Please load a premade beam file or make a beam using the make-a-beam window.\n'
-				return
-			elif self.beamAdded == True:
-				self.advice += 'Beam found.\n'
+	def createAdviceString(self):
+		# update help advice depending on whether crystals, beams, strategies are loaded.
+		# Advice string broken into summary and breakdown sections
+		adviceSummary,adviceBreakdown = "",""
+		tickMark = u'\u2713\t'
+		questionMark = '?\t'
+		if self.crystAdded == False:
+			adviceSummary += questionMark
+			adviceSummary += 'No crystal found.\n' 
+			adviceBreakdown += 'Please load a premade crystal file or make a crystal using the make-a-crystal window.\n'
+			return (adviceSummary,adviceBreakdown)
+		elif self.crystAdded == True:
+			adviceSummary += tickMark
+			adviceSummary += 'Crystal found.\n' 
 
-			if self.stratLoaded == False:
-				self.advice += 'Please create a strategy using added crystals and beams.\n'
-				return
-			elif self.stratLoaded == True:
-				self.advice += 'A strategy has been loaded. Additional exposure strategies can be added, or the current strategy can now be run.'
+		if self.beamAdded == False:
+			adviceSummary += questionMark
+			adviceSummary += 'No beam found.\n' 
+			adviceBreakdown += 'Please load a premade beam file or make a beam using the make-a-beam window.\n'
+			return (adviceSummary,adviceBreakdown)
+		elif self.beamAdded == True:
+			adviceSummary += tickMark
+			adviceSummary += 'Beam found.\n'
+
+		if self.stratLoaded == False:
+			adviceSummary += questionMark
+			adviceSummary += 'No strategy found.\n' 
+			adviceBreakdown += 'Please create a strategy using added crystals and beams.\n'
+			return (adviceSummary,adviceBreakdown)
+		elif self.stratLoaded == True:
+			adviceSummary += tickMark
+			adviceSummary += 'Strategy found.\n'
+			adviceBreakdown += 'A strategy has been loaded. Additional exposure strategies can be added, or the current strategy can now be run.'
+
+		return (adviceSummary,adviceBreakdown)
 
 	def checkStates(self,list,type):
 		# inputs a list of crystal, beam or wedge objects (type = 'crystal','beam','wedge')
