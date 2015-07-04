@@ -579,6 +579,24 @@ class crystalMakerWindow(Frame):
 				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
 				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
 				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+				self.materialElements.set("Na 0")
+
+			elif 'Specify elemental composition' in containerTypeValue.get():
+				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Elemental composition",style="inputBoxes.TLabel")
+				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialElements,width=14)
+				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+
+				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
+				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
+				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
+
+				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
+				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
+				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+				self.materialMixture.set("0")
 
 
 	def update(self, crystTypeValue, absCoeffTypeValue, containerTypeValue, MainGui):
