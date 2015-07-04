@@ -44,6 +44,16 @@ class crystalMakerWindow(Frame):
 
 		#Crystal input --> Inputs for crystal composition. This is dependent on
 		#Absorption Coefficient (AbsCoeff) type chosen
+		self.pdbcode = StringVar()
+		self.unitcell = StringVar()
+		self.numMonomers =  StringVar()
+		self.numResidues = StringVar()
+		self.numRNA = StringVar()
+		self.numDNA = StringVar()
+		self.proteinHeavyAtoms = StringVar()
+		self.solventHeavyConc = StringVar()
+		self.solventFraction = StringVar()
+		self.proteinConc = StringVar()
 		self.crystalCompositionInputs(self.crystalAbsCoeffType)
 
 		# create a 'make' button here to add this crystal to the list of added crystals
@@ -157,8 +167,21 @@ class crystalMakerWindow(Frame):
 		if 'Using PDB code' in absCoeffTypeValue.get():
 			CrystalPDBLabel = Label(self.currentStrategyCrystal,text="PDB code",style="inputBoxes.TLabel")
 			CrystalPDBLabel.grid(row=3,column=0,sticky=E,pady=5,padx=6)
-			CrystalPDBInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalModelFile,width=14)
+			CrystalPDBInputBox = Entry(self.currentStrategyCrystal,textvariable=self.pdbcode,width=14)
 			CrystalPDBInputBox.grid(row=3,column=1,sticky=W,pady=5,padx=6)
+
+			CrystalSolConcLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
+			CrystalSolConcLabel.grid(row=3,column=2,sticky=E,pady=5,padx=6)
+			CrystalSolConcInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
+			CrystalSolConcInputBox.grid(row=3,column=3,columnspan=4,sticky=W,pady=5,padx=6)
+			self.unitcell.set("0")
+			self.numMonomers.set("0")
+			self.numResidues.set("0")
+			self.numRNA.set("0")
+			self.numDNA.set("0")
+			self.proteinHeavyAtoms.set("Na 0")
+			self.solventFraction.set("0")
+			self.proteinConc.set("0")
 
 	def update(self, crystTypeValue, absCoeffTypeValue, MainGui):
 
