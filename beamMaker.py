@@ -10,7 +10,7 @@ class beamMakerWindow(Frame):
 		self.master = MainGui.top_BeamMaker
 		self.beamMakerFrame = Frame(self.master)
 		self.beamMakerFrame.pack()
-		
+
 		# Beam inputs here:
 		l = Label(MainGui.top_BeamMaker,text="Beam",style="labelFrameTitle.TLabel")
 		self.currentStrategyBeam = LabelFrame(self.master,labelwidget=l,
@@ -21,7 +21,7 @@ class beamMakerWindow(Frame):
 		self.BeamType = StringVar()
 		self.BeamType.set('Gaussian')
 		self.beamTypeInputs(MainGui)
-	
+
 		# Beam input 2 --> FWHM
 		self.BeamFWHMVertical,self.BeamFWHMHorizontal, = StringVar(),StringVar()
 		self.beamFWHMInputs(self.BeamType)
@@ -36,11 +36,11 @@ class beamMakerWindow(Frame):
 
 		# Beam input 5 --> Rectangular Collimation
 		self.BeamRectCollVert,self.BeamRectCollHoriz, = StringVar(),StringVar()
-		self.beamRectCollInputs()
+		self.beamRectCollInputs(self.BeamType)
 
 		# create a 'make' button here to add this beam to the list of added beams
 		self.beamMakeButton(MainGui)
-		
+
 	def beamTypeInputs(self,MainGui):
 		# Beam input 1 --> Beam type
 		BeaminputLabel1 = Label(self.currentStrategyBeam,text="Beam Type",style="inputBoxes.TLabel")
@@ -78,9 +78,12 @@ class beamMakerWindow(Frame):
 		BeaminputBox4 = Entry(self.currentStrategyBeam,textvariable=self.BeamEnergy,width=5)
 		BeaminputBox4.grid(row=3,column=1,sticky=W,pady=5,padx=6)
 
-	def beamRectCollInputs(self):
+	def beamRectCollInputs(self, beamType):
 		# Beam input 5 --> Rectangular Collimation
-		BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
+		if beamType.get() == 'Gaussian':
+			BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation (optional)",style="inputBoxes.TLabel")
+		else:
+			BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
 		BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
 		BeamRectCollInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
 		BeamRectCollInputsFrame.grid(row=4,column=1,sticky=W)
@@ -99,7 +102,7 @@ class beamMakerWindow(Frame):
 		self.beamFWHMInputs(self.BeamType)
 		self.beamFluxInputs()
 		self.beamEnergyInputs()
-		self.beamRectCollInputs()
+		self.beamRectCollInputs(self.BeamType)
 		self.beamMakeButton(MainGui)
 
 	def beamMakeButton(self,MainGui):
