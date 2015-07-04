@@ -25,8 +25,13 @@ class crystalMakerWindow(Frame):
 		self.crystalAbsCoeffType = StringVar()
 		self.crystalAbsCoeffType.set('Average protein composition')
 
+		#Crystal input --> container type
+		self.containerType = StringVar()
+		self.containerType.set("No container")
+
 		self.crystalTypeInputs(MainGui)
 		self.crystalAbsCoeffTypeInputs(MainGui)
+		self.sampleContainerTypeInputs(MainGui)
 
 		# Crystal input --> default cuboid crystal dimensions
 		self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
@@ -62,6 +67,12 @@ class crystalMakerWindow(Frame):
 		self.sequenceFile = StringVar()
 		self.crystalCompositionInputs(self.crystalAbsCoeffType)
 
+		self.materialMixture = StringVar()
+		self.materialElements = StringVar()
+		self.containerThickness = StringVar()
+		self.containerDensity = StringVar()
+		self.containerTypeInputs(containerType)
+
 		# create a 'make' button here to add this crystal to the list of added crystals
 		self.crystalMakeButton(MainGui)
 
@@ -70,7 +81,7 @@ class crystalMakerWindow(Frame):
 		CrystalinputLabel1 = Label(self.currentStrategyCrystal,text="Crystal Type",style="inputBoxes.TLabel")
 		CrystalinputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
 		crystTypeList = ['Cuboid','Spherical', 'Cylindrical', 'Polyhedron']
-		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,MainGui))
+		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystTypeOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 
 	def crystalDimInputs(self,crystTypeValue):
@@ -166,7 +177,7 @@ class crystalMakerWindow(Frame):
 		CrystalinputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
 		crystAbsCoeffList = ['Average protein composition', 'Using PDB code', 'User defined composition',
 		'RADDOSE version 2', 'using sequence file', 'SAXS (user defined composition)', 'SAXS (sequence file)']
-		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType, self.crystalAbsCoeffType, MainGui))
+		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystAbsCoeffOptionMenu.grid(row=3,column=1,sticky=W,pady=5,padx=6)
 
 	def crystalCompositionInputs(self, absCoeffTypeValue):
@@ -538,8 +549,23 @@ class crystalMakerWindow(Frame):
 			self.numRNA.set("0")
 			self.numDNA.set("0")
 
+	def sampleContainerTypeInputs(self, MainGui):
+		# Crystal input  --> Sample container type
+		containerTypeInputLabel = Label(self.currentStrategyCrystal,text="Type of sample container",style="inputBoxes.TLabel")
+		containerTypeInputLabel.grid(row=9,column=0,sticky=E,pady=5,padx=6)
+		containerTypeList = ['No container', 'Specify mixture', 'Specify elemental composition']
+		containerTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.containerType, self.containerType.get(), *containerTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
+		containerTypeOptionMenu.grid(row=9,column=1,sticky=W,pady=5,padx=6)
 
-	def update(self, crystTypeValue, absCoeffTypeValue, MainGui):
+	def containerTypeInputs(self, containerTypeValue):
+			if 'No container' in containerTypeValue.get():
+				self.materialMixture.set("0")
+				self.materialElements.set("Na 0")
+				self.containerThickness.set("0")
+				self.containerDensity.set("0")
+
+
+	def update(self, crystTypeValue, absCoeffTypeValue, containerTypeValue, MainGui):
 
 		# remove all widgets within the current crystal-maker frame
 		for widget in self.currentStrategyCrystal.winfo_children():
@@ -547,16 +573,18 @@ class crystalMakerWindow(Frame):
 
 		self.crystalTypeInputs(MainGui)
 		self.crystalAbsCoeffTypeInputs(MainGui)
+		self.sampleContainerTypeInputs(MainGui)
 		self.crystalDimInputs(crystTypeValue)
 		self.crystalPixPerMicInputs()
 		self.crystalAngleInputs()
 		self.crystalMakeButton(MainGui)
 		self.crystalCompositionInputs(absCoeffTypeValue)
+		self.containerTypeInputs(containerTypeValue)
 
 	def crystalMakeButton(self,MainGui):
 		# create a 'make' button here to add this crystal to the list of added crystals
 		crystMakeButton = Button(self.currentStrategyCrystal,text="Make",command= lambda: self.addMadeCryst(MainGui))
-		crystMakeButton.grid(row=9,columnspan=3,pady=5)
+		crystMakeButton.grid(row=10,columnspan=3,pady=5)
 
 	def addMadeCryst(self,MainGui):
 		# make a new crystal object from above entered parameters and add to both listbox crystal list and
