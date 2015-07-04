@@ -17,26 +17,30 @@ class beamMakerWindow(Frame):
 											style="MakeABeam.TFrame")
 		self.currentStrategyBeam.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
 
-		# Beam input 1 --> Beam type
+		# Beam input --> Beam type
 		self.BeamType = StringVar()
 		self.BeamType.set('Gaussian')
 		self.beamTypeInputs(MainGui)
 
-		# Beam input 2 --> FWHM
+		# Beam input --> FWHM
 		self.BeamFWHMVertical,self.BeamFWHMHorizontal, = StringVar(),StringVar()
 		self.beamFWHMInputs(self.BeamType)
 
-		# Beam input 3 --> flux
+		# Beam input --> flux
 		self.BeamFlux = StringVar()
 		self.beamFluxInputs()
 
-		# Beam input 4 --> Energy
+		# Beam input --> Energy
 		self.BeamEnergy = StringVar()
 		self.beamEnergyInputs()
 
-		# Beam input 5 --> Rectangular Collimation
+		# Beam input --> Rectangular Collimation
 		self.BeamRectCollVert,self.BeamRectCollHoriz, = StringVar(),StringVar()
 		self.beamRectCollInputs(self.BeamType)
+
+		# Beam input --> File containing the experimental beam image.
+		self.beamFile = StringVar()
+		self.beamFileInput(self.BeamType)
 
 		# create a 'make' button here to add this beam to the list of added beams
 		self.beamMakeButton(MainGui)
@@ -45,7 +49,7 @@ class beamMakerWindow(Frame):
 		# Beam input 1 --> Beam type
 		BeaminputLabel1 = Label(self.currentStrategyBeam,text="Beam Type",style="inputBoxes.TLabel")
 		BeaminputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
-		beamTypeList = ['Gaussian','TopHat']
+		beamTypeList = ['Gaussian','TopHat','Experimental']
 		beamTypeListOptionMenu = OptionMenu(self.currentStrategyBeam, self.BeamType,self.BeamType.get(),*beamTypeList,command= lambda x: self.update(self.BeamType,MainGui))
 		beamTypeListOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 
@@ -60,7 +64,7 @@ class beamMakerWindow(Frame):
 			BeamFWHMVerticalBox.pack(side=LEFT,pady=5,padx=6)
 			BeamFWHMHorizontalBox = Entry(BeamFWHMInputsFrame,textvariable=self.BeamFWHMHorizontal,width=5)
 			BeamFWHMHorizontalBox.pack(side=LEFT,pady=5,padx=6)
-		elif beamType.get() == 'TopHat':
+		else:
 			self.BeamFWHMVertical.set("")
 			self.BeamFWHMHorizontal.set("")
 
@@ -80,17 +84,31 @@ class beamMakerWindow(Frame):
 
 	def beamRectCollInputs(self, beamType):
 		# Beam input 5 --> Rectangular Collimation
-		if beamType.get() == 'Gaussian':
-			BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation (optional)",style="inputBoxes.TLabel")
+		if beamType.get() == 'Experimental':
+			self.BeamRectCollVert.set("0")
+			self.BeamRectCollHoriz.set("0")
 		else:
-			BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
-		BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
-		BeamRectCollInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-		BeamRectCollInputsFrame.grid(row=4,column=1,sticky=W)
-		BeamRectCollVertBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollVert,width=5)
-		BeamRectCollVertBox.pack(side=LEFT,pady=5,padx=6)
-		BeamRectCollHorizBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollHoriz,width=5)
-		BeamRectCollHorizBox.pack(side=LEFT,pady=5,padx=6)
+			if beamType.get() == 'Gaussian':
+				BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation (optional)",style="inputBoxes.TLabel")
+			else:
+				BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
+			BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			BeamRectCollInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
+			BeamRectCollInputsFrame.grid(row=4,column=1,sticky=W)
+			BeamRectCollVertBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollVert,width=5)
+			BeamRectCollVertBox.pack(side=LEFT,pady=5,padx=6)
+			BeamRectCollHorizBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollHoriz,width=5)
+			BeamRectCollHorizBox.pack(side=LEFT,pady=5,padx=6)
+
+	def beamFileInput(self,beamType):
+		# Beam input 2 --> FWHM
+		if beamType.get() == 'Experimental':
+			BeaminputLabel3 = Label(self.currentStrategyBeam,text="File",style="inputBoxes.TLabel")
+			BeaminputLabel3.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			BeaminputBox3 = Entry(self.currentStrategyBeam,textvariable=self.beamFile,width=5)
+			BeaminputBox3.grid(row=4,column=1,columnspan=3,sticky=W,pady=5,padx=6)
+		else:
+			self.beamFile.set("")
 
 	def update(self,beamType,MainGui):
 		# remove all widgets within the current beam-maker frame
@@ -103,6 +121,7 @@ class beamMakerWindow(Frame):
 		self.beamFluxInputs()
 		self.beamEnergyInputs()
 		self.beamRectCollInputs(self.BeamType)
+		self.beamFileInput(self.BeamType)
 		self.beamMakeButton(MainGui)
 
 	def beamMakeButton(self,MainGui):
