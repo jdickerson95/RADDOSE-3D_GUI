@@ -24,7 +24,6 @@ class crystalMakerWindow(Frame):
 
 		# Crystal input --> default cuboid crystal dimensions
 		self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
-		self.crystalDimInputs(self.CrystalType)
 
 		# Crystal input --> wireframe type and model file for a polyhedron crystal
 		self.crystalWireFrameType, self.crystalModelFile, = StringVar(),StringVar(),
@@ -48,9 +47,9 @@ class crystalMakerWindow(Frame):
 		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType,self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,MainGui))
 		crystTypeOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 
-	def crystalDimInputs(self,value):
+	def crystalDimInputs(self,crystTypeValue):
 		# Crystal input 2 --> crystal dimensions
-		if value.get() in ('Cuboid','Spherical','Cylindrical'):
+		if crystTypeValue.get() in ('Cuboid','Spherical','Cylindrical'):
 
 			CrystalinputLabel2 = Label(self.currentStrategyCrystal,text="Crystal Dimensions (microns):",style="inputBoxes.TLabel")
 			CrystalinputLabel2.grid(row=0,column=2,sticky=E,pady=5,padx=6)
@@ -58,7 +57,7 @@ class crystalMakerWindow(Frame):
 			self.CrystalDimsInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 			self.CrystalDimsInputsFrame.grid(row=0,column=3,sticky=W,pady=5,padx=6)
 
-			if value.get() == 'Cuboid':
+			if crystTypeValue.get() == 'Cuboid':
 				CrystalDimXLabel = Label(self.CrystalDimsInputsFrame,text="x = ",style="inputBoxes.TLabel")
 				CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
 				CrystalinputBox2X = Entry(self.CrystalDimsInputsFrame,textvariable=self.CrystalDimX,width=5)
@@ -72,7 +71,7 @@ class crystalMakerWindow(Frame):
 				CrystalinputBox2Z = Entry(self.CrystalDimsInputsFrame,textvariable=self.CrystalDimZ,width=5)
 				CrystalinputBox2Z.pack(side=LEFT,pady=5,padx=6)
 
-			elif value.get() == 'Spherical':
+			elif crystTypeValue.get() == 'Spherical':
 				CrystalDimXLabel = Label(self.CrystalDimsInputsFrame,text="Diameter = ",style="inputBoxes.TLabel")
 				CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
 				CrystalinputBox2X = Entry(self.CrystalDimsInputsFrame,textvariable=self.CrystalDimX,width=5)
@@ -80,7 +79,7 @@ class crystalMakerWindow(Frame):
 				self.CrystalDimY.set(0)
 				self.CrystalDimZ.set(0)
 
-			elif value.get() == 'Cylindrical':
+			elif crystTypeValue.get() == 'Cylindrical':
 				CrystalDimXLabel = Label(self.CrystalDimsInputsFrame,text="Diameter = ",style="inputBoxes.TLabel")
 				CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
 				CrystalinputBox2X = Entry(self.CrystalDimsInputsFrame,textvariable=self.CrystalDimX,width=5)
@@ -91,7 +90,15 @@ class crystalMakerWindow(Frame):
 				CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
 				self.CrystalDimZ.set(0)
 
-		elif value.get() == 'Polyhedron':
+		elif crystTypeValue.get() == 'Polyhedron':
+			####################################################################
+			#Currently the only input for wireframe type in RADDOSE-3D (as of
+			#4th July 2015) is "obj". This means we have currently set the
+			#crystal wireframe type to be "obj". If in future there are more
+			#options then we require a drop-down menu for the choices. The
+			#commented code below is the code required for the option menu for
+			#the case when there are more options for the wireframe type.
+			####################################################################
 			# CrystalWireFrameTypeLabel = Label(self.currentStrategyCrystal,text="WireFrameType = ",style="inputBoxes.TLabel")
 			# CrystalWireFrameTypeLabel.grid(row=0,column=2,sticky=E,pady=5,padx=6)
 			# crystWireFrameTypeList = ['obj']
@@ -123,14 +130,14 @@ class crystalMakerWindow(Frame):
 		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalAbsorpCoeff,crystAbsCoeffList[0],*crystAbsCoeffList)
 		crystAbsCoeffOptionMenu.grid(row=1,column=3,sticky=W,pady=5,padx=6)
 
-	def update(self,value,MainGui):
+	def update(self,crystTypeValue,MainGui):
 
 		# remove all widgets within the current crystal-maker frame
 		for widget in self.currentStrategyCrystal.winfo_children():
 			widget.destroy()
 
 		self.crystalTypeInputs(MainGui)
-		self.crystalDimInputs(value)
+		self.crystalDimInputs(crystTypeValue)
 		self.crystalPixPerMicInputs()
 		self.crystalAbsCoeffInputs()
 		self.crystalMakeButton(MainGui)
