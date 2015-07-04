@@ -71,7 +71,7 @@ class crystalMakerWindow(Frame):
 		self.materialElements = StringVar()
 		self.containerThickness = StringVar()
 		self.containerDensity = StringVar()
-		self.containerTypeInputs(containerType)
+		self.containerTypeInputs(self.containerType)
 
 		# create a 'make' button here to add this crystal to the list of added crystals
 		self.crystalMakeButton(MainGui)
@@ -564,6 +564,22 @@ class crystalMakerWindow(Frame):
 				self.containerThickness.set("0")
 				self.containerDensity.set("0")
 
+			elif 'Specify mixture' in containerTypeValue.get():
+				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
+				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialMixture,width=14)
+				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+
+				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
+				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
+				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
+
+				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
+				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
+				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+
 
 	def update(self, crystTypeValue, absCoeffTypeValue, containerTypeValue, MainGui):
 
@@ -584,7 +600,7 @@ class crystalMakerWindow(Frame):
 	def crystalMakeButton(self,MainGui):
 		# create a 'make' button here to add this crystal to the list of added crystals
 		crystMakeButton = Button(self.currentStrategyCrystal,text="Make",command= lambda: self.addMadeCryst(MainGui))
-		crystMakeButton.grid(row=10,columnspan=3,pady=5)
+		crystMakeButton.grid(row=12,columnspan=3,pady=5)
 
 	def addMadeCryst(self,MainGui):
 		# make a new crystal object from above entered parameters and add to both listbox crystal list and
