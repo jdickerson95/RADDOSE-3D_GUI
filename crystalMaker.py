@@ -32,6 +32,10 @@ class crystalMakerWindow(Frame):
 		# Crystal input --> pixels per Micron
 		self.crystalPixPerMicInputs()
 
+		# Crystal input --> Angle P and Angle L - these angles define the
+		#orientation of the crystal with respect to the beam and rotation axis.
+		self.crystalAngleInputs()
+
 		# Crystal input --> absorption coefficient
 		self.crystalAbsCoeffInputs()
 
@@ -121,14 +125,27 @@ class crystalMakerWindow(Frame):
 		CrystalinputBox3 = Entry(self.currentStrategyCrystal,textvariable=self.CrystalPixPerMic,width=5)
 		CrystalinputBox3.grid(row=1,column=1,sticky=W,pady=5,padx=6)
 
+	def crystalAngleInputs(self):
+		CrystalAnglePLabel = Label(self.currentStrategyCrystal,text="Angle P = ",style="inputBoxes.TLabel")
+		CrystalAnglePLabel.grid(row=1,column=2,sticky=E,pady=5,padx=6)
+		self.crystalAngleP = StringVar()
+		CrystalAnglePInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalAngleP,width=5)
+		CrystalAnglePInputBox.grid(row=1,column=3,sticky=W,pady=5,padx=6)
+
+		CrystalAngleLLabel = Label(self.currentStrategyCrystal,text="Angle L = ",style="inputBoxes.TLabel")
+		CrystalAngleLLabel.grid(row=1,column=4,sticky=W,pady=5,padx=6)
+		self.crystalAngleL = StringVar()
+		CrystalAnglePInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalAngleL,width=5)
+		CrystalAnglePInputBox.grid(row=1,column=5,sticky=W,pady=5,padx=6)
+
 	def crystalAbsCoeffInputs(self):
 		# Crystal input 4 --> absorption coefficient
 		CrystalinputLabel4 = Label(self.currentStrategyCrystal,text="Absorption Coefficient",style="inputBoxes.TLabel")
-		CrystalinputLabel4.grid(row=1,column=2,sticky=E,pady=5,padx=6)
+		CrystalinputLabel4.grid(row=2,column=0,sticky=E,pady=5,padx=6)
 		self.CrystalAbsorpCoeff = StringVar()
 		crystAbsCoeffList = ['Average','RADDOSE']
 		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalAbsorpCoeff,crystAbsCoeffList[0],*crystAbsCoeffList)
-		crystAbsCoeffOptionMenu.grid(row=1,column=3,sticky=W,pady=5,padx=6)
+		crystAbsCoeffOptionMenu.grid(row=2,column=1,sticky=W,pady=5,padx=6)
 
 	def update(self,crystTypeValue,MainGui):
 
@@ -140,12 +157,13 @@ class crystalMakerWindow(Frame):
 		self.crystalDimInputs(crystTypeValue)
 		self.crystalPixPerMicInputs()
 		self.crystalAbsCoeffInputs()
+		self.crystalAngleInputs()
 		self.crystalMakeButton(MainGui)
 
 	def crystalMakeButton(self,MainGui):
 		# create a 'make' button here to add this crystal to the list of added crystals
 		crystMakeButton = Button(self.currentStrategyCrystal,text="Make",command= lambda: self.addMadeCryst(MainGui))
-		crystMakeButton.grid(row=4,column=0,columnspan=3,pady=5)
+		crystMakeButton.grid(row=5,column=0,columnspan=3,pady=5)
 
 	def addMadeCryst(self,MainGui):
 		# make a new crystal object from above entered parameters and add to both listbox crystal list and
