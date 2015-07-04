@@ -1043,12 +1043,15 @@ class RADDOSEgui(Frame):
             self.tableRowEntries.append(tableEntry)
 
     def deleteCryst(self):
-		# delete the selected crystal from the listbox of added crystals. Also remove the
-		# corresponding crystal object from the crystalList list
-		self.crystListbox.delete(ANCHOR)
-		self.crystList.pop(self.crystListbox.index(ANCHOR))
-		# refresh the option menu of added crystals to keep it up to date
-		self.refreshCrystChoices()
+        # delete the selected crystal from the listbox of added crystals. Also remove the
+        # corresponding crystal object from the crystalList list
+        self.crystListbox.delete(ANCHOR)
+        self.crystList.pop(self.crystListbox.index(ANCHOR))
+        # refresh the option menu of added crystals to keep it up to date
+        self.refreshCrystChoices()
+
+        # update help window
+        self.updateHelp()
 
     def clickCrystMake(self):
 		# what happens when crystal make button clicked. Makes a new small window allowing
@@ -1082,7 +1085,6 @@ class RADDOSEgui(Frame):
         self.refreshCrystChoices()
 
         # update help window
-        self.helpObj.checkStates(self.crystList,'crystal')
         self.updateHelp()
 
     def addToExperimentList(self):
@@ -1247,10 +1249,13 @@ class RADDOSEgui(Frame):
 		return string
 
     def deleteBeam(self):
-		self.beamListbox.delete(ANCHOR)
-		self.beamList.pop(self.beamListbox.index(ANCHOR))
-		# also update list of beam choices used in the right strategy window
-		self.refreshBeamChoices()
+        self.beamListbox.delete(ANCHOR)
+        self.beamList.pop(self.beamListbox.index(ANCHOR))
+        # also update list of beam choices used in the right strategy window
+        self.refreshBeamChoices()
+
+        # update help window
+        self.updateHelp()
 
     def clickBeamMake(self):
 		# what happens when beam make button clicked. Makes a new small window allowing
@@ -1285,7 +1290,6 @@ class RADDOSEgui(Frame):
         self.refreshBeamChoices()
 
         # update help window
-        self.helpObj.checkStates(self.beamList,'beam')
         self.updateHelp()
 
     def clickBeamLoad(self):
@@ -1370,6 +1374,13 @@ class RADDOSEgui(Frame):
 		self.var3.set(value)
 
     def updateHelp(self):
+        # update the help window
+        # avoid trying to locate crystList and beamList when gui initially opened
+        # (before they are made)
+        if self.helpObj.messageNumber != 0:
+            self.helpObj.checkStates(self.crystList,'crystal')
+            self.helpObj.checkStates(self.beamList,'beam')
+
         self.helpObj.getAdvice()
         self.varHelpBox.set(self.helpObj.advice)
         quote = self.varHelpBox.get()
