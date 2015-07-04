@@ -171,7 +171,25 @@ class crystalMakerWindow(Frame):
 
 	def crystalCompositionInputs(self, absCoeffTypeValue):
 
-		if 'Using PDB code' in absCoeffTypeValue.get():
+		if 'Average protein composition' in absCoeffTypeValue.get():
+			self.solventHeavyConc.set("0")
+			self.pdbcode.set("0")
+			self.unitcell_a.set("0")
+			self.unitcell_b.set("0")
+			self.unitcell_c.set("0")
+			self.unitcell_alpha.set("0")
+			self.unitcell_beta.set("0")
+			self.unitcell_gamma.set("0")
+			self.numMonomers.set("0")
+			self.numResidues.set("0")
+			self.numRNA.set("0")
+			self.numDNA.set("0")
+			self.proteinHeavyAtoms.set("Na 0")
+			self.solventFraction.set("0")
+			self.proteinConc.set("0")
+			self.sequenceFile.set("0")
+
+		elif 'Using PDB code' in absCoeffTypeValue.get():
 			CrystalPDBLabel = Label(self.currentStrategyCrystal,text="PDB code",style="inputBoxes.TLabel")
 			CrystalPDBLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
 			CrystalPDBInputBox = Entry(self.currentStrategyCrystal,textvariable=self.pdbcode,width=14)
