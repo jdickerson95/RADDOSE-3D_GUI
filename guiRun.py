@@ -759,43 +759,49 @@ class RADDOSEgui(Frame):
 		wedgeMakeButton.grid(row=4,column=0,pady=5)
 
     def addBeamStrategy(self):
-		# add a new beam+wedge strategy to the treeview of coupled beam+wedge strategies to be input into RADDOSE3D
+        # add a new beam+wedge strategy to the treeview of coupled beam+wedge strategies to be input into RADDOSE3D
 
-		# make a new wedge object
-		currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get())
-		Index = self.BeamStratTree.insert("" , len(self.treeviewIndexlist),    text=str(len(self.treeviewIndexlist)+1),
-								 values=(self.beamChoice.get(),currentWedge.angStart,currentWedge.angStop,currentWedge.exposureTime))
-		self.treeviewIndexlist.append(Index)
+        # make a new wedge object
+        currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get())
+        Index = self.BeamStratTree.insert("" , len(self.treeviewIndexlist),    text=str(len(self.treeviewIndexlist)+1),
+        						 values=(self.beamChoice.get(),currentWedge.angStart,currentWedge.angStop,currentWedge.exposureTime))
+        self.treeviewIndexlist.append(Index)
 
-		# get the index of the selected beam from the list of added beams (in the optionmenu list)
-		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
-		# get the selected beam object here
-		currentBeam = self.beamList[self.currentBeamIndex]
-		# add the current beam to the list of beams to be run
-		self.beamList2Run.append(currentBeam)
-		# add the current wedge information for this beam to another list
-		self.wedgeList2Run.append(currentWedge)
+        # get the index of the selected beam from the list of added beams (in the optionmenu list)
+        self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
+        # get the selected beam object here
+        currentBeam = self.beamList[self.currentBeamIndex]
+        # add the current beam to the list of beams to be run
+        self.beamList2Run.append(currentBeam)
+        # add the current wedge information for this beam to another list
+        self.wedgeList2Run.append(currentWedge)
 
-		# once this function runs, the toplevel window should be exited
-		self.top_WedgeMaker.destroy()
+        # once this function runs, the toplevel window should be exited
+        self.top_WedgeMaker.destroy()
+
+        # update help window
+        self.updateHelp()
 
     def clickRemoveBeamStrategy(self):
-		# what happens when the remove beam strategy button is clicked. This removes the last entry in the treeview
-		# of beam+wedge couples currently saved.
+        # what happens when the remove beam strategy button is clicked. This removes the last entry in the treeview
+        # of beam+wedge couples currently saved.
 
-		# first find last entry in treeview
-		lastIndex = self.treeviewIndexlist[-1]
+        # first find last entry in treeview
+        lastIndex = self.treeviewIndexlist[-1]
 
-		# delete this entry from the treeview of beam+wedge couples
-		self.BeamStratTree.delete(lastIndex)
+        # delete this entry from the treeview of beam+wedge couples
+        self.BeamStratTree.delete(lastIndex)
 
-		# remove this index from the reference list of treeview indices
-		self.treeviewIndexlist.pop(-1)
+        # remove this index from the reference list of treeview indices
+        self.treeviewIndexlist.pop(-1)
 
-		# remove the last object from the list of added beam and wedge objects to be written into RADDOSE input script
-		# to correspond to updated treeview list
-		self.beamList2Run.pop(-1)
-		self.wedgeList2Run.pop(-1)
+        # remove the last object from the list of added beam and wedge objects to be written into RADDOSE input script
+        # to correspond to updated treeview list
+        self.beamList2Run.pop(-1)
+        self.wedgeList2Run.pop(-1)
+
+        # update help window
+        self.updateHelp()
 
     def refreshCrystChoices(self):
 	    # Reset the option menu of added crystals and delete crystals not now
@@ -1380,6 +1386,7 @@ class RADDOSEgui(Frame):
         if self.helpObj.messageNumber != 0:
             self.helpObj.checkStates(self.crystList,'crystal')
             self.helpObj.checkStates(self.beamList,'beam')
+            self.helpObj.checkStates(self.wedgeList2Run,'wedge')
 
         self.helpObj.getAdvice()
         self.varHelpBox.set(self.helpObj.advice)
