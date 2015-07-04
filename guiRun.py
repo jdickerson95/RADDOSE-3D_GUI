@@ -30,6 +30,7 @@ from beams import beams
 from wedges import wedges
 from experiments import Experiments
 from customMadeWidgets import *
+from help import help
 
 try:
     imp.find_module('mayavi')
@@ -184,16 +185,16 @@ class RADDOSEgui(Frame):
         #####################################################################################################
         # for top left body --> help/suggestion dialogue box
         self.varHelpBox = StringVar()
-        self.readHelpFile()
+        self.helpObj = help() # create help object to be updated as inputs are loaded
 
         scrollbarStrategyList = Scrollbar(FrameBodyLeftTop, orient=VERTICAL)
-        T = Text(FrameBodyLeftTop, height=8, width=35,wrap=WORD)
+        self.helpBox = Text(FrameBodyLeftTop, height=8, width=35,wrap=WORD)
         scrollbarStrategyList.pack(side=LEFT,fill=Y)
-        T.pack(side=LEFT,expand=True)
-        scrollbarStrategyList.config(command=T.yview)
-        T.config(yscrollcommand=scrollbarStrategyList.set)
-        quote = self.varHelpBox.get()
-        T.insert(END, quote*2)
+        self.helpBox.pack(side=LEFT,expand=True)
+        scrollbarStrategyList.config(command=self.helpBox.yview)
+        self.helpBox.config(yscrollcommand=scrollbarStrategyList.set)
+        # update help window
+        self.updateHelp()
 
         miniButtonFrame = Frame(FrameBodyLeftTop,style="labelFrameTitle.TLabel")
         miniButtonFrame.pack(side=RIGHT,padx=5)
@@ -1073,12 +1074,16 @@ class RADDOSEgui(Frame):
 			self.app = crystalMakerWindow(self)
 
     def addCrystalToList(self, crystal):
-		# add a crystal object to the list of crystals (outside of listbox)
-		self.crystList.append(crystal)
-		# add crystal name to loaded crystal list
-		self.crystListbox.insert(END, str(crystal.crystName))
-		# refresh the option menu of added crystals to keep it up to date
-		self.refreshCrystChoices()
+        # add a crystal object to the list of crystals (outside of listbox)
+        self.crystList.append(crystal)
+        # add crystal name to loaded crystal list
+        self.crystListbox.insert(END, str(crystal.crystName))
+        # refresh the option menu of added crystals to keep it up to date
+        self.refreshCrystChoices()
+
+        # update help window
+        self.helpObj.checkStates(self.crystList,'crystal')
+        self.updateHelp()
 
     def addToExperimentList(self):
 		if self.emptyExpListString in self.expListbox.get(0):
@@ -1272,12 +1277,16 @@ class RADDOSEgui(Frame):
 			self.app = beamMakerWindow(self)
 
     def addBeamToList(self, beam):
-		# add beam name to loaded beam list
-		self.beamListbox.insert(END, beam.beamName)
-		# add a beam object to the list of beams (outside of listbox)
-		self.beamList.append(beam)
-		# also update list of beam choices used in the right strategy window
-		self.refreshBeamChoices()
+        # add beam name to loaded beam list
+        self.beamListbox.insert(END, beam.beamName)
+        # add a beam object to the list of beams (outside of listbox)
+        self.beamList.append(beam)
+        # also update list of beam choices used in the right strategy window
+        self.refreshBeamChoices()
+
+        # update help window
+        self.helpObj.checkStates(self.beamList,'beam')
+        self.updateHelp()
 
     def clickBeamLoad(self):
 		# what happens when beam load button clicked
@@ -1360,14 +1369,12 @@ class RADDOSEgui(Frame):
 		value = sender.get(idx)
 		self.var3.set(value)
 
-    def readHelpFile(self):
-		# read in a txt file to add to helpBox in top left body frame. Currently the txt file
-		# 'sampletxt.txt' is just a template file, but will eventually contain all the suggested
-		# output from each RADDOSE run
-		fileOpen = open('sampletxt.txt','r')
-		filelines = fileOpen.readlines()
-		fileString = ' '.join(filelines)
-		self.varHelpBox.set(fileString)
+    def updateHelp(self):
+        self.helpObj.getAdvice()
+        self.varHelpBox.set(self.helpObj.advice)
+        quote = self.varHelpBox.get()
+        self.helpBox.delete(1.0, END)
+        self.helpBox.insert(END, quote)
 
     def writeRaddose3DInputFile(self):
 		"""Writes an input file for RADDOSE-3D
