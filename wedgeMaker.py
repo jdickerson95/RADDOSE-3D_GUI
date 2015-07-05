@@ -3,7 +3,7 @@ from ttk import *
 from wedges import wedges
 
 
-class wedgeMakerWindow(Frame):
+class wedgeMakerWindow():
 
     def __init__(self, MainGui):
         self.master = MainGui.top_WedgeMaker
@@ -30,6 +30,26 @@ class wedgeMakerWindow(Frame):
         self.WedgeExposTime = StringVar()
         self.WedgeExposTimeInputs()
 
+        # wedge input --> Angular resolution
+        self.angRes = StringVar()
+        self.angResInput()
+
+        # #wedge input --> Start offset
+        self.startOffsetX = StringVar()
+        self.startOffsetY = StringVar()
+        self.startOffsetZ = StringVar()
+        self.startOffsetInput()
+
+        #wedge input --> Translation per degree
+        self.transPerDegX = StringVar()
+        self.transPerDegY = StringVar()
+        self.transPerDegZ = StringVar()
+        self.transPerDegInput()
+
+        #wedge input --> Amount that beam is translated from rotation axis
+        self.rotAxBeamOffset = StringVar()
+        self.rotAxBeamOffsetInput()
+
         # create visual wedge in Frame
         self.createVisualWedge()
 
@@ -39,35 +59,107 @@ class wedgeMakerWindow(Frame):
     def wedgeAngRangeStartInputs(self):
         # Wedge input --> Wedge angular range (start)
         WedgeinputFrame1 = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
-        WedgeinputFrame1.grid(row=0,column=0)
+        WedgeinputFrame1.grid(row=0,column=0,sticky=W,pady=5,padx=6)
         WedgeinputLabel1 = Label(WedgeinputFrame1,text="Angular Range (Start)",style="inputBoxes.TLabel")
-        WedgeinputLabel1.pack(side=LEFT,pady=5,padx=6)
+        WedgeinputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
         WedgeinputBox1 = Entry(WedgeinputFrame1,textvariable=self.WedgeAngRangeStart,width=5)
-        WedgeinputBox1.pack(side=LEFT,pady=5,padx=6)
+        WedgeinputBox1.grid(row=0,column=1,sticky=W,pady=5,padx=6)
         # preset start angle for wedge
         self.WedgeAngRangeStart.set("0")
 
     def wedgeAngRangeStopInputs(self):
         # Wedge input --> Wedge angular range (stop)
         WedgeinputFrame2 = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
-        WedgeinputFrame2.grid(row=1,column=0)
+        WedgeinputFrame2.grid(row=1,column=0,sticky=W,pady=5,padx=6)
         WedgeinputLabel2 = Label(WedgeinputFrame2,text="Angular Range (Stop)",style="inputBoxes.TLabel")
-        WedgeinputLabel2.pack(side=LEFT,pady=5,padx=6)
+        WedgeinputLabel2.grid(row=0,column=0,sticky=E,pady=5,padx=6)
         WedgeinputBox2 = Entry(WedgeinputFrame2,textvariable=self.WedgeAngRangeStop,width=5)
-        WedgeinputBox2.pack(side=LEFT,pady=5,padx=6)
+        WedgeinputBox2.grid(row=0,column=1,sticky=W,pady=5,padx=6)
         # preset end angle for wedge
         self.WedgeAngRangeStop.set("180")
 
     def WedgeExposTimeInputs(self):
         # Wedge input --> Wedge total exposure time
         WedgeinputFrame3 = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
-        WedgeinputFrame3.grid(row=2,column=0)
+        WedgeinputFrame3.grid(row=2,column=0,sticky=W,pady=5,padx=6)
         WedgeinputLabel3 = Label(WedgeinputFrame3,text="Total Exposure Time",style="inputBoxes.TLabel")
-        WedgeinputLabel3.pack(side=LEFT,pady=5,padx=6)
+        WedgeinputLabel3.grid(row=0,column=0,sticky=E,pady=5,padx=6)
         WedgeinputBox3 = Entry(WedgeinputFrame3,textvariable=self.WedgeExposTime,width=5)
-        WedgeinputBox3.pack(side=LEFT,pady=5,padx=6)
+        WedgeinputBox3.grid(row=0,column=1,sticky=W,pady=5,padx=6)
         # preset total exposure time for wedge
         self.WedgeExposTime.set("180")
+
+    def angResInput(self):
+        # Wedge input --> Angular resolution
+        WedgeinputFrame = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
+        WedgeinputFrame.grid(row=3,column=0,sticky=W,pady=5,padx=6)
+        WedgeinputLabel = Label(WedgeinputFrame,text="Angular resolution",style="inputBoxes.TLabel")
+        WedgeinputLabel.grid(row=0,column=0,sticky=E,pady=5,padx=6)
+        WedgeinputBox = Entry(WedgeinputFrame,textvariable=self.angRes,width=5)
+        WedgeinputBox.grid(row=0,column=1,sticky=W,pady=5,padx=6)
+        # preset angular resolution
+        self.angRes.set("2")
+
+    def startOffsetInput(self):
+        # Wedge input --> Start Offset
+        WedgeinputFrame = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
+        WedgeinputFrame.grid(row=4,column=0,sticky=W,pady=5,padx=6)
+        WedgeinputLabel = Label(WedgeinputFrame,text="Start offset",style="inputBoxes.TLabel")
+        WedgeinputLabel.grid(row=0,column=0,sticky=W,pady=5,padx=6)
+        startOffsetInputsFrame = Frame(WedgeinputFrame,style="inputBoxes.TFrame")
+        startOffsetInputsFrame.grid(row=0,column=1,sticky=W)
+        startOffsetXLabel = Label(startOffsetInputsFrame,text="x = ",style="inputBoxes.TLabel")
+        startOffsetXLabel.grid(row=0,column=0,sticky=W,pady=5,padx=6)
+        startOffsetXBox = Entry(startOffsetInputsFrame,textvariable=self.startOffsetX,width=5)
+        startOffsetXBox.grid(row=0,column=1,sticky=W,pady=5,padx=6)
+        startOffsetYLabel = Label(startOffsetInputsFrame,text="y = ",style="inputBoxes.TLabel")
+        startOffsetYLabel.grid(row=0,column=2,sticky=W,pady=5,padx=6)
+        startOffsetYBox = Entry(startOffsetInputsFrame,textvariable=self.startOffsetY,width=5)
+        startOffsetYBox.grid(row=0,column=3,sticky=W,pady=5,padx=6)
+        startOffsetZLabel = Label(startOffsetInputsFrame,text="z = ",style="inputBoxes.TLabel")
+        startOffsetZLabel.grid(row=0,column=4,sticky=W,pady=5,padx=6)
+        startOffsetZBox = Entry(startOffsetInputsFrame,textvariable=self.startOffsetZ,width=5)
+        startOffsetZBox.grid(row=0,column=5,sticky=W,pady=5,padx=6)
+        # preset starting offsets
+        self.startOffsetX.set("0")
+        self.startOffsetY.set("0")
+        self.startOffsetZ.set("0")
+
+    def transPerDegInput(self):
+        # Wedge input --> Translation per degree
+        WedgeinputFrame = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
+        WedgeinputFrame.grid(row=5,column=0,sticky=W,pady=5,padx=6)
+        WedgeinputLabel = Label(WedgeinputFrame,text="Translation per degree",style="inputBoxes.TLabel")
+        WedgeinputLabel.grid(row=0,column=0,sticky=W,pady=5,padx=6)
+        transPerDegInputsFrame = Frame(WedgeinputFrame,style="inputBoxes.TFrame")
+        transPerDegInputsFrame.grid(row=0,column=1,sticky=W)
+        transPerDegXLabel = Label(transPerDegInputsFrame,text="x = ",style="inputBoxes.TLabel")
+        transPerDegXLabel.grid(row=0,column=0,sticky=W,pady=5,padx=6)
+        transPerDegXBox = Entry(transPerDegInputsFrame,textvariable=self.transPerDegX,width=5)
+        transPerDegXBox.grid(row=0,column=1,sticky=W,pady=5,padx=6)
+        transPerDegYLabel = Label(transPerDegInputsFrame,text="y = ",style="inputBoxes.TLabel")
+        transPerDegYLabel.grid(row=0,column=2,sticky=W,pady=5,padx=6)
+        transPerDegYBox = Entry(transPerDegInputsFrame,textvariable=self.transPerDegY,width=5)
+        transPerDegYBox.grid(row=0,column=3,sticky=W,pady=5,padx=6)
+        transPerDegZLabel = Label(transPerDegInputsFrame,text="z = ",style="inputBoxes.TLabel")
+        transPerDegZLabel.grid(row=0,column=4,sticky=W,pady=5,padx=6)
+        transPerDegZBox = Entry(transPerDegInputsFrame,textvariable=self.transPerDegZ,width=5)
+        transPerDegZBox.grid(row=0,column=5,sticky=W,pady=5,padx=6)
+        # preset translations per degree
+        self.transPerDegX.set("0")
+        self.transPerDegY.set("0")
+        self.transPerDegZ.set("0")
+
+    def rotAxBeamOffsetInput(self):
+        # Wedge input --> The offset between the beam axis and the rotation axis
+        WedgeinputFrame = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
+        WedgeinputFrame.grid(row=6,column=0,sticky=W,pady=5,padx=6)
+        WedgeinputLabel = Label(WedgeinputFrame,text="rotation and beam axis offset",style="inputBoxes.TLabel")
+        WedgeinputLabel.grid(row=0,column=0,sticky=E,pady=5,padx=6)
+        WedgeinputBox = Entry(WedgeinputFrame,textvariable=self.rotAxBeamOffset,width=5)
+        WedgeinputBox.grid(row=0,column=1,sticky=W,pady=5,padx=6)
+        # preset offset
+        self.angRes.set("0")
 
     def createVisualWedge(self):
         # make an example visual wedge here
@@ -79,7 +171,7 @@ class wedgeMakerWindow(Frame):
     def addWedgeMakeButton(self, MainGui):
         # create a 'make' button here to add this wedge to the list of added beam strategies in treeview list
         wedgeMakeButton = Button(self.currentStrategyWedge, text="Make", command= lambda: self.addStrategy(MainGui))
-        wedgeMakeButton.grid(row=4,column=0,pady=5)
+        wedgeMakeButton.grid(row=7,column=0,pady=5)
 
     def addStrategy(self, MainGui):
         # make a new wedge object
