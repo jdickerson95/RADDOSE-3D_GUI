@@ -1,7 +1,8 @@
 from Tkinter import *
 from ttk import *
 from wedges import wedges
-
+from HoverInfo import HoverInfo
+from InputsHelpText import WedgeInputHelp
 
 class wedgeMakerWindow():
 
@@ -17,6 +18,9 @@ class wedgeMakerWindow():
         self.currentStrategyWedge = LabelFrame(self.master,labelwidget=l,
                           style="MakeABeam.TFrame")
         self.currentStrategyWedge.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
+
+        #Create object that contains the help text
+        self.helpText = WedgeInputHelp()
 
         # wedge input --> angular range start
         self.WedgeAngRangeStart = StringVar()
@@ -60,6 +64,7 @@ class wedgeMakerWindow():
         # Wedge input --> Wedge angular range (start)
         WedgeinputLabel1 = Label(self.currentStrategyWedge,text="Angular Range (Start)",style="inputBoxes.TLabel")
         WedgeinputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
+        self.hoverStart = HoverInfo(WedgeinputLabel1, self.helpText.angStartText)
         WedgeinputBox1 = Entry(self.currentStrategyWedge,textvariable=self.WedgeAngRangeStart,width=5)
         WedgeinputBox1.grid(row=0,column=1,sticky=W,pady=5,padx=6)
         # preset start angle for wedge
@@ -69,6 +74,7 @@ class wedgeMakerWindow():
         # Wedge input --> Wedge angular range (stop)
         WedgeinputLabel2 = Label(self.currentStrategyWedge,text="Angular Range (Stop)",style="inputBoxes.TLabel")
         WedgeinputLabel2.grid(row=1,column=0,sticky=E,pady=5,padx=6)
+        self.hoverStop = HoverInfo(WedgeinputLabel2, self.helpText.angStopText)
         WedgeinputBox2 = Entry(self.currentStrategyWedge,textvariable=self.WedgeAngRangeStop,width=5)
         WedgeinputBox2.grid(row=1,column=1,sticky=W,pady=5,padx=6)
         # preset end angle for wedge
@@ -78,6 +84,7 @@ class wedgeMakerWindow():
         # Wedge input --> Wedge total exposure time
         WedgeinputLabel3 = Label(self.currentStrategyWedge,text="Total Exposure Time",style="inputBoxes.TLabel")
         WedgeinputLabel3.grid(row=2,column=0,sticky=E,pady=5,padx=6)
+        self.hoverExpos = HoverInfo(WedgeinputLabel3, self.helpText.exposText)
         WedgeinputBox3 = Entry(self.currentStrategyWedge,textvariable=self.WedgeExposTime,width=5)
         WedgeinputBox3.grid(row=2,column=1,sticky=W,pady=5,padx=6)
         # preset total exposure time for wedge
@@ -87,6 +94,7 @@ class wedgeMakerWindow():
         # Wedge input --> Angular resolution
         WedgeinputLabel = Label(self.currentStrategyWedge,text="Angular resolution",style="inputBoxes.TLabel")
         WedgeinputLabel.grid(row=3,column=0,sticky=E,pady=5,padx=6)
+        self.hoverAngRes = HoverInfo(WedgeinputLabel, self.helpText.angRes)
         WedgeinputBox = Entry(self.currentStrategyWedge,textvariable=self.angRes,width=5)
         WedgeinputBox.grid(row=3,column=1,sticky=W,pady=5,padx=6)
         # preset angular resolution
@@ -96,6 +104,7 @@ class wedgeMakerWindow():
         # Wedge input --> Start Offset
         WedgeinputLabel = Label(self.currentStrategyWedge,text="Start offset",style="inputBoxes.TLabel")
         WedgeinputLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+        self.hoverStartOffset = HoverInfo(WedgeinputLabel, self.helpText.startOffText)
         startOffsetInputsFrame = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
         startOffsetInputsFrame.grid(row=4,column=1,sticky=W)
         startOffsetXLabel = Label(startOffsetInputsFrame,text="x = ",style="inputBoxes.TLabel")
@@ -119,6 +128,7 @@ class wedgeMakerWindow():
         # Wedge input --> Translation per degree
         WedgeinputLabel = Label(self.currentStrategyWedge,text="Translation per degree",style="inputBoxes.TLabel")
         WedgeinputLabel.grid(row=5,column=0,sticky=E,pady=5,padx=6)
+        self.hoverTrans = HoverInfo(WedgeinputLabel, self.helpText.transText)
         transPerDegInputsFrame = Frame(self.currentStrategyWedge,style="inputBoxes.TFrame")
         transPerDegInputsFrame.grid(row=5,column=1,sticky=W)
         transPerDegXLabel = Label(transPerDegInputsFrame,text="x = ",style="inputBoxes.TLabel")
@@ -142,6 +152,7 @@ class wedgeMakerWindow():
         # Wedge input --> The offset between the beam axis and the rotation axis
         WedgeinputLabel = Label(self.currentStrategyWedge,text="rotation and beam axis offset",style="inputBoxes.TLabel")
         WedgeinputLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
+        self.hoverRot = HoverInfo(WedgeinputLabel, self.helpText.rotText)
         WedgeinputBox = Entry(self.currentStrategyWedge,textvariable=self.rotAxBeamOffset,width=5)
         WedgeinputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
         # preset offset

@@ -35,3 +35,13 @@ class BeamInputHelp():
         self.fwhmText = "Need to sort out the text: fwhm"
         self.fileText = "Need to sort out the text: file"
         self.pixSizeText = "Need to sort out the text: pix size"
+
+class WedgeInputHelp():
+    def __init__(self):
+        self.angStartText = "Need to sort out the text: start ang"
+        self.angStopText = "Need to sort out the text: stop ang"
+        self.exposText = "Need to sort out the text: exposure time"
+        self.angRes = "Need to sort out the text: angular resolution"
+        self.startOffText = "Need to sort out the text: start offset"
+        self.transText = "Need to sort out the text: trans per deg"
+        self.rotText = "Need to sort out the text: rotation & beam axis offset"
