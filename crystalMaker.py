@@ -2,6 +2,8 @@ from Tkinter import *
 from ttk import *
 from crystals import crystals
 import tkMessageBox
+from HoverInfo import HoverInfo
+from InputsHelpText import CrystalInputHelp
 
 class crystalMakerWindow(Frame):
 	# this is a secondary crystal-maker window class here.
@@ -16,6 +18,9 @@ class crystalMakerWindow(Frame):
 		self.currentStrategyCrystal = LabelFrame(self.master,labelwidget=l,
 											style="MakeABeam.TFrame")
 		self.currentStrategyCrystal.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
+
+		#Create object that creates the help text
+		self.helpText = CrystalInputHelp()
 
 		# Crystal input --> crystal type
 		self.CrystalType = StringVar()
@@ -83,6 +88,8 @@ class crystalMakerWindow(Frame):
 		crystTypeList = ['Cuboid','Spherical', 'Cylindrical', 'Polyhedron']
 		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystTypeOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
+		self.hoverType = HoverInfo(CrystalinputLabel1, self.helpText.typeText)
+
 
 	def crystalDimInputs(self,crystTypeValue):
 		# Crystal input 2 --> crystal dimensions
@@ -90,6 +97,7 @@ class crystalMakerWindow(Frame):
 
 			CrystalinputLabel2 = Label(self.currentStrategyCrystal,text="Crystal Dimensions (microns):",style="inputBoxes.TLabel")
 			CrystalinputLabel2.grid(row=0,column=2,sticky=E,pady=5,padx=6)
+			self.hoverDims = HoverInfo(CrystalinputLabel2, self.helpText.dimsText)
 
 			self.CrystalDimsInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 			self.CrystalDimsInputsFrame.grid(row=0,column=3,sticky=W,pady=5,padx=6)
@@ -143,6 +151,7 @@ class crystalMakerWindow(Frame):
 			# crystTypeOptionMenu.grid(row=0,column=3,sticky=W,pady=5,padx=6)
 			CrystalModelFileLabel = Label(self.currentStrategyCrystal,text="Model File (.obj) = ",style="inputBoxes.TLabel")
 			CrystalModelFileLabel.grid(row=0,column=2,sticky=E,pady=5,padx=6)
+			self.hoverModel = HoverInfo(CrystalModelFileLabel, self.helpText.modelText)
 			CrystalModelFileInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalModelFile,width=14)
 			CrystalModelFileInputBox.grid(row=0,column=3,sticky=W,pady=5,padx=6)
 			self.CrystalDimX.set(0)
@@ -154,6 +163,7 @@ class crystalMakerWindow(Frame):
 		# Crystal input 3 --> pixels per Micron
 		CrystalinputLabel3 = Label(self.currentStrategyCrystal,text="Pixels per Micron",style="inputBoxes.TLabel")
 		CrystalinputLabel3.grid(row=1,column=0,sticky=E,pady=5,padx=6)
+		self.hoverPix = HoverInfo(CrystalinputLabel3, self.helpText.pixPerMicText)
 		self.CrystalPixPerMic = StringVar()
 		CrystalinputBox3 = Entry(self.currentStrategyCrystal,textvariable=self.CrystalPixPerMic,width=5)
 		CrystalinputBox3.grid(row=1,column=1,sticky=W,pady=5,padx=6)
@@ -161,12 +171,14 @@ class crystalMakerWindow(Frame):
 	def crystalAngleInputs(self):
 		CrystalAnglePLabel = Label(self.currentStrategyCrystal,text="Angle P = ",style="inputBoxes.TLabel")
 		CrystalAnglePLabel.grid(row=1,column=2,sticky=E,pady=5,padx=6)
+		self.hoverAngP = HoverInfo(CrystalAnglePLabel, self.helpText.anglePText)
 		self.crystalAngleP = StringVar()
 		CrystalAnglePInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalAngleP,width=5)
 		CrystalAnglePInputBox.grid(row=1,column=3,sticky=W,pady=5,padx=6)
 
 		CrystalAngleLLabel = Label(self.currentStrategyCrystal,text="Angle L = ",style="inputBoxes.TLabel")
 		CrystalAngleLLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
+		self.hoverAngL = HoverInfo(CrystalAngleLLabel, self.helpText.angleLText)
 		self.crystalAngleL = StringVar()
 		CrystalAnglePInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalAngleL,width=5)
 		CrystalAnglePInputBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
@@ -175,6 +187,7 @@ class crystalMakerWindow(Frame):
 		# Crystal input 4 --> absorption coefficient
 		CrystalinputLabel4 = Label(self.currentStrategyCrystal,text="Absorption Coefficient",style="inputBoxes.TLabel")
 		CrystalinputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
+		self.hoverAbsCoeff = HoverInfo(CrystalinputLabel4, self.helpText.absCoeffText)
 		crystAbsCoeffList = ['Average protein composition', 'Using PDB code', 'User defined composition',
 		'RADDOSE version 2', 'using sequence file', 'SAXS (user defined composition)', 'SAXS (sequence file)']
 		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
@@ -203,11 +216,13 @@ class crystalMakerWindow(Frame):
 		elif 'Using PDB code' in absCoeffTypeValue.get():
 			CrystalPDBLabel = Label(self.currentStrategyCrystal,text="PDB code",style="inputBoxes.TLabel")
 			CrystalPDBLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverPDB = HoverInfo(CrystalPDBLabel, self.helpText.pdbText)
 			CrystalPDBInputBox = Entry(self.currentStrategyCrystal,textvariable=self.pdbcode,width=14)
 			CrystalPDBInputBox.grid(row=4,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalSolConcLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
-			CrystalSolConcLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
+			CrystalHeavySolLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSolHeavy = HoverInfo(CrystalHeavySolLabel, self.helpText.solHeavyText)
 			CrystalSolConcInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
 			CrystalSolConcInputBox.grid(row=4,column=3,columnspan=4,sticky=W,pady=5,padx=6)
 			self.unitcell_a.set("0")
@@ -228,41 +243,49 @@ class crystalMakerWindow(Frame):
 		elif 'User defined composition' in absCoeffTypeValue.get():
 			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Number of monomers",style="inputBoxes.TLabel")
 			CrystalNumMonLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverNumMon = HoverInfo(CrystalNumMonLabel, self.helpText.numMonText)
 			CrystalNumMonInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numMonomers,width=14)
 			CrystalNumMonInputBox.grid(row=4,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalNumResLabel = Label(self.currentStrategyCrystal,text="Number of residues",style="inputBoxes.TLabel")
 			CrystalNumResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			self.hoverNumRes = HoverInfo(CrystalNumResLabel, self.helpText.numResText)
 			CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numResidues,width=14)
 			CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalNumRNALabel = Label(self.currentStrategyCrystal,text="Number of RNA nucleotides (optional)",style="inputBoxes.TLabel")
 			CrystalNumRNALabel.grid(row=5,column=0,sticky=E,pady=5,padx=6)
+			self.hoverNumRNA = HoverInfo(CrystalNumRNALabel, self.helpText.numRNAText)
 			CrystalNumRNAInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numRNA,width=14)
 			CrystalNumRNAInputBox.grid(row=5,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalNumDNALabel = Label(self.currentStrategyCrystal,text="Number of DNA nucleotides (optional)",style="inputBoxes.TLabel")
 			CrystalNumDNALabel.grid(row=5,column=2,sticky=E,pady=5,padx=6)
+			self.hoverNumDNA = HoverInfo(CrystalNumDNALabel, self.helpText.numDNAText)
 			CrystalNumDNAInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numDNA,width=14)
 			CrystalNumDNAInputBox.grid(row=5,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
 			CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
+			self.hoverHeavyProt = HoverInfo(CrystalHeavyProtLabel, self.helpText.protHeavyText)
 			CrystalHeavyProtInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinHeavyAtoms,width=14)
 			CrystalHeavyProtInputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Concentration of heavy elements in solvent (optional)",style="inputBoxes.TLabel")
+			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
 			CrystalHeavySolLabel.grid(row=6,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSolHeavy = HoverInfo(CrystalHeavySolLabel, self.helpText.solHeavyText)
 			CrystalHeavySolInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
 			CrystalHeavySolInputBox.grid(row=6,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalSolFracLabel = Label(self.currentStrategyCrystal,text="Solvent fraction (optional)",style="inputBoxes.TLabel")
 			CrystalSolFracLabel.grid(row=7,column=0,sticky=E,pady=5,padx=6)
+			self.hoverSolFrac = HoverInfo(CrystalSolFracLabel, self.helpText.solFracText)
 			CrystalSolFracInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventFraction,width=14)
 			CrystalSolFracInputBox.grid(row=7,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalUnitcellLabel = Label(self.currentStrategyCrystal,text="Unit Cell Dimensions",style="inputBoxes.TLabel")
 			CrystalUnitcellLabel.grid(row=8,column=0,sticky=E,pady=5,padx=6)
+			self.hoverUnitcell = HoverInfo(CrystalUnitcellLabel, self.helpText.unitcellText)
 			self.UnitcellInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 			self.UnitcellInputsFrame.grid(row=8,column=1,sticky=W,pady=5,padx=6)
 			unitCellALabel = Label(self.UnitcellInputsFrame,text="a = ",style="inputBoxes.TLabel")
@@ -296,41 +319,49 @@ class crystalMakerWindow(Frame):
 		elif 'RADDOSE version 2' in absCoeffTypeValue.get():
 			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Number of monomers",style="inputBoxes.TLabel")
 			CrystalNumMonLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverNumMon = HoverInfo(CrystalNumMonLabel, self.helpText.numMonText)
 			CrystalNumMonInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numMonomers,width=14)
 			CrystalNumMonInputBox.grid(row=4,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalNumResLabel = Label(self.currentStrategyCrystal,text="Number of residues",style="inputBoxes.TLabel")
 			CrystalNumResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			self.hoverNumRes = HoverInfo(CrystalNumResLabel, self.helpText.numResText)
 			CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numResidues,width=14)
 			CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalNumRNALabel = Label(self.currentStrategyCrystal,text="Number of RNA nucleotides (optional)",style="inputBoxes.TLabel")
 			CrystalNumRNALabel.grid(row=5,column=0,sticky=E,pady=5,padx=6)
+			self.hoverNumRNA = HoverInfo(CrystalNumRNALabel, self.helpText.numRNAText)
 			CrystalNumRNAInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numRNA,width=14)
 			CrystalNumRNAInputBox.grid(row=5,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalNumDNALabel = Label(self.currentStrategyCrystal,text="Number of DNA nucleotides (optional)",style="inputBoxes.TLabel")
 			CrystalNumDNALabel.grid(row=5,column=2,sticky=E,pady=5,padx=6)
+			self.hoverNumDNA = HoverInfo(CrystalNumDNALabel, self.helpText.numDNAText)
 			CrystalNumDNAInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numDNA,width=14)
 			CrystalNumDNAInputBox.grid(row=5,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
 			CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
+			self.hoverHeavyProt = HoverInfo(CrystalHeavyProtLabel, self.helpText.protHeavyText)
 			CrystalHeavyProtInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinHeavyAtoms,width=14)
 			CrystalHeavyProtInputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Concentration of heavy elements in solvent (optional)",style="inputBoxes.TLabel")
+			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
 			CrystalHeavySolLabel.grid(row=6,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSolHeavy = HoverInfo(CrystalHeavySolLabel, self.helpText.solHeavyText)
 			CrystalHeavySolInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
 			CrystalHeavySolInputBox.grid(row=6,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalSolFracLabel = Label(self.currentStrategyCrystal,text="Solvent fraction",style="inputBoxes.TLabel")
 			CrystalSolFracLabel.grid(row=7,column=0,sticky=E,pady=5,padx=6)
+			self.hoverSolFrac = HoverInfo(CrystalSolFracLabel, self.helpText.solFracText)
 			CrystalSolFracInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventFraction,width=14)
 			CrystalSolFracInputBox.grid(row=7,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalUnitcellLabel = Label(self.currentStrategyCrystal,text="Unit Cell Dimensions",style="inputBoxes.TLabel")
 			CrystalUnitcellLabel.grid(row=8,column=0,sticky=E,pady=5,padx=6)
+			self.hoverUnitcell = HoverInfo(CrystalUnitcellLabel, self.helpText.unitcellText)
 			self.UnitcellInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 			self.UnitcellInputsFrame.grid(row=8,column=1,sticky=W,pady=5,padx=6)
 			unitCellALabel = Label(self.UnitcellInputsFrame,text="a = ",style="inputBoxes.TLabel")
@@ -364,31 +395,37 @@ class crystalMakerWindow(Frame):
 		elif 'using sequence file' in absCoeffTypeValue.get():
 			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Number of monomers",style="inputBoxes.TLabel")
 			CrystalNumMonLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverNumMon = HoverInfo(CrystalNumMonLabel, self.helpText.numMonText)
 			CrystalNumMonInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numMonomers,width=14)
 			CrystalNumMonInputBox.grid(row=4,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalNumResLabel = Label(self.currentStrategyCrystal,text="Sequence file",style="inputBoxes.TLabel")
-			CrystalNumResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			CrystalSeqResLabel = Label(self.currentStrategyCrystal,text="Sequence file",style="inputBoxes.TLabel")
+			CrystalSeqResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSeqRes = HoverInfo(CrystalSeqResLabel, self.helpText.seqFileText)
 			CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.sequenceFile,width=14)
 			CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
 			CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
+			self.hoverHeavyProt = HoverInfo(CrystalHeavyProtLabel, self.helpText.protHeavyText)
 			CrystalHeavyProtInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinHeavyAtoms,width=14)
 			CrystalHeavyProtInputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Concentration of heavy elements in solvent (optional)",style="inputBoxes.TLabel")
+			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
 			CrystalHeavySolLabel.grid(row=6,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSolHeavy = HoverInfo(CrystalHeavySolLabel, self.helpText.solHeavyText)
 			CrystalHeavySolInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
 			CrystalHeavySolInputBox.grid(row=6,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalSolFracLabel = Label(self.currentStrategyCrystal,text="Solvent fraction (optional)",style="inputBoxes.TLabel")
 			CrystalSolFracLabel.grid(row=7,column=0,sticky=E,pady=5,padx=6)
+			self.hoverSolFrac = HoverInfo(CrystalSolFracLabel, self.helpText.solFracText)
 			CrystalSolFracInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventFraction,width=14)
 			CrystalSolFracInputBox.grid(row=7,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalUnitcellLabel = Label(self.currentStrategyCrystal,text="Unit Cell Dimensions",style="inputBoxes.TLabel")
 			CrystalUnitcellLabel.grid(row=8,column=0,sticky=E,pady=5,padx=6)
+			self.hoverUnitcell = HoverInfo(CrystalUnitcellLabel, self.helpText.unitcellText)
 			self.UnitcellInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 			self.UnitcellInputsFrame.grid(row=8,column=1,sticky=W,pady=5,padx=6)
 			unitCellALabel = Label(self.UnitcellInputsFrame,text="a = ",style="inputBoxes.TLabel")
@@ -422,43 +459,51 @@ class crystalMakerWindow(Frame):
 			self.numDNA.set("0")
 
 		elif 'SAXS (user defined composition)' in absCoeffTypeValue.get():
-			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Protein concentration",style="inputBoxes.TLabel")
-			CrystalNumMonLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			CrystalProtConcLabel = Label(self.currentStrategyCrystal,text="Protein concentration",style="inputBoxes.TLabel")
+			CrystalProtConcLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverProtConc = HoverInfo(CrystalProtConcLabel, self.helpText.protConcText)
 			CrystalNumMonInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinConc,width=14)
 			CrystalNumMonInputBox.grid(row=4,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalNumResLabel = Label(self.currentStrategyCrystal,text="Number of residues",style="inputBoxes.TLabel")
 			CrystalNumResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			self.hoverNumRes = HoverInfo(CrystalNumResLabel, self.helpText.numResText)
 			CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numResidues,width=14)
 			CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalNumRNALabel = Label(self.currentStrategyCrystal,text="Number of RNA nucleotides (optional)",style="inputBoxes.TLabel")
 			CrystalNumRNALabel.grid(row=5,column=0,sticky=E,pady=5,padx=6)
+			self.hoverNumRNA = HoverInfo(CrystalNumRNALabel, self.helpText.numRNAText)
 			CrystalNumRNAInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numRNA,width=14)
 			CrystalNumRNAInputBox.grid(row=5,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalNumDNALabel = Label(self.currentStrategyCrystal,text="Number of DNA nucleotides (optional)",style="inputBoxes.TLabel")
 			CrystalNumDNALabel.grid(row=5,column=2,sticky=E,pady=5,padx=6)
+			self.hoverNumDNA = HoverInfo(CrystalNumDNALabel, self.helpText.numDNAText)
 			CrystalNumDNAInputBox = Entry(self.currentStrategyCrystal,textvariable=self.numDNA,width=14)
 			CrystalNumDNAInputBox.grid(row=5,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
 			CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
+			self.hoverHeavyProt = HoverInfo(CrystalHeavyProtLabel, self.helpText.protHeavyText)
 			CrystalHeavyProtInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinHeavyAtoms,width=14)
 			CrystalHeavyProtInputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Concentration of heavy elements in solvent (optional)",style="inputBoxes.TLabel")
+			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
 			CrystalHeavySolLabel.grid(row=6,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSolHeavy = HoverInfo(CrystalHeavySolLabel, self.helpText.solHeavyText)
 			CrystalHeavySolInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
 			CrystalHeavySolInputBox.grid(row=6,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalSolFracLabel = Label(self.currentStrategyCrystal,text="Solvent fraction (optional)",style="inputBoxes.TLabel")
 			CrystalSolFracLabel.grid(row=7,column=0,sticky=E,pady=5,padx=6)
+			self.hoverSolFrac = HoverInfo(CrystalSolFracLabel, self.helpText.solFracText)
 			CrystalSolFracInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventFraction,width=14)
 			CrystalSolFracInputBox.grid(row=7,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalUnitcellLabel = Label(self.currentStrategyCrystal,text="Unit Cell Dimensions (optional)",style="inputBoxes.TLabel")
 			CrystalUnitcellLabel.grid(row=8,column=0,sticky=E,pady=5,padx=6)
+			self.hoverUnitcell = HoverInfo(CrystalUnitcellLabel, self.helpText.unitcellSAXSText)
 			self.UnitcellInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 			self.UnitcellInputsFrame.grid(row=8,column=1,sticky=W,pady=5,padx=6)
 			unitCellALabel = Label(self.UnitcellInputsFrame,text="a = ",style="inputBoxes.TLabel")
@@ -490,33 +535,39 @@ class crystalMakerWindow(Frame):
 			self.sequenceFile.set("0")
 
 		elif 'SAXS (sequence file)' in absCoeffTypeValue.get():
-			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Protein concentration",style="inputBoxes.TLabel")
-			CrystalNumMonLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			CrystalProtConcLabel = Label(self.currentStrategyCrystal,text="Protein concentration",style="inputBoxes.TLabel")
+			CrystalProtConcLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverProtConc = HoverInfo(CrystalProtConcLabel, self.helpText.protConcText)
 			CrystalNumMonInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinConc,width=14)
 			CrystalNumMonInputBox.grid(row=4,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalNumResLabel = Label(self.currentStrategyCrystal,text="Sequence file",style="inputBoxes.TLabel")
-			CrystalNumResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			CrystalSeqResLabel = Label(self.currentStrategyCrystal,text="Sequence file",style="inputBoxes.TLabel")
+			CrystalSeqResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSeqRes = HoverInfo(CrystalSeqResLabel, self.helpText.seqFileText)
 			CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.sequenceFile,width=14)
 			CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
 			CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
+			self.hoverHeavyProt = HoverInfo(CrystalHeavyProtLabel, self.helpText.protHeavyText)
 			CrystalHeavyProtInputBox = Entry(self.currentStrategyCrystal,textvariable=self.proteinHeavyAtoms,width=14)
 			CrystalHeavyProtInputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
 
-			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Concentration of heavy elements in solvent (optional)",style="inputBoxes.TLabel")
+			CrystalHeavySolLabel = Label(self.currentStrategyCrystal,text="Solvent Heavy Concentration (optional)",style="inputBoxes.TLabel")
 			CrystalHeavySolLabel.grid(row=6,column=2,sticky=E,pady=5,padx=6)
+			self.hoverSolHeavy = HoverInfo(CrystalHeavySolLabel, self.helpText.solHeavyText)
 			CrystalHeavySolInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
 			CrystalHeavySolInputBox.grid(row=6,column=3,sticky=W,pady=5,padx=6)
 
 			CrystalSolFracLabel = Label(self.currentStrategyCrystal,text="Solvent fraction (optional)",style="inputBoxes.TLabel")
 			CrystalSolFracLabel.grid(row=7,column=0,sticky=E,pady=5,padx=6)
+			self.hoverSolFrac = HoverInfo(CrystalSolFracLabel, self.helpText.solFracText)
 			CrystalSolFracInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventFraction,width=14)
 			CrystalSolFracInputBox.grid(row=7,column=1,sticky=W,pady=5,padx=6)
 
 			CrystalUnitcellLabel = Label(self.currentStrategyCrystal,text="Unit Cell Dimensions (optional)",style="inputBoxes.TLabel")
 			CrystalUnitcellLabel.grid(row=8,column=0,sticky=E,pady=5,padx=6)
+			self.hoverUnitcell = HoverInfo(CrystalUnitcellLabel, self.helpText.unitcellSAXSText)
 			self.UnitcellInputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
 			self.UnitcellInputsFrame.grid(row=8,column=1,sticky=W,pady=5,padx=6)
 			unitCellALabel = Label(self.UnitcellInputsFrame,text="a = ",style="inputBoxes.TLabel")
@@ -553,6 +604,7 @@ class crystalMakerWindow(Frame):
 		# Crystal input  --> Sample container type
 		containerTypeInputLabel = Label(self.currentStrategyCrystal,text="Type of sample container",style="inputBoxes.TLabel")
 		containerTypeInputLabel.grid(row=9,column=0,sticky=E,pady=5,padx=6)
+		self.hoverConType = HoverInfo(containerTypeInputLabel, self.helpText.conTypeText)
 		containerTypeList = ['No container', 'Specify mixture', 'Specify elemental composition']
 		containerTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.containerType, self.containerType.get(), *containerTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		containerTypeOptionMenu.grid(row=9,column=1,sticky=W,pady=5,padx=6)
@@ -567,33 +619,39 @@ class crystalMakerWindow(Frame):
 			elif 'Specify mixture' in containerTypeValue.get():
 				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
 				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+				self.hoverConMix = HoverInfo(containerMixtureLabel, self.helpText.conMixText)
 				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialMixture,width=14)
 				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
 
 				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
 				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+				self.hoverConThick = HoverInfo(containerThicknessLabel, self.helpText.conThick)
 				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
 				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
 
 				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
 				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+				self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
 				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
 				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
 				self.materialElements.set("Na 0")
 
 			elif 'Specify elemental composition' in containerTypeValue.get():
-				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Elemental composition",style="inputBoxes.TLabel")
-				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+				containerElementalLabel = Label(self.currentStrategyCrystal,text="Elemental composition",style="inputBoxes.TLabel")
+				containerElementalLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+				self.hoverConEl = HoverInfo(containerElementalLabel, self.helpText.conElText)
 				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialElements,width=14)
 				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
 
 				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
 				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+				self.hoverConThick = HoverInfo(containerThicknessLabel, self.helpText.conThick)
 				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
 				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
 
 				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
 				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+				self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
 				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
 				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
 				self.materialMixture.set("0")
