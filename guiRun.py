@@ -25,6 +25,7 @@ import time
 from plotMaker import barplotWindow
 from beamMaker import beamMakerWindow
 from crystalMaker import crystalMakerWindow
+from  wedgeMaker import wedgeMakerWindow
 from crystals import crystals
 from beams import beams
 from wedges import wedges
@@ -703,68 +704,20 @@ class RADDOSEgui(Frame):
     def clickAddBeamStrategy(self):
 		# what happens when add beam strategy button clicked. Makes a new small window allowing
 		# manual entry of wedge parameters for currently selected beam
-		self.top_WedgeMaker=Toplevel()
-		self.top_WedgeMaker.title("Make a wedge")
+        self.top_WedgeMaker=Toplevel()
+        self.top_WedgeMaker.title("Make a wedge")
 
 		# give the new window a dark background colour
-		self.top_WedgeMaker.configure(bg=self.darkcolour)
+        self.top_WedgeMaker.configure(bg=self.darkcolour)
 
-		# Wedge inputs here:
-		l = Label(self.top_WedgeMaker,text="Wedge",style="labelFrameTitle.TLabel")
-		currentStrategyWedge = LabelFrame(self.top_WedgeMaker,labelwidget=l,
-											style="MakeABeam.TFrame")
-		currentStrategyWedge.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
+        # finds separate class for secondary crystal-maker window
+        self.app = wedgeMakerWindow(self)
 
-		# Wedge input 1 --> Wedge angular range (start)
-		WedgeinputFrame1 = Frame(currentStrategyWedge,style="inputBoxes.TFrame")
-		WedgeinputFrame1.grid(row=0,column=0)
-		WedgeinputLabel1 = Label(WedgeinputFrame1,text="Angular Range (Start)",style="inputBoxes.TLabel")
-		WedgeinputLabel1.pack(side=LEFT,pady=5,padx=6)
-		self.WedgeAngRangeStart = StringVar()
-		WedgeinputBox1 = Entry(WedgeinputFrame1,textvariable=self.WedgeAngRangeStart,width=5)
-		WedgeinputBox1.pack(side=LEFT,pady=5,padx=6)
-		# preset start angle for wedge
-		self.WedgeAngRangeStart.set("0")
-
-		# Wedge input 2 --> Wedge angular range (stop)
-		WedgeinputFrame2 = Frame(currentStrategyWedge,style="inputBoxes.TFrame")
-		WedgeinputFrame2.grid(row=1,column=0)
-		WedgeinputLabel2 = Label(WedgeinputFrame2,text="Angular Range (Stop)",style="inputBoxes.TLabel")
-		WedgeinputLabel2.pack(side=LEFT,pady=5,padx=6)
-		self.WedgeAngRangeStop = StringVar()
-		WedgeinputBox2 = Entry(WedgeinputFrame2,textvariable=self.WedgeAngRangeStop,width=5)
-		WedgeinputBox2.pack(side=LEFT,pady=5,padx=6)
-		# preset end angle for wedge
-		self.WedgeAngRangeStop.set("180")
-
-		# Wedge input 3 --> Wedge total exposure time
-		WedgeinputFrame3 = Frame(currentStrategyWedge,style="inputBoxes.TFrame")
-		WedgeinputFrame3.grid(row=2,column=0)
-		WedgeinputLabel3 = Label(WedgeinputFrame3,text="Total Exposure Time",style="inputBoxes.TLabel")
-		WedgeinputLabel3.pack(side=LEFT,pady=5,padx=6)
-		self.WedgeExposTime = StringVar()
-		WedgeinputBox3 = Entry(WedgeinputFrame3,textvariable=self.WedgeExposTime,width=5)
-		WedgeinputBox3.pack(side=LEFT,pady=5,padx=6)
-		# preset total exposure time for wedge
-		self.WedgeExposTime.set("180")
-
-		# make an example visual wedge here
-		C = Canvas(currentStrategyWedge, bg=self.lightcolour, height=100, width=100)
-		coord = 0, 20, 100, 100
-		C.create_arc(coord, start=0, extent=150, fill=self.darkcolour)
-		C.grid(row=0,column=1,rowspan=4)
-
-		# create a 'make' button here to add this wedge to the list of added beam strategies in treeview list
-		wedgeMakeButton = Button(currentStrategyWedge,text="Make",command=self.addBeamStrategy)
-		wedgeMakeButton.grid(row=4,column=0,pady=5)
-
-    def addBeamStrategy(self):
+    def updateTreeView(self, wedge):
         # add a new beam+wedge strategy to the treeview of coupled beam+wedge strategies to be input into RADDOSE3D
 
-        # make a new wedge object
-        currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get())
         Index = self.BeamStratTree.insert("" , len(self.treeviewIndexlist),    text=str(len(self.treeviewIndexlist)+1),
-        						 values=(self.beamChoice.get(),currentWedge.angStart,currentWedge.angStop,currentWedge.exposureTime))
+        						 values=(self.beamChoice.get(),wedge.angStart,wedge.angStop,wedge.exposureTime))
         self.treeviewIndexlist.append(Index)
 
         # get the index of the selected beam from the list of added beams (in the optionmenu list)
@@ -774,7 +727,7 @@ class RADDOSEgui(Frame):
         # add the current beam to the list of beams to be run
         self.beamList2Run.append(currentBeam)
         # add the current wedge information for this beam to another list
-        self.wedgeList2Run.append(currentWedge)
+        self.wedgeList2Run.append(wedge)
 
         # once this function runs, the toplevel window should be exited
         self.top_WedgeMaker.destroy()
