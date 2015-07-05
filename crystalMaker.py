@@ -19,7 +19,7 @@ class crystalMakerWindow(Frame):
 											style="MakeABeam.TFrame")
 		self.currentStrategyCrystal.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
 
-		#Create object that creates the help text
+		#Create object that contains the help text
 		self.helpText = CrystalInputHelp()
 
 		# Crystal input --> crystal type

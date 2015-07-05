@@ -2,6 +2,8 @@ from Tkinter import *
 from ttk import *
 from beams import beams
 import tkMessageBox
+from HoverInfo import HoverInfo
+from InputsHelpText import BeamInputHelp
 
 class beamMakerWindow(Frame):
 	# this is a secondary beam-maker window class here.
@@ -16,6 +18,9 @@ class beamMakerWindow(Frame):
 		self.currentStrategyBeam = LabelFrame(self.master,labelwidget=l,
 											style="MakeABeam.TFrame")
 		self.currentStrategyBeam.pack(side=TOP,padx=10, pady=10,fill=BOTH,expand=TRUE)
+
+		#Create object that contains the help text
+		self.helpText = BeamInputHelp()
 
 		# Beam input --> Beam type
 		self.BeamType = StringVar()
@@ -54,6 +59,7 @@ class beamMakerWindow(Frame):
 		# Beam input 1 --> Beam type
 		BeaminputLabel1 = Label(self.currentStrategyBeam,text="Beam Type",style="inputBoxes.TLabel")
 		BeaminputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
+		self.hoverType = HoverInfo(BeaminputLabel1, self.helpText.typeText)
 		beamTypeList = ['Gaussian','TopHat','Experimental']
 		beamTypeListOptionMenu = OptionMenu(self.currentStrategyBeam, self.BeamType,self.BeamType.get(),*beamTypeList,command= lambda x: self.update(self.BeamType,MainGui))
 		beamTypeListOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
@@ -63,6 +69,7 @@ class beamMakerWindow(Frame):
 		if beamType.get() == 'Gaussian':
 			BeaminputLabel2 = Label(self.currentStrategyBeam,text="FWHM",style="inputBoxes.TLabel")
 			BeaminputLabel2.grid(row=1,column=0,sticky=E)
+			self.hoverfwhm = HoverInfo(BeaminputLabel2, self.helpText.fwhmText)
 			BeamFWHMInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
 			BeamFWHMInputsFrame.grid(row=1,column=1,sticky=W)
 			BeamFWHMVerticalBox = Entry(BeamFWHMInputsFrame,textvariable=self.BeamFWHMVertical,width=5)
@@ -77,6 +84,7 @@ class beamMakerWindow(Frame):
 		# Beam input 3 --> flux
 		BeaminputLabel3 = Label(self.currentStrategyBeam,text="Flux",style="inputBoxes.TLabel")
 		BeaminputLabel3.grid(row=2,column=0,sticky=E,pady=5,padx=6)
+		self.hoverFlux = HoverInfo(BeaminputLabel3, self.helpText.fluxText)
 		BeaminputBox3 = Entry(self.currentStrategyBeam,textvariable=self.BeamFlux,width=5)
 		BeaminputBox3.grid(row=2,column=1,sticky=W,pady=5,padx=6)
 
@@ -84,6 +92,7 @@ class beamMakerWindow(Frame):
 		# Beam input 4 --> Energy
 		BeaminputLabel4 = Label(self.currentStrategyBeam,text="Energy",style="inputBoxes.TLabel")
 		BeaminputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
+		self.hoverEnergy = HoverInfo(BeaminputLabel4, self.helpText.energyText)
 		BeaminputBox4 = Entry(self.currentStrategyBeam,textvariable=self.BeamEnergy,width=5)
 		BeaminputBox4.grid(row=3,column=1,sticky=W,pady=5,padx=6)
 
@@ -98,6 +107,7 @@ class beamMakerWindow(Frame):
 			else:
 				BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
 			BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverColl = HoverInfo(BeaminputLabel5, self.helpText.collText)
 			BeamRectCollInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
 			BeamRectCollInputsFrame.grid(row=4,column=1,sticky=W)
 			BeamRectCollVertBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollVert,width=5)
@@ -110,6 +120,7 @@ class beamMakerWindow(Frame):
 		if beamType.get() == 'Experimental':
 			BeamFileInputLabel = Label(self.currentStrategyBeam,text="File",style="inputBoxes.TLabel")
 			BeamFileInputLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
+			self.hoverFile = HoverInfo(BeamFileInputLabel, self.helpText.fileText)
 			BeamFileInputBox = Entry(self.currentStrategyBeam,textvariable=self.beamFile,width=5)
 			BeamFileInputBox.grid(row=4,column=1,columnspan=3,sticky=W,pady=5,padx=6)
 		else:
@@ -120,6 +131,7 @@ class beamMakerWindow(Frame):
 		if beamType.get() == 'Experimental':
 			BeamPixelSizeInputLabel = Label(self.currentStrategyBeam,text="Pixel Size (x, y - microns)",style="inputBoxes.TLabel")
 			BeamPixelSizeInputLabel.grid(row=5,column=0,sticky=E,pady=5,padx=6)
+			self.hoverPixelSize = HoverInfo(BeamPixelSizeInputLabel, self.helpText.pixSizeText)
 			BeamPixelSizeInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
 			BeamPixelSizeInputsFrame.grid(row=5,column=1,sticky=W)
 			BeamPixelSizeXBox = Entry(BeamPixelSizeInputsFrame,textvariable=self.beamPixSizeX,width=5)

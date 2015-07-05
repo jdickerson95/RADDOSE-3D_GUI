@@ -25,4 +25,13 @@ class CrystalInputHelp():
         self.conDens = "Need to sort out the text: con dens"
         self.seqFileText= "Need to out the text: seq File"
 
-        
+
+class BeamInputHelp():
+    def __init__(self):
+        self.typeText = "Need to sort out the text: type"
+        self.fluxText = "Need to sort out the text: flux"
+        self.energyText = "Need to sort out the text: energy"
+        self.collText = "Need to sort out the text: collimation"
+        self.fwhmText = "Need to sort out the text: fwhm"
+        self.fileText = "Need to sort out the text: file"
+        self.pixSizeText = "Need to sort out the text: pix size"
