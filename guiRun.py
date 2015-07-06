@@ -333,8 +333,8 @@ class RADDOSEgui(Frame):
         scrollbarCrystList = Scrollbar(crystListFrame, orient=VERTICAL)
 
         # want to make a list of crystal object instances (here two example crystals are defined)
-        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1,'Average')
-        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,'Average')
+        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1)
+        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2)
         self.crystList = [exampleCryst,exampleCryst2]
 
         self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=loadListHeight)
@@ -779,7 +779,7 @@ class RADDOSEgui(Frame):
 """ %(str(crystalObject.crystName),str(crystalObject.type),
 		          		str(crystalObject.crystDimX),str(crystalObject.crystDimY),
 		          		str(crystalObject.crystDimZ),str(crystalObject.pixelsPerMicron),
-		          		str(crystalObject.absCoefCalc))
+		          		'NEED TO SORT!!')
 		return string
 
     def extractWedgeInfo(self, wedgeObject):
@@ -1133,9 +1133,9 @@ class RADDOSEgui(Frame):
 				pass
 
     def checkCrystInputs(self,newCrystal):
-		# additional check to ensure correct crystal properties have been read successively
-		# from premade RD3D input file
-		ErrorMessage1 = newCrystal.checkValidInputs()
+        # additional check to ensure correct crystal properties have been read successively
+        # from premade RD3D input file
+        ErrorMessage1 = newCrystal.checkValidInputs()
         return ErrorMessage1
 
 	# functions for the manipulation of beam files and parameters
@@ -1534,8 +1534,8 @@ class RADDOSEgui(Frame):
 					crystal.type = line.split()[1]
 				elif "PixelsPerMicron" in line:
 					crystal.pixelsPerMicron = float(line.split()[1])
-				elif "CoefCalc" in line:
-					crystal.absCoefCalc = line.split()[1]
+				# elif "CoefCalc" in line:
+				# 	crystal.absCoefCalc = line.split()[1]
 
 			elif beamBlock:
 				if "Type" in line:

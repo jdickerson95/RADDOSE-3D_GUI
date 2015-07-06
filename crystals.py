@@ -1,7 +1,7 @@
 class crystals(object):
 	# this class is for crystal parameters for a loaded or created crystal
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-				 crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff=""):
+				 crystDimZ=0,crystPixPerMic=0):
 		self.crystName        = crystName
 		self.type             = crystType
 		self.crystDimX        = crystDimX
@@ -34,15 +34,17 @@ class crystals(object):
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-				 crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff="",
+				 crystDimZ=0,crystPixPerMic=0,
 				 pdbcode="",solventHeavyConc=""):
 		super(crystals_AverageAbsCoeffCals, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
-					crystDimZ,crystPixPerMic,crystAbsorpCoeff)
+					crystDimZ,crystPixPerMic)
 
 		self.pdbcode = pdbcode
 		self.solventHeavyConc = solventHeavyConc
-		self.absCoefCalc = 'PDB code'
+
+	def getAbsCoeffType(self):
+		return 'PDB code'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -55,7 +57,7 @@ class crystals_pdbCode(crystals):
 class crystals_userDefined(crystals):
 	# A subclass for a user defined crystal composition
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-			     crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff="",
+			     crystDimZ=0,crystPixPerMic=0,
 				 unitcell_a=0,unitcell_b=0,unitcell_c=0,
 				 unitcell_alpha=0,unitcell_beta=0,unitcell_gamma=0,
 				 numMonomers=0,numResidues=0,numRNA=0,numDNA=0,
@@ -63,7 +65,7 @@ class crystals_userDefined(crystals):
 				 solventFraction=0):
 		super(crystals_AverageAbsCoeffCals, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
-					crystDimZ,crystPixPerMic,crystAbsorpCoeff)
+					crystDimZ,crystPixPerMic)
 
 		self.unitcell_a = unitcell_a
 		self.unitcell_b = unitcell_b
@@ -78,7 +80,9 @@ class crystals_userDefined(crystals):
 		self.proteinHeavyAtoms = proteinHeavyAtoms
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
-		self.absCoefCalc = 'User Defined'
+
+	def getAbsCoeffType(self):
+		return 'User Defined'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -124,7 +128,7 @@ class crystals_userDefined(crystals):
 class crystals_RADDOSEv2(crystals):
 	# A subclass for RADDOSE-v2 crystal inputs
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-				 crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff="",
+				 crystDimZ=0,crystPixPerMic=0,
 				 unitcell_a=0,unitcell_b=0,unitcell_c=0,
 				 unitcell_alpha=0,unitcell_beta=0,unitcell_gamma=0,
 				 numMonomers=0,numResidues=0,numRNA=0,numDNA=0,
@@ -132,7 +136,7 @@ class crystals_RADDOSEv2(crystals):
 				 solventFraction=0):
 		super(crystals_AverageAbsCoeffCals, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
-					crystDimZ,crystPixPerMic,crystAbsorpCoeff)
+					crystDimZ,crystPixPerMic)
 
 		self.unitcell_a = unitcell_a
 		self.unitcell_b = unitcell_b
@@ -147,7 +151,9 @@ class crystals_RADDOSEv2(crystals):
 		self.proteinHeavyAtoms = proteinHeavyAtoms
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
-		self.absCoefCalc = 'RADDOSE-v2'
+
+	def getAbsCoeffType(self):
+		return 'RADDOSE-v2'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -192,14 +198,14 @@ class crystals_RADDOSEv2(crystals):
 class crystals_seqFile(crystals):
 	# A subclass for sequence file-defined crystal composition
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-				 crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff="",
+				 crystDimZ=0,crystPixPerMic=0,
 				 unitcell_a=0,unitcell_b=0,unitcell_c=0,
 				 unitcell_alpha=0,unitcell_beta=0,unitcell_gamma=0,
-				 numMonomers=0,sequenceFile="",cproteinHeavyAtoms="",
+				 numMonomers=0,sequenceFile="",proteinHeavyAtoms="",
 				 solventHeavyConc="",solventFraction=0):
 		super(crystals_AverageAbsCoeffCals, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
-					crystDimZ,crystPixPerMic,crystAbsorpCoeff)
+					crystDimZ,crystPixPerMic)
 
 		self.unitcell_a = unitcell_a
 		self.unitcell_b = unitcell_b
@@ -211,7 +217,9 @@ class crystals_seqFile(crystals):
 		self.proteinHeavyAtoms = proteinHeavyAtoms
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
-		self.absCoefCalc = 'Sequence File'
+
+	def getAbsCoeffType(self):
+		return 'Sequence File'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -241,7 +249,7 @@ class crystals_seqFile(crystals):
 class crystals_SAXSuserDefined(crystals):
 	# A subclass for user-defined SAXS crystal composition inputs
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-				 crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff="",
+				 crystDimZ=0,crystPixPerMic=0,
 				 unitcell_a=0,unitcell_b=0,unitcell_c=0,
 				 unitcell_alpha=0,unitcell_beta=0,unitcell_gamma=0,
 				 numResidues=0,numRNA=0,numDNA=0,
@@ -249,7 +257,7 @@ class crystals_SAXSuserDefined(crystals):
 				 solventFraction=0,proteinConc=0):
 		super(crystals_AverageAbsCoeffCals, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
-					crystDimZ,crystPixPerMic,crystAbsorpCoeff)
+					crystDimZ,crystPixPerMic)
 
 		self.unitcell_a = unitcell_a
 		self.unitcell_b = unitcell_b
@@ -264,7 +272,9 @@ class crystals_SAXSuserDefined(crystals):
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
 		self.proteinConc = proteinConc
-		self.absCoefCalc = 'SAXS User Defined'
+
+	def getAbsCoeffType(self):
+		return 'SAXS User Defined'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -304,14 +314,14 @@ class crystals_SAXSuserDefined(crystals):
 class crystals_SAXSseqFile(crystals):
 	# A subclass for sequence file-defined SAXS crystal composition inputs
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-				 crystDimZ=0,crystPixPerMic=0,crystAbsorpCoeff="",
+				 crystDimZ=0,crystPixPerMic=0,
 				 unitcell_a=0,unitcell_b=0,unitcell_c=0,
 				 unitcell_alpha=0,unitcell_beta=0,unitcell_gamma=0,
 				 proteinHeavyAtoms="",solventHeavyConc="",
 				 solventFraction=0,proteinConc=0,sequenceFile=""):
 		super(crystals_AverageAbsCoeffCals, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
-					crystDimZ,crystPixPerMic,crystAbsorpCoeff)
+					crystDimZ,crystPixPerMic)
 
 		self.unitcell_a = unitcell_a
 		self.unitcell_b = unitcell_b
@@ -324,7 +334,9 @@ class crystals_SAXSseqFile(crystals):
 		self.solventFraction = solventFraction
 		self.proteinConc = proteinConc
 		self.sequenceFile = sequenceFile
-		self.absCoefCalc = 'SAXS Sequence File'
+
+	def getAbsCoeffType(self):
+		return 'SAXS Sequence File'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""

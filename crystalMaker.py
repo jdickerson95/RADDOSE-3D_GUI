@@ -681,9 +681,56 @@ class crystalMakerWindow(Frame):
 	def addMadeCryst(self,MainGui):
 		# make a new crystal object from above entered parameters and add to both listbox crystal list and
 		# also list of crystal objects
-		newCryst = crystals(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
-							self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
-							"average")
+
+		if 'Average protein composition' in self.crystalAbsCoeffType.get():
+			newCryst = crystals(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+								self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get())
+		
+		elif 'Using PDB code' in self.crystalAbsCoeffType.get():
+			newCryst = crystals_pdbCode(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+										self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
+							 			self.pdbcode,self.solventHeavyConc)
+
+		elif 'User defined composition' in self.crystalAbsCoeffType.get():
+			newCryst = crystals_userDefined(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+											self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
+				 							self.unitcell_a,self.unitcell_b,self.unitcell_c,
+				 							self.unitcell_alpha,self.unitcell_beta,self.unitcell_gamma,
+				 							self.numMonomers,self.numResidues,self.numRNA,self.numDNA,
+				 							self.proteinHeavyAtoms,self.solventHeavyConc,self.solventFraction)
+
+		elif 'RADDOSE version 2' in self.crystalAbsCoeffType.get():
+			newCryst = crystals_RADDOSEv2(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+										  self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
+				 						  self.unitcell_a,self.unitcell_b,self.unitcell_c,
+				 						  self.unitcell_alpha,self.unitcell_beta,self.unitcell_gamma,
+				 						  self.numMonomers,self.numResidues,self.numRNA,self.numDNA,
+				 						  self.proteinHeavyAtoms,self.solventHeavyConc,self.solventFraction)
+
+		elif 'using sequence file' in self.crystalAbsCoeffType.get():
+			newCryst = crystals_seqFile(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+										self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
+										self.unitcell_a,self.unitcell_b,self.unitcell_c,
+				 						self.unitcell_alpha,self.unitcell_beta,self.unitcell_gamma,
+				 						self.numMonomers,self.sequenceFile,self.proteinHeavyAtoms,
+				 						self.solventHeavyConc,self.solventFraction)
+
+		elif 'SAXS (user defined composition)' in self.crystalAbsCoeffType.get():
+			newCryst = crystals_SAXSuserDefined(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+												self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
+				 								self.unitcell_a,self.unitcell_b,self.unitcell_c,
+				 								self.unitcell_alpha,self.unitcell_beta,self.unitcell_gamma,
+				 								self.numResidues,self.numRNA,self.numDNA,
+				 								self.proteinHeavyAtoms,self.solventHeavyConc,
+				 								self.solventFraction,self.proteinConc)
+
+		elif 'SAXS (sequence file)' in self.crystalAbsCoeffType.get():
+			newCryst = crystals_SAXSseqFile(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+											self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
+											self.unitcell_a,self.unitcell_b,self.unitcell_c,
+				 							self.unitcell_alpha,self.unitcell_beta,self.unitcell_gamma,
+				 							self.proteinHeavyAtoms,self.solventHeavyConc,
+				 							self.solventFraction,self.proteinConc,self.sequenceFile)
 
 		# check the crystal parameters are valid
 		ErrorMessage = MainGui.checkCrystInputs(newCryst)
