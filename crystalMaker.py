@@ -1,6 +1,6 @@
 from Tkinter import *
 from ttk import *
-from crystals import crystals
+from crystals import *
 import tkMessageBox
 from HoverInfo import HoverInfo
 from InputsHelpText import CrystalInputHelp
