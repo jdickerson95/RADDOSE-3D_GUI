@@ -110,14 +110,70 @@ to specify the SAXS sample composition.
 Currently the RADDOSE-3D only reads PDB files from online database and not local files.
 """
 
-        self.unitcellText = "Need to sort out the text: unitcell - crystal"
-        self.unitcellSAXSText = "Need to sort out the text: unitcell - saxs"
-        self.numMonText = "Need to sort out the text: num mon"
-        self.numResText = "Need to sort out the text: num res"
-        self.numRNAText = "Need to sort out the text: num rna"
-        self.numDNAText = "Need to sort out the text: num dna"
-        self.protHeavyText = "Need to sort out the text: prot heavy"
-        self.solHeavyText = "Need to sort out the text: sol heavy"
+        self.unitcellText = """Specifies the unit cell dimensions of the crystal
+inputs a, b and c specify the unit cell lengths in angstroms. Alpha, beta and gamma
+specify the unit cell angles in degrees. If the unit cell angles are not given then
+they will default to 90 degrees"""
+
+        self.unitcellSAXSText = """Specifies a volume to calculate the sample composition.
+The unit cell for the SAXS case is not taken literally as a unit cell in the
+crystal sense. Instead it specifies a volume of sufficient size to contain at
+least 1 complete protein molecule. If the unit cell values are not explicitly
+given then each dimension will default to 1000 Angstroms and the cell angles will
+default to 90 degrees. When RADDOSE-3D is run, the log file will give the number
+of protein molecules in the given volume and will give a warning if it is less
+than 1. If this is the case then the unit cell dimensions should be increased
+manually.
+ """
+
+        self.numMonText = """ Specifies the number of protein monomers in the unit cell.
+Only integers (whole numbers) should be given. This should not be confused with
+the number of monomers in the asymmetric unit.
+"""
+
+        self.numResText = """Specifies the number of residues per protein monomer.
+Only integers (whole numbers) should be given. The number and types of atoms for each
+residue are given as:
+amino acid = 5 carbon + 1.35 Nitrogren + 1.5 Oxygen + 8 Hydrogen.
+Any sulfur atoms, e.g. from CYS and MET residues, should be added explicitly with
+the "Heavy atoms in protein" option.
+"""
+
+        self.numRNAText = """Specifies the number of RNA nucleotides per monomer.
+Only integers (whole numbers) should be given. The number and types of atoms for each
+nucleotide (assuming average nucleotide content) are given as:
+mean nucleotide = 9.5 carbon + 3.75 Nitrogren + 7 Oxygen + 11.25 Hydrogen + 1 Phosphorus.
+Explicit atom specification with the "Heavy atoms in protein" option can be used
+if more accuracy is necessary.
+The default value is 0.
+"""
+
+        self.numDNAText = """Specifies the number of DNA nucleotides per monomer.
+Only integers (whole numbers) should be given. The number and types of atoms for each
+nucleotide (assuming average nucleotide content) are given as:
+mean nucleotide = 9.75 carbon + 4 Nitrogren + 6 Oxygen + 11.75 Hydrogen + 1 Phosphorus.
+Explicit atom specification with the "Heavy atoms in protein" option can be used
+if more accuracy is necessary.
+The default value is 0.
+"""
+
+        self.protHeavyText = """Specifies a list of atoms to add to the protein part of the absorption.
+Each species is defined by a two character string for the elemental symbol and an
+integer (whole) number of atoms of that species per monomer.
+
+Example:
+To specify 10 sulfur atoms and 2 selenium atoms per monomer the input would be:
+S 10 Se 2
+"""
+        self.solHeavyText = """Specifies a concentration of elements in the solvent (not including water).
+The concentration should be given in millimoles per litre. Oxygen and lighter
+elements should not be specified.
+
+Example:
+To specify 1 Molar sodium chloride in the solvent the input would be:
+Na 1000 Cl 1000
+"""
+
         self.solFracText = "Need to sort out the text: sol frac"
         self.protConcText = "Need to sort out the text: prot conc"
         self.conTypeText = "Need to sort out the text: con type"
