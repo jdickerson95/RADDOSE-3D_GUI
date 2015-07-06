@@ -85,7 +85,11 @@ class crystalMakerWindow(Frame):
 		# Crystal input 1 --> crystal type
 		CrystalinputLabel1 = Label(self.currentStrategyCrystal,text="Crystal Type",style="inputBoxes.TLabel")
 		CrystalinputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
-		crystTypeList = ['Cuboid','Spherical', 'Cylindrical', 'Polyhedron']
+		self.crystTypeDict = {'Cuboid'      : "Cuboid",
+							  'Spherical'   : "Spherical",
+							  'Cylindrical' : "Cylindrical",
+							  'Polyhedron'  : "Polyhedron"}
+		crystTypeList = self.crystTypeDict.keys()
 		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystTypeOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 		self.hoverType = HoverInfo(CrystalinputLabel1, self.helpText.typeText)
@@ -187,8 +191,14 @@ class crystalMakerWindow(Frame):
 		CrystalinputLabel4 = Label(self.currentStrategyCrystal,text="Absorption Coefficient",style="inputBoxes.TLabel")
 		CrystalinputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
 		self.hoverAbsCoeff = HoverInfo(CrystalinputLabel4, self.helpText.absCoeffText)
-		crystAbsCoeffList = ['Average protein composition', 'Using PDB code', 'User defined composition',
-		'RADDOSE version 2', 'using sequence file', 'SAXS (user defined composition)', 'SAXS (sequence file)']
+		self.crystAbsCoeffDict = {'Average protein composition'     : "Average",
+    							  'Using PDB code'                  : "EXP",
+    							  'User defined composition'        : "RD3D",
+    							  'RADDOSE version 2'               : "RDV2",
+							 	  'using sequence file'             : "Sequence",
+								  'SAXS (user defined composition)' : "SAXS",
+								  'SAXS (sequence file)'            : "SAXSseq"}
+		crystAbsCoeffList = self.crystAbsCoeffDict.keys()
 		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystAbsCoeffOptionMenu.grid(row=3,column=1,sticky=W,pady=5,padx=6)
 
@@ -553,7 +563,10 @@ class crystalMakerWindow(Frame):
 		containerTypeInputLabel = Label(self.currentStrategyCrystal,text="Type of sample container",style="inputBoxes.TLabel")
 		containerTypeInputLabel.grid(row=9,column=0,sticky=E,pady=5,padx=6)
 		self.hoverConType = HoverInfo(containerTypeInputLabel, self.helpText.conTypeText)
-		containerTypeList = ['No container', 'Specify mixture', 'Specify elemental composition']
+		self.containerTypeDict = {'No container'                  : "None",
+		                          'Specify mixture'               : "Mixture",
+								  'Specify elemental composition' : "Elemental"}
+		containerTypeList = self.containerTypeDict.keys()
 		containerTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.containerType, self.containerType.get(), *containerTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		containerTypeOptionMenu.grid(row=9,column=1,sticky=W,pady=5,padx=6)
 
@@ -640,7 +653,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 								self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 								self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict)
-		
+
 		elif 'Using PDB code' in self.crystalAbsCoeffType.get():
 			newCryst = crystals_pdbCode(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 										self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
