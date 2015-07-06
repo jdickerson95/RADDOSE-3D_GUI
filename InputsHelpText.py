@@ -1,6 +1,6 @@
 class CrystalInputHelp():
     def __init__(self):
-        self.typeText = """Specify the type of the crystal.
+        self.typeText = """Specifies the type of the crystal.
 This determines the shape of the crystal and ultimately determines the dimensions
 that are required for input. Currently there are 4 types that can be selected:
 
@@ -21,14 +21,14 @@ explicitly giving dimensions for the arbitrary shaped crystal, a file containing
 the vertices and faces of the crystal object should be given.
 """
 
-        self.dimsText = """Specify the dimensions for the chosen crystal type.
+        self.dimsText = """Specifies the dimensions for the chosen crystal type.
 Please see help text on the "Crystal Type" label for information about the
 dimensions required for each crystal type.
 Only numerical values are accepted for these fields. The units for the dimension
 values are microns.
 """
 
-        self.modelText = """Specify the filename for the file containing the geometry of the crystal.
+        self.modelText = """Specifies the filename for the file containing the geometry of the crystal.
 Currently only .obj (geometry denition) files can be read. The model and the
 .obj files can be generated using the free and open source 3D animation software
 BLENDER. (NOTE: if you are exporting a Wavefront (.obj) file in BLENDER, then
@@ -71,7 +71,7 @@ http://www.raddo.se/user-guide.pdf
 Only numerical values are accepted for this field.
 """
 
-        self.absCoeffText = """Species how the program should calculate the absorption coefficients
+        self.absCoeffText = """Specifies how the program should calculate the absorption coefficients
 There are currently 7 different options:
 
 1) Average protein composition - RADDOSE-3D assumes an absorption coefficient of
@@ -235,19 +235,52 @@ Only numerical values are accepted for this field.
 
         self.seqFileText= """Specifies the path to the sequence file.
 This file should be a plain text file in fasta format:
-http://blast.ncbi.nlm.nih.gov/blastcgihelp.shtml.        
+http://blast.ncbi.nlm.nih.gov/blastcgihelp.shtml.
 """
 
 
 class BeamInputHelp():
     def __init__(self):
-        self.typeText = "Need to sort out the text: type"
-        self.fluxText = "Need to sort out the text: flux"
-        self.energyText = "Need to sort out the text: energy"
-        self.collText = "Need to sort out the text: collimation"
-        self.fwhmText = "Need to sort out the text: fwhm"
-        self.fileText = "Need to sort out the text: file"
-        self.pixSizeText = "Need to sort out the text: pix size"
+        self.typeText = """Specifies the type of the beam.
+The beam type represents the type of the overall beam profile. There are
+currently 3 types available:
+
+1) Tophat - defines a beam with a uniform flux
+
+2) Gaussian - defines a beam with a 2-dimensional Gaussian flux profile.
+
+3) Experimental - defines a beam with an arbitrary beam profile given in an
+image format.
+"""
+        self.fluxText = """Specifies the total beam flux in photons per second.
+The flux should be a numerical value but can also be specified in scientific
+notation (e.g. 1.3e12).
+"""
+
+        self.energyText = """Specifies the incident photon energy in keV.
+The energy should be given as a numerical value.
+"""
+
+        self.collText = """Specifies the collimation of the beam.
+Currently the only collimation available is rectangular collimation. Hence the
+user should supply the horizontal (x) and vertical (y) collimation (slit size)
+for the beam.
+If the collimation is not supplied for a Gaussian beam then the x and y
+collimation is set to 3 x full width half max.
+"""
+
+        self.fwhmText = """Specifies the full width half maximum (fwhm) of the Gaussian beam.
+Note that the vertical fwhm is the X (first) input and the horizontal fwhm is
+the Y (second) input.
+"""
+
+        self.fileText = """Specifies the path to the file containing the beam image.
+Currently only portable Graymap (.pgm) files are supported.
+"""
+
+        self.pixSizeText = """Specifies the pixel size of the beam image in micrometers.
+x and y specify the horizontal and vertical size of the pixels in the
+corresponding beam image."""
 
 class WedgeInputHelp():
     def __init__(self):
