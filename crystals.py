@@ -4,7 +4,7 @@ class crystals(object):
 	# this class is for crystal parameters for a loaded or created crystal.
 	# Default absCoefCalc is set to 'Average'
 	def __init__(self, crystName="", crystType="", crystDimX=0, crystDimY=0, crystDimZ=0,
-				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}):
+				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}, absCoeffCalc=""):
 
 		self.crystName        = crystName
 		self.type             = crystType
@@ -14,12 +14,13 @@ class crystals(object):
 		self.pixelsPerMicron  = crystPixPerMic
 		self.angleP 		  = angleP
 		self.angleL 		  = angleL
-		self.absCoeffCalc 	  = 'Average'
+		self.absCoeffCalc 	  = absCoeffCalc
 
 		# find the crystal container information, if it was provided when the crystal object was created
 		self.containerInfoDict = containerInfoDict
 		try:
-			materialMixture,materialElements,containerThickness,containerDensity = self.getContainerInfo()
+			containerType, materialMixture,materialElements,containerThickness,containerDensity = self.getContainerInfo()
+			self.containerType      = containerType
 			self.materialMixture  	= materialMixture
 			self.materialElements 	= materialElements
 			self.containerThickness = containerThickness
@@ -36,12 +37,13 @@ class crystals(object):
 
 	def getContainerInfo(self):
 		# get info regarding crystal container
+		containerType       = self.containerInfoDict["Type"]
 		materialMixture		= self.containerInfoDict["Mixture"]
 		materialElements 	= self.containerInfoDict["Elements"]
 		containerThickness 	= self.containerInfoDict["Thickness"]
 		containerDensity 	= self.containerInfoDict["Density"]
 
-		return (materialMixture,materialElements,containerThickness,containerDensity)
+		return (containerType,materialMixture,materialElements,containerThickness,containerDensity)
 
 	def checkValidInputs(self):
 		ErrorMessage = ""
@@ -75,15 +77,17 @@ class crystals(object):
 	def extractCrystalInfo(self):
 		# create a string containing information of current crystal
 		summaryString 	= 	"Crystal Name: {}\n".format(str(self.crystName))
-		summaryString 	+= 	"nType: {}\n".format(str(self.type))
+		summaryString 	+= 	"Type: {}\n".format(str(self.type))
 		summaryString 	+= 	"Dimensions: {} {} {} (microns in x,y,z)\n".format(str(self.crystDimX),str(self.crystDimY),str(self.crystDimZ))
 		summaryString 	+= 	"Pixels per Micron: {}\n".format(str(self.pixelsPerMicron))
 		summaryString 	+= 	"Angle P: {}\n".format(str(self.angleP))
 		summaryString 	+= 	"Angle L: {}\n".format(str(self.angleL))
+		summaryString 	+= 	"Absorption Coeffient Calculation: {}\n".format(str(self.absCoeffCalc))
 
 		# if container information was provided, include in summary
 		if self.checkContainerInfoPresent() == True:
 			containerString  	= 	"\nContainer Information:\n"
+			containerString 	+= 	"Container Type: {}\n".format(str(self.containerType))
 			containerString 	+= 	"Material Mixture: {}\n".format(str(self.materialMixture))
 			containerString 	+= 	"Material Elements: {}\n".format(str(self.materialElements))
 			containerString 	+= 	"Container Thickness: {}\n".format(str(self.containerThickness))
@@ -95,15 +99,14 @@ class crystals(object):
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
 	def __init__(self, crystName="", crystType="", crystDimX=0, crystDimY=0,crystDimZ=0,
-				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}, 
+				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}, absCoeffCalc="",
 				 pdbcode="", solventHeavyConc=""):
 
 		super(crystals_pdbCode, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-											   crystPixPerMic, angleP, angleL, containerInfoDict)
+											   crystPixPerMic, angleP, angleL, containerInfoDict, absCoeffCalc)
 
 		self.pdbcode 			= pdbcode
 		self.solventHeavyConc 	= solventHeavyConc
-		self.absCoeffCalc 		= 'EXP'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -117,21 +120,21 @@ class crystals_pdbCode(crystals):
 		# create a string containing information of current crystal composition
 		compositionString  	= 	"\nComposition Information:\n"
 		compositionString 	+= 	"PDB code: {}\n".format(str(self.pdbcode))
-		compositionString 	+= 	"Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 
 		return compositionString
 
 class crystals_userDefined(crystals):
 	# A subclass for a user defined crystal composition
 	def __init__(self, crystName="", crystType="", crystDimX=0, crystDimY=0, crystDimZ=0,
-				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={},
+				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}, absCoeffCalc="",
 				 unitcell_a=0, unitcell_b=0, unitcell_c=0,
 				 unitcell_alpha=0, unitcell_beta=0, unitcell_gamma=0,
 				 numMonomers=0, numResidues=0, numRNA=0, numDNA=0,
 				 proteinHeavyAtoms="", solventHeavyConc="", solventFraction=0):
 
 		super(crystals_userDefined, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-												   crystPixPerMic, angleP, angleL, containerInfoDict)
+												   crystPixPerMic, angleP, angleL, containerInfoDict, absCoeffCalc)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -146,7 +149,6 @@ class crystals_userDefined(crystals):
 		self.proteinHeavyAtoms 	= proteinHeavyAtoms
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
-		self.absCoeffCalc 		= 'RDV3'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -198,7 +200,7 @@ class crystals_userDefined(crystals):
 		compositionString 	+= 	"Number of RNA: {}\n".format(str(self.numRNA))
 		compositionString 	+= 	"Number of DNA: {}\n".format(str(self.numDNA))
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
-		compositionString 	+= 	"Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
 
 		return compositionString
@@ -206,14 +208,14 @@ class crystals_userDefined(crystals):
 class crystals_RADDOSEv2(crystals):
 	# A subclass for RADDOSE-v2 crystal inputs
 	def __init__(self, crystName="", crystType="", crystDimX=0, crystDimY=0, crystDimZ=0,
-				 crystPixPerMic=0, angleP=0,angleL=0, containerInfoDict={},
+				 crystPixPerMic=0, angleP=0,angleL=0, containerInfoDict={}, absCoeffCalc="",
 				 unitcell_a=0, unitcell_b=0, unitcell_c=0,
 				 unitcell_alpha=0, unitcell_beta=0, unitcell_gamma=0,
 				 numMonomers=0, numResidues=0, numRNA=0, numDNA=0,
 				 proteinHeavyAtoms="", solventHeavyConc="",solventFraction=0):
 
 		super(crystals_RADDOSEv2, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-												 crystPixPerMic, angleP, angleL, containerInfoDict)
+												 crystPixPerMic, angleP, angleL, containerInfoDict, absCoeffCalc)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -228,7 +230,6 @@ class crystals_RADDOSEv2(crystals):
 		self.proteinHeavyAtoms 	= proteinHeavyAtoms
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
-		self.absCoeffCalc 		= 'RDV2'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -280,7 +281,7 @@ class crystals_RADDOSEv2(crystals):
 		compositionString 	+= 	"Number of RNA: {}\n".format(str(self.numRNA))
 		compositionString 	+= 	"Number of DNA: {}\n".format(str(self.numDNA))
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
-		compositionString 	+= 	"Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
 
 		return compositionString
@@ -288,14 +289,14 @@ class crystals_RADDOSEv2(crystals):
 class crystals_seqFile(crystals):
 	# A subclass for sequence file-defined crystal composition
 	def __init__(self, crystName="", crystType="", crystDimX=0, crystDimY=0, crystDimZ=0,
-				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={},
+				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}, absCoeffCalc="",
 				 unitcell_a=0, unitcell_b=0, unitcell_c=0,
 				 unitcell_alpha=0, unitcell_beta=0, unitcell_gamma=0,
 				 numMonomers=0, sequenceFile="", proteinHeavyAtoms="",
 				 solventHeavyConc="", solventFraction=0):
 
 		super(crystals_seqFile, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-											   crystPixPerMic, angleP, angleL, containerInfoDict)
+											   crystPixPerMic, angleP, angleL, containerInfoDict, absCoeffCalc)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -307,7 +308,6 @@ class crystals_seqFile(crystals):
 		self.proteinHeavyAtoms 	= proteinHeavyAtoms
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
-		self.absCoeffCalc 		= 'RDV3'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -341,7 +341,7 @@ class crystals_seqFile(crystals):
 		compositionString 	+= 	"Unit Cell Angles: {} {} {} (degrees in alpha,beta,gamma)\n".format(str(self.unitcell_alpha),str(self.unitcell_beta),str(self.unitcell_gamma))
 		compositionString 	+= 	"Number of Monomers: {}\n".format(str(self.numMonomers))
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
-		compositionString 	+= 	"Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
 
 		return compositionString
@@ -349,7 +349,7 @@ class crystals_seqFile(crystals):
 class crystals_SAXSuserDefined(crystals):
 	# A subclass for user-defined SAXS crystal composition inputs
 	def __init__(self, crystName="", crystType="", crystDimX=0, crystDimY=0, crystDimZ=0,
-				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={},
+				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}, absCoeffCalc="",
 				 unitcell_a=0, unitcell_b=0, unitcell_c=0,
 				 unitcell_alpha=0, unitcell_beta=0, unitcell_gamma=0,
 				 numResidues=0, numRNA=0, numDNA=0,
@@ -357,7 +357,7 @@ class crystals_SAXSuserDefined(crystals):
 				 solventFraction=0, proteinConc=0):
 
 		super(crystals_SAXSuserDefined, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-													   crystPixPerMic, angleP, angleL, containerInfoDict)
+													   crystPixPerMic, angleP, angleL, containerInfoDict, absCoeffCalc)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -372,7 +372,6 @@ class crystals_SAXSuserDefined(crystals):
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
 		self.proteinConc 		= proteinConc
-		self.absCoeffCalc 		= 'RDV3'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -418,23 +417,23 @@ class crystals_SAXSuserDefined(crystals):
 		compositionString 	+= 	"Number of RNA: {}\n".format(str(self.numRNA))
 		compositionString 	+= 	"Number of DNA: {}\n".format(str(self.numDNA))
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
-		compositionString 	+= 	"Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
-		compositionString 	+= 	"Protein Conc: {}\n".format(str(self.proteinConc))
+		compositionString 	+= 	"Protein Concentration: {}\n".format(str(self.proteinConc))
 
 		return compositionString
 
 class crystals_SAXSseqFile(crystals):
 	# A subclass for sequence file-defined SAXS crystal composition inputs
 	def __init__(self, crystName="", crystType="", crystDimX=0, crystDimY=0, crystDimZ=0,
-				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={},
+				 crystPixPerMic=0, angleP=0, angleL=0, containerInfoDict={}, absCoeffCalc="",
 				 unitcell_a=0, unitcell_b=0, unitcell_c=0,
 				 unitcell_alpha=0, unitcell_beta=0, unitcell_gamma=0,
 				 proteinHeavyAtoms="", solventHeavyConc="",
 				 solventFraction=0, proteinConc=0, sequenceFile=""):
 
 		super(crystals_SAXSseqFile, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-												   crystPixPerMic, angleP, angleL, containerInfoDict)
+												   crystPixPerMic, angleP, angleL, containerInfoDict, absCoeffCalc)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -447,7 +446,6 @@ class crystals_SAXSseqFile(crystals):
 		self.solventFraction 	= solventFraction
 		self.proteinConc 		= proteinConc
 		self.sequenceFile 		= sequenceFile
-		self.absCoeffCalc 		= 'RDV3'
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -479,10 +477,9 @@ class crystals_SAXSseqFile(crystals):
 		compositionString 	+= 	"Unit Cell Dimensions: {} {} {} (microns in a,b,c)\n".format(str(self.unitcell_a),str(self.unitcell_b),str(self.unitcell_c))
 		compositionString 	+= 	"Unit Cell Angles: {} {} {} (degrees in alpha,beta,gamma)\n".format(str(self.unitcell_alpha),str(self.unitcell_beta),str(self.unitcell_gamma))
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
-		compositionString 	+= 	"Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString 	+= 	"Solvent Heavy Atom Concenctration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
-		compositionString 	+= 	"Protein Conc: {}\n".format(str(self.proteinConc))
+		compositionString 	+= 	"Protein Concentration: {}\n".format(str(self.proteinConc))
 		compositionString 	+= 	"Sequence File: {}\n".format(str(self.sequenceFile))
 
 		return compositionString
-

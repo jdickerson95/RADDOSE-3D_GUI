@@ -619,6 +619,7 @@ class crystalMakerWindow(Frame):
 
 			# create dictionary for container info
 			self.containerInfoDict = {}
+			self.containerInfoDict["Type"] = self.containerTypeDict[self.containerType.get()]
 			self.containerInfoDict["Mixture"] = self.materialMixture.get()
 			self.containerInfoDict["Elements"] = self.materialElements.get()
 			self.containerInfoDict["Thickness"] = self.containerThickness.get()
@@ -650,20 +651,23 @@ class crystalMakerWindow(Frame):
 		# also list of crystal objects
 
 		if 'Average protein composition' in self.crystalAbsCoeffType.get():
-			newCryst = crystals(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+			newCryst = crystals(MainGui.crystMakeName.get(),self.crystTypeDict[self.CrystalType.get()],self.CrystalDimX.get(),
 								self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
-								self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict)
+								self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+								self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()])
 
 		elif 'Using PDB code' in self.crystalAbsCoeffType.get():
 			newCryst = crystals_pdbCode(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 										self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 										self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+										self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 							 			self.pdbcode.get(),self.solventHeavyConc.get())
 
 		elif 'User defined composition' in self.crystalAbsCoeffType.get():
 			newCryst = crystals_userDefined(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 											self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 											self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+											self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 				 							self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 							self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 							self.numMonomers.get(),self.numResidues.get(),self.numRNA.get(),self.numDNA.get(),
@@ -673,6 +677,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_RADDOSEv2(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 										  self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 				 						  self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+										  self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 				 						  self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 						  self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 						  self.numMonomers.get(),self.numResidues.get(),self.numRNA.get(),self.numDNA.get(),
@@ -682,6 +687,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_seqFile(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 										self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 										self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+										self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 										self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 						self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 						self.numMonomers.get(),self.sequenceFile.get(),self.proteinHeavyAtoms.get(),
@@ -691,6 +697,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_SAXSuserDefined(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 												self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 												self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+												self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 				 								self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 								self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 								self.numResidues.get(),self.numRNA.get(),self.numDNA.get(),
@@ -701,6 +708,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_SAXSseqFile(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 											self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 											self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+											self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 											self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 							self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 							self.proteinHeavyAtoms.get(),self.solventHeavyConc.get(),
