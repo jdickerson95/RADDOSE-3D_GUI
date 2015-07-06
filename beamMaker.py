@@ -60,7 +60,10 @@ class beamMakerWindow(Frame):
 		BeaminputLabel1 = Label(self.currentStrategyBeam,text="Beam Type",style="inputBoxes.TLabel")
 		BeaminputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
 		self.hoverType = HoverInfo(BeaminputLabel1, self.helpText.typeText)
-		beamTypeList = ['Gaussian','TopHat','Experimental']
+		self.beamTypeDict = {'Gaussian'     : "Gaussian",
+		                     'TopHat'       : "Tophat",
+							 'Experimental' : "Experimental"}
+		beamTypeList = self.beamTypeDict.keys()
 		beamTypeListOptionMenu = OptionMenu(self.currentStrategyBeam, self.BeamType,self.BeamType.get(),*beamTypeList,command= lambda x: self.update(self.BeamType,MainGui))
 		beamTypeListOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 
@@ -165,7 +168,7 @@ class beamMakerWindow(Frame):
 	def addMadeBeam(self,MainGui):
 		# make a new beam object from above entered parameters and add to both listbox beam list and
 		# also list of beam objects
-		newBeam = beams(MainGui.beamMakeName.get(),self.BeamType.get(),
+		newBeam = beams(MainGui.beamMakeName.get(),self.beamTypeDict[self.BeamType.get()],
 						[self.BeamFWHMVertical.get(),self.BeamFWHMHorizontal.get()],
 						self.BeamFlux.get(),self.BeamEnergy.get(),
 						[self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])
