@@ -38,16 +38,17 @@ class crystals(object):
 			float(self.angleP)
 			float(self.angleL)
 		except ValueError:
-			ErrorMessage = ErrorMessage + 'Crystal angle L or angle P input not of compatible float format.\n
+			ErrorMessage = ErrorMessage + 'Crystal angle L or angle P input not of compatible float format.\n'
 
 		return ErrorMessage
 
 	def extractCrystalInfo(self):
 		# create a string containing information of current crystal
-		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\n
+		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAngle P: %s\nAngle L: %s\n
 """ %(str(self.crystName),str(self.type),
 		          		str(self.crystDimX),str(self.crystDimY),
-		          		str(self.crystDimZ),str(self.pixelsPerMicron))
+		          		str(self.crystDimZ),str(self.pixelsPerMicron),
+		          		str(self.angleP),str(self.angleL))
 		return string
 
 class crystals_pdbCode(crystals):
