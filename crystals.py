@@ -16,23 +16,29 @@ class crystals(object):
 		self.absCoeffCalc 	  = 'Average'
 
 		# find the crystal container information, if it was provided when the crystal object was created
+		self.containerInfoDict = containerInfoDict
 		try:
-			materialMixture,materialElements,containerThickness,containerDensity = self.getContainerInfo(containerInfoDict)
+			materialMixture,materialElements,containerThickness,containerDensity = self.getContainerInfo()
 			self.materialMixture  = materialMixture
 			self.materialElements = materialElements
 			self.containerThickness = containerThickness
 			self.containerDensity = containerDensity
-			self.containerInfo = True
 		except KeyError:
-			self.containerInfo = False
 			pass
 
-	def getContainerInfo(self,containerInfoDict):
+	def checkContainerInfoPresent(self):
+		# check whether container info has been provided for crystal
+		if len(self.containerInfoDict) != 0:
+			return True
+		else:
+			return False
+
+	def getContainerInfo(self):
 		# get info regarding crystal container
-		materialMixture = containerInfoDict["Mixture"]
-		materialElements = containerInfoDict["Elements"]
-		containerThickness = containerInfoDict["Thickness"]
-		containerDensity = containerInfoDict["Density"]
+		materialMixture = self.containerInfoDict["Mixture"]
+		materialElements = self.containerInfoDict["Elements"]
+		containerThickness = self.containerInfoDict["Thickness"]
+		containerDensity = self.containerInfoDict["Density"]
 		return (materialMixture,materialElements,containerThickness,containerDensity)
 
 	def checkValidInputs(self):
@@ -66,18 +72,18 @@ class crystals(object):
 
 	def extractCrystalInfo(self):
 		# create a string containing information of current crystal
-		summaryString = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAngle P: %s\nAngle L: %s\n
+		summaryString = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAngle P: %s\nAngle L: %s
 """ %(str(self.crystName),str(self.type),
 		          		str(self.crystDimX),str(self.crystDimY),
 		          		str(self.crystDimZ),str(self.pixelsPerMicron),
 		          		str(self.angleP),str(self.angleL))
 
 		# if container information was provided, include in summary
-		if self.containerInfo == True:
-			containerString = """Container Information:\nMaterial Mixture: %s\nMaterial Elements: %s\nContainer Thickness: %s\nContainer Density: %s\n
+		if self.checkContainerInfoPresent() == True:
+			containerString = """\nContainer Information:\nMaterial Mixture: %s\nMaterial Elements: %s\nContainer Thickness: %s\nContainer Density: %s
 			""" %(str(self.materialMixture),str(self.materialElements),str(self.containerThickness),str(self.containerDensity))
 			summaryString += containerString
-			
+
 		return summaryString
 
 class crystals_pdbCode(crystals):
@@ -87,7 +93,7 @@ class crystals_pdbCode(crystals):
 				 pdbcode="",solventHeavyConc=""):
 		super(crystals_pdbCode, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
-					crystDimZ,crystPixPerMic,angleP,angleL)
+					crystDimZ,crystPixPerMic,angleP,angleL,containerInfoDict)
 
 		self.pdbcode = pdbcode
 		self.solventHeavyConc = solventHeavyConc
@@ -99,6 +105,13 @@ class crystals_pdbCode(crystals):
 		if len(self.pdbcode) != 4:
 			ErrorMessage = ErrorMessage +  'PDB code input %s not of compatible format.\n' %(self.pdbcode)
 		return ErrorMessage
+
+	def extractCrystalInfo_composition(self):
+		# create a string containing information of current crystal composition
+		compositionString  = "\nComposition Information:\n"
+		compositionString += "PDB code: {}\n".format(str(self.pdbcode))
+		compositionString += "Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))	
+		return compositionString
 
 class crystals_userDefined(crystals):
 	# A subclass for a user defined crystal composition
@@ -168,6 +181,19 @@ class crystals_userDefined(crystals):
 
 		return ErrorMessage
 
+	def extractCrystalInfo_composition(self):
+		# create a string containing information of current crystal composition
+		compositionString  = "\nComposition Information:\n"
+		compositionString += "Unit Cell Dimensions: {} {} {} (microns in a,b,c)\n".format(str(self.unitcell_a),str(self.unitcell_b),str(self.unitcell_c))
+		compositionString += "Unit Cell Angles: {} {} {} (degrees in alpha,beta,gamma)\n".format(str(self.unitcell_alpha),str(self.unitcell_beta),str(self.unitcell_gamma))
+		compositionString += "Number of Monomers: {}\n".format(str(self.numMonomers))
+		compositionString += "Number of Residues: {}\n".format(str(self.numResidues))
+		compositionString += "Number of RNA: {}\n".format(str(self.numRNA))
+		compositionString += "Number of DNA: {}\n".format(str(self.numDNA))
+		compositionString += "Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
+		compositionString += "Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString += "Solvent Fraction: {}\n".format(str(self.solventFraction))
+		return compositionString
 
 class crystals_RADDOSEv2(crystals):
 	# A subclass for RADDOSE-v2 crystal inputs
@@ -237,6 +263,20 @@ class crystals_RADDOSEv2(crystals):
 
 		return ErrorMessage
 
+	def extractCrystalInfo_composition(self):
+		# create a string containing information of current crystal composition
+		compositionString  = "\nComposition Information:\n"
+		compositionString += "Unit Cell Dimensions: {} {} {} (microns in a,b,c)\n".format(str(self.unitcell_a),str(self.unitcell_b),str(self.unitcell_c))
+		compositionString += "Unit Cell Angles: {} {} {} (degrees in alpha,beta,gamma)\n".format(str(self.unitcell_alpha),str(self.unitcell_beta),str(self.unitcell_gamma))
+		compositionString += "Number of Monomers: {}\n".format(str(self.numMonomers))
+		compositionString += "Number of Residues: {}\n".format(str(self.numResidues))
+		compositionString += "Number of RNA: {}\n".format(str(self.numRNA))
+		compositionString += "Number of DNA: {}\n".format(str(self.numDNA))
+		compositionString += "Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
+		compositionString += "Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString += "Solvent Fraction: {}\n".format(str(self.solventFraction))
+		return compositionString
+
 class crystals_seqFile(crystals):
 	# A subclass for sequence file-defined crystal composition
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
@@ -260,7 +300,6 @@ class crystals_seqFile(crystals):
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
 		self.absCoeffCalc = 'RDV3'
-
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -286,6 +325,17 @@ class crystals_seqFile(crystals):
 			ErrorMessage = ErrorMessage + 'Crystal solventFraction input not of compatible float format.\n'
 
 		return ErrorMessage
+
+	def extractCrystalInfo_composition(self):
+		# create a string containing information of current crystal composition
+		compositionString  = "\nComposition Information:\n"
+		compositionString += "Unit Cell Dimensions: {} {} {} (microns in a,b,c)\n".format(str(self.unitcell_a),str(self.unitcell_b),str(self.unitcell_c))
+		compositionString += "Unit Cell Angles: {} {} {} (degrees in alpha,beta,gamma)\n".format(str(self.unitcell_alpha),str(self.unitcell_beta),str(self.unitcell_gamma))
+		compositionString += "Number of Monomers: {}\n".format(str(self.numMonomers))
+		compositionString += "Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
+		compositionString += "Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString += "Solvent Fraction: {}\n".format(str(self.solventFraction))
+		return compositionString
 
 class crystals_SAXSuserDefined(crystals):
 	# A subclass for user-defined SAXS crystal composition inputs
@@ -350,6 +400,20 @@ class crystals_SAXSuserDefined(crystals):
 
 		return ErrorMessage
 
+	def extractCrystalInfo_composition(self):
+		# create a string containing information of current crystal composition
+		compositionString  = "\nComposition Information:\n"
+		compositionString += "Unit Cell Dimensions: {} {} {} (microns in a,b,c)\n".format(str(self.unitcell_a),str(self.unitcell_b),str(self.unitcell_c))
+		compositionString += "Unit Cell Angles: {} {} {} (degrees in alpha,beta,gamma)\n".format(str(self.unitcell_alpha),str(self.unitcell_beta),str(self.unitcell_gamma))
+		compositionString += "Number of Residues: {}\n".format(str(self.numResidues))
+		compositionString += "Number of RNA: {}\n".format(str(self.numRNA))
+		compositionString += "Number of DNA: {}\n".format(str(self.numDNA))
+		compositionString += "Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
+		compositionString += "Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString += "Solvent Fraction: {}\n".format(str(self.solventFraction))
+		compositionString += "Protein Conc: {}\n".format(str(self.proteinConc))
+		return compositionString
+
 class crystals_SAXSseqFile(crystals):
 	# A subclass for sequence file-defined SAXS crystal composition inputs
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
@@ -398,3 +462,16 @@ class crystals_SAXSseqFile(crystals):
 			ErrorMessage = ErrorMessage +  'Sequence file input %s not of compatible format.\n' %(self.sequenceFile)
 
 		return ErrorMessage
+
+	def extractCrystalInfo_composition(self):
+		# create a string containing information of current crystal composition
+		compositionString  = "\nComposition Information:\n"
+		compositionString += "Unit Cell Dimensions: {} {} {} (microns in a,b,c)\n".format(str(self.unitcell_a),str(self.unitcell_b),str(self.unitcell_c))
+		compositionString += "Unit Cell Angles: {} {} {} (degrees in alpha,beta,gamma)\n".format(str(self.unitcell_alpha),str(self.unitcell_beta),str(self.unitcell_gamma))
+		compositionString += "Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
+		compositionString += "Solvent Heavy Atom Conc: {}\n".format(str(self.solventHeavyConc))
+		compositionString += "Solvent Fraction: {}\n".format(str(self.solventFraction))
+		compositionString += "Protein Conc: {}\n".format(str(self.proteinConc))
+		compositionString += "Sequence File: {}\n".format(str(self.sequenceFile))
+		return compositionString
+

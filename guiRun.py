@@ -775,8 +775,15 @@ class RADDOSEgui(Frame):
 		tkMessageBox.showinfo( "View Crystal Information", crystInfo)
 
     def extractCrystalInfo(self, crystalObject):
-		string = crystalObject.extractCrystalInfo()
-		return string
+        string = crystalObject.extractCrystalInfo()
+
+        # for non 'average' absCoefCalc crystals, also include composition info
+        try:
+            compositionString = crystalObject.extractCrystalInfo_composition()
+            string += compositionString
+        except AttributeError:
+            pass
+        return string
 
     def extractWedgeInfo(self, wedgeObject):
 		string = """Total Oscillation %.2f (Angle Start: %s, End: %s) in degrees\nTotal Exposure Time: %s seconds\n
