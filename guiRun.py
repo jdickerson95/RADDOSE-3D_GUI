@@ -1577,52 +1577,50 @@ class RADDOSEgui(Frame):
 		return crystBlock #return the crystal block
 
     def writeBeamBlock(self, beamObj):
-		"""Write a text block of beam information for RADDOSE-3D
+        """Write a text block of beam information for RADDOSE-3D
 
-		Function to write a text block of the beam properties for a
-		RADDOSE-3D input file.
+        Function to write a text block of the beam properties for a
+        RADDOSE-3D input file.
 
-		=================
-		Keyword arguments
-		=================
-		beamObj:
-			a 'beams' object whose properties contain the required properties
-			for RADDOSE-3D input.
+        =================
+        Keyword arguments
+        =================
+        beamObj:
+        a 'beams' object whose properties contain the required properties
+        for RADDOSE-3D input.
 
-		=================
-		Return parameters
-		=================
-		beamBlock:
-			a string block that contains the beam information in the form
-			required for input into RADDOSE-3D
+        =================
+        Return parameters
+        =================
+        beamBlock:
+        a string block that contains the beam information in the form
+        required for input into RADDOSE-3D
 
-		"""
-		beamLines = [] #Inialise empty list
-		beamLines.append("Beam") # Append the string - "Beam" - to the list
-		beamPropertyDict = vars(beamObj) #create a dictionary from the beam object properties and corresponding values
+        """
+        beamLines = [] #Inialise empty list
+        beamLines.append("Beam") # Append the string - "Beam" - to the list
+        beamPropertyDict = vars(beamObj) #create a dictionary from the beam object properties and corresponding values
 
-		#Add a dictionary entry that puts beam FWHM dimensions values into a string
-		beamPropertyDict["FWHM"] = '{} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
-		#Add a dictionary entry that puts beam collimation dimensions values into a string
-		beamPropertyDict["Collimation Rectangular"] = '{} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
-		#Add a dictionary entry that puts beam pixel size dimensions values into a string
-		beamPropertyDict["PixelSize"] = '{} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
+        #loop through each entry in the dictionary, create a string of the key
+        #and value from the dictionary and append that to the list created above
+        for beamProp in beamPropertyDict:
+            if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName'):
+                string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
+                beamLines.append(string)
+            if beamProp == 'fwhm':
+                string = 'FWHM {} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
+                beamLines.append(string)
+            if beamProp == 'collimation':
+                string = 'Collimation Rectangular {} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
+                beamLines.append(string)
+            if beamProp == 'pixelSize': 
+                string = 'PixelSize {} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
+                beamLines.append(string)
 
-		#loop through each entry in the dictionary, create a string of the key
-		#and value from the dictionary and append that to the list created above
-		for beamProp in beamPropertyDict:
-			if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'FWHM':
-					string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
-					beamLines.append(string)
-			# include FWHM for Gaussian beam type
-			if beamObj.type == 'Gaussian' and beamProp == 'FWHM':
-					string = '{} {}'.format(beamProp,str(beamPropertyDict[beamProp]))
-					beamLines.append(string)
-
-		#write list entries as a single text block with each list entry joined
-		#by a new line character
-		beamBlock = "\n".join(beamLines)
-		return beamBlock #return the beam block
+        #write list entries as a single text block with each list entry joined
+        #by a new line character
+        beamBlock = "\n".join(beamLines)
+        return beamBlock #return the beam block
 
     def writeWedgeBlock(self, wedgeObj):
 		"""Write a text block of wedge information for RADDOSE-3D
