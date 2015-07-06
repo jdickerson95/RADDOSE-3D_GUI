@@ -38,23 +38,29 @@ should be an option box)
 
 - Add units to the crystal input labels
 
-- Add help comments when mouse is hovered over RADDOSE-3D inputs
-
 - Increase width of the "File" field in the Beam Maker window when the
 "Experimental" beam type is selected.
 
--make sure that the default values for any inputs that are optional but left
-null are the same as those specified in the RADDOSE-3D user manual. 
+- Make sure that the default values for any inputs that are optional but left
+null are the same as those specified in the RADDOSE-3D user manual.
 
--***************************-
-To do at some point
--***************************-
+- Make sure that the GUI reads integers as well as floats for fields that
+require floating point values.
 
 - If you don't put valid inputs in for the crystal and you try to make a crystal
 it wont let you make that crystal but the crystal maker window closes and you
 lose the inputs that you did have. This needs to be changed so that the window
-doesn't close and you keep the inputs that you did have.
+doesn't close and you keep the inputs that you did have so you don't have to
+input everything again.
 
-- Add help buttons for each of the RADDDOSE-3D inputs
+-include RADDOSE FORTRAN executable so that users can run RADDOSE V2.
+
+-Some of the help text isn't formatted properly (there are hidden characters
+which don't show up in the editor but appear in the GUI). Need to get rid of
+these.
+
+-***************************-
+To do at some point
+-***************************-
 
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)

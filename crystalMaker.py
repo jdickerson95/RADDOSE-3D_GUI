@@ -85,7 +85,11 @@ class crystalMakerWindow(Frame):
 		# Crystal input 1 --> crystal type
 		CrystalinputLabel1 = Label(self.currentStrategyCrystal,text="Crystal Type",style="inputBoxes.TLabel")
 		CrystalinputLabel1.grid(row=0,column=0,sticky=E,pady=5,padx=6)
-		crystTypeList = ['Cuboid','Spherical', 'Cylindrical', 'Polyhedron']
+		self.crystTypeDict = {'Cuboid'      : "Cuboid",
+							  'Spherical'   : "Spherical",
+							  'Cylindrical' : "Cylindrical",
+							  'Polyhedron'  : "Polyhedron"}
+		crystTypeList = self.crystTypeDict.keys()
 		crystTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.CrystalType, self.CrystalType.get(),*crystTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystTypeOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
 		self.hoverType = HoverInfo(CrystalinputLabel1, self.helpText.typeText)
@@ -187,8 +191,14 @@ class crystalMakerWindow(Frame):
 		CrystalinputLabel4 = Label(self.currentStrategyCrystal,text="Absorption Coefficient",style="inputBoxes.TLabel")
 		CrystalinputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
 		self.hoverAbsCoeff = HoverInfo(CrystalinputLabel4, self.helpText.absCoeffText)
-		crystAbsCoeffList = ['Average protein composition', 'Using PDB code', 'User defined composition',
-		'RADDOSE version 2', 'using sequence file', 'SAXS (user defined composition)', 'SAXS (sequence file)']
+		self.crystAbsCoeffDict = {'Average protein composition'     : "Average",
+    							  'Using PDB code'                  : "EXP",
+    							  'User defined composition'        : "RD3D",
+    							  'RADDOSE version 2'               : "RDV2",
+							 	  'using sequence file'             : "Sequence",
+								  'SAXS (user defined composition)' : "SAXS",
+								  'SAXS (sequence file)'            : "SAXSseq"}
+		crystAbsCoeffList = self.crystAbsCoeffDict.keys()
 		crystAbsCoeffOptionMenu = OptionMenu(self.currentStrategyCrystal, self.crystalAbsCoeffType, self.crystalAbsCoeffType.get(), *crystAbsCoeffList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		crystAbsCoeffOptionMenu.grid(row=3,column=1,sticky=W,pady=5,padx=6)
 
@@ -553,7 +563,10 @@ class crystalMakerWindow(Frame):
 		containerTypeInputLabel = Label(self.currentStrategyCrystal,text="Type of sample container",style="inputBoxes.TLabel")
 		containerTypeInputLabel.grid(row=9,column=0,sticky=E,pady=5,padx=6)
 		self.hoverConType = HoverInfo(containerTypeInputLabel, self.helpText.conTypeText)
-		containerTypeList = ['No container', 'Specify mixture', 'Specify elemental composition']
+		self.containerTypeDict = {'No container'                  : "None",
+		                          'Specify mixture'               : "Mixture",
+								  'Specify elemental composition' : "Elemental"}
+		containerTypeList = self.containerTypeDict.keys()
 		containerTypeOptionMenu = OptionMenu(self.currentStrategyCrystal, self.containerType, self.containerType.get(), *containerTypeList, command= lambda x: self.update(self.CrystalType,self.crystalAbsCoeffType,self.containerType,MainGui))
 		containerTypeOptionMenu.grid(row=9,column=1,sticky=W,pady=5,padx=6)
 
@@ -568,8 +581,56 @@ class crystalMakerWindow(Frame):
 				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
 				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
 				self.hoverConMix = HoverInfo(containerMixtureLabel, self.helpText.conMixText)
-				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialMixture,width=14)
-				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+				self.mixtureDict = {'A-150 Tissue-Equivalent Plastic' : "a150",
+							        'Adipose Tissue (ICRU-44)' : "adipose",
+									'Dry Air (near sea level)': "air",
+									'Alanine' : "alanine",
+									'Bakelite' : "bakelite",
+									'Blood, Whole (ICRU-44)': "blood",
+									'Bone, Cortical (ICRU-44)':"bone",
+									'B-100 Bone-Equivalent Plastic':"b100",
+									'Brain, Grey/White Matter (ICRU-44)':"brain",
+									'Breast Tissue (ICRU-44)':"breast",
+									'C-552 Air-equivalent Plastic':"c552",
+									'Cadmium Telluride':"telluride",
+									'Calcium Fluoride':"fluoride",
+									'Calcium Sulfate':"calcium",
+									'15 mmol L-1 Ceric Ammonium Sulfate Solution':'ceric',
+									'Cesium Iodide':"cesium",
+									'Ordinary Concrete':"concrete",
+									'Barite Concrete (Type BA)':"concreteba",
+									'Eye Lens (ICRU-44)':"eye",
+									'Standard Fricke Ferrous Sulfate':"fricke",
+									'Gadolinium Oxysulfide':"gadolinium",
+									'Gafchromic Sensor':"gafchromic",
+									'Gallium Arsenide':"gallium",
+									'Pyrex (Borosilicate Glass)':"pyrex",
+									'Lead Glass':"glass",
+									'Lithium Fluoride':"lithiumflu",
+									'Lithium Tetraborate':"lithium",
+									'Lung Tissue (ICRU-44)':"lung",
+									'Magnesium Tetroborate':"magnesium",
+									'Mercuric Iodide':"mercuric",
+									'Muscle, Skeletal (ICRU-44)':"muscle",
+									'Ovary (ICRU-44)':"ovary",
+									'Photographic Emulsion, Kodak Type AA':"kodak",
+									'Photographic Emulsion, Standard Nuclear':"photoemul",
+									'Plastic Scintillator, Vinyltoluene':"vinyl",
+									'Polyethylene':"polyethylene",
+									'Mylar (Polyethylene Terephthalate)':"mylar",
+									'Polymethyl Methacrylate':"pmma",
+									'Polystyrene':"polystyrene",
+									'Teflon (Polytetrafluoroethylene)':"teflon",
+									'Polyvinyl Chloride':"polyvinyl",
+									'Radiochromic Dye Film, Nylon Base':"nylonfilm",
+									'Testis (ICRU-44)':"testis",
+									'Tissue, Soft (ICRU-44)':"tissue",
+									'Tissue, Soft (ICRU Four-Component)':"tissue4",
+									'Tissue-Equivalent Gas, Methane Based':"temethane",
+									'Tissue-Equivalent Gas, Propane Based':"tepropane",
+									'Liquid Water':"water"}
+				containerMixtureOptionMenu = OptionMenu(self.currentStrategyCrystal,self.materialMixture, self.materialMixture.get(), *self.mixtureDict.keys())
+				containerMixtureOptionMenu.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
 
 				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
 				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
@@ -606,7 +667,8 @@ class crystalMakerWindow(Frame):
 
 			# create dictionary for container info
 			self.containerInfoDict = {}
-			self.containerInfoDict["Mixture"] = self.materialMixture.get()
+			self.containerInfoDict["Type"] = self.containerTypeDict[self.containerType.get()]
+			self.containerInfoDict["Mixture"] = self.mixtureDict[self.materialMixture.get()]
 			self.containerInfoDict["Elements"] = self.materialElements.get()
 			self.containerInfoDict["Thickness"] = self.containerThickness.get()
 			self.containerInfoDict["Density"] = self.containerDensity.get()
@@ -637,20 +699,23 @@ class crystalMakerWindow(Frame):
 		# also list of crystal objects
 
 		if 'Average protein composition' in self.crystalAbsCoeffType.get():
-			newCryst = crystals(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
+			newCryst = crystals(MainGui.crystMakeName.get(),self.crystTypeDict[self.CrystalType.get()],self.CrystalDimX.get(),
 								self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
-								self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict)
-		
+								self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+								self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()])
+
 		elif 'Using PDB code' in self.crystalAbsCoeffType.get():
 			newCryst = crystals_pdbCode(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 										self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 										self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+										self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 							 			self.pdbcode.get(),self.solventHeavyConc.get())
 
 		elif 'User defined composition' in self.crystalAbsCoeffType.get():
 			newCryst = crystals_userDefined(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 											self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 											self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+											self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 				 							self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 							self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 							self.numMonomers.get(),self.numResidues.get(),self.numRNA.get(),self.numDNA.get(),
@@ -660,6 +725,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_RADDOSEv2(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 										  self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 				 						  self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+										  self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 				 						  self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 						  self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 						  self.numMonomers.get(),self.numResidues.get(),self.numRNA.get(),self.numDNA.get(),
@@ -669,6 +735,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_seqFile(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 										self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 										self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+										self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 										self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 						self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 						self.numMonomers.get(),self.sequenceFile.get(),self.proteinHeavyAtoms.get(),
@@ -678,6 +745,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_SAXSuserDefined(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 												self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 												self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+												self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 				 								self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 								self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 								self.numResidues.get(),self.numRNA.get(),self.numDNA.get(),
@@ -688,6 +756,7 @@ class crystalMakerWindow(Frame):
 			newCryst = crystals_SAXSseqFile(MainGui.crystMakeName.get(),self.CrystalType.get(),self.CrystalDimX.get(),
 											self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),
 											self.crystalAngleP.get(),self.crystalAngleL.get(),self.containerInfoDict,
+											self.crystAbsCoeffDict[self.crystalAbsCoeffType.get()],
 											self.unitcell_a.get(),self.unitcell_b.get(),self.unitcell_c.get(),
 				 							self.unitcell_alpha.get(),self.unitcell_beta.get(),self.unitcell_gamma.get(),
 				 							self.proteinHeavyAtoms.get(),self.solventHeavyConc.get(),

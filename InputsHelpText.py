@@ -284,10 +284,63 @@ corresponding beam image."""
 
 class WedgeInputHelp():
     def __init__(self):
-        self.angStartText = "Need to sort out the text: start ang"
-        self.angStopText = "Need to sort out the text: stop ang"
-        self.exposText = "Need to sort out the text: exposure time"
-        self.angRes = "Need to sort out the text: angular resolution"
-        self.startOffText = "Need to sort out the text: start offset"
-        self.transText = "Need to sort out the text: trans per deg"
-        self.rotText = "Need to sort out the text: rotation & beam axis offset"
+        self.angStartText = """Specifies the starting angle of the sample rotation in degrees.
+At 0 degrees the front face of the crystal (X-Y plane where X and Y are defined
+as in the coordinate definition of a cuboid type crystal) is normal to the beam.
+Rotation is right handed about the Y-axis.
+
+For a diagram explaining this value please see the official RADDOSE-3D user guide:
+http://www.raddo.se/user-guide.pdf
+
+Only numerical values are accepted for this field.
+"""
+        self.angStopText = """Specifies the end angle of the sample rotation in degrees.
+At 0 degrees the front face of the crystal (X-Y plane where X and Y are defined
+as in the coordinate definition of a cuboid type crystal) is normal to the beam.
+Rotation is right handed about the Y-axis.
+
+For a diagram explaining this value please see the official RADDOSE-3D user guide:
+http://www.raddo.se/user-guide.pdf
+
+Only numerical values are accepted for this field.
+"""
+
+        self.exposText = """Specifies the total time for the crystal exposure during the experiment in seconds.
+Only numerical values are accepted for this field.
+"""
+        self.angRes = """Specifies the angular step size used for the wedge iterations in degrees.
+This basically represents how often RADDOSE-3D will update the dose distribution
+in the crystal. If this value is not given then it will default to 2 degrees.
+
+Only numerical values are accepted for this field.
+
+Note: If very small wedges are being used e.g. < 5 degress then the angular
+resolution should be decreased.
+"""
+        self.startOffText = """Specifies the offset translation applied to the crystal relative to the origin in microns
+(defined as the intersection of the beam and the aligned goniometer axis) for
+the starting position of the crystal in x, y and z dimensions.
+
+Only numerical values are accepted for these fields. If the values are not
+explicitly given then they will default to 0 0 0 in x, y and z
+"""
+        self.transText = """Specifies the translation of the goniometer during exposure.
+This is given in microns/degree and should be used for a helical scan.
+
+Helical scanning leads to imporvements in the dose distribution and hence should
+be considered if you have a large crystal that is isomorphous throughout and is
+sensitive to radiation damage.
+
+Only numerical values are accepted for these fields. If the values are not
+explicitly given then they will default to 0 0 0 in x, y and z
+"""
+        self.rotText = """Specifies the offset in microns along X (vertical in most set-ups)
+between the beam axis and the rotation axis.
+
+An offset rotation axis can be used to improve the dose distribution in an
+experiment where you may have a large crystal that is isomorphous throughout and
+is sensitive to radiation damage.
+
+Only numerical values are accepted for this field. If the value is not
+explicitly given then it will default to 0.
+"""
