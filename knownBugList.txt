@@ -24,3 +24,6 @@ where it is assumed to habe been read in.
 understandable for the user (as much as possible anyway) rather than set them to
 be the same as for the RADDOSE-3D input. I will sort this out when I've finished
 sorting out all of the inputs and help comments (Jonny)
+
+- the summary table between multiple RD3D runs in the left summary window is not aligned
+correctly on my machine -> the title row and experiment rows don't match up
