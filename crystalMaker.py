@@ -581,8 +581,56 @@ class crystalMakerWindow(Frame):
 				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
 				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
 				self.hoverConMix = HoverInfo(containerMixtureLabel, self.helpText.conMixText)
-				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialMixture,width=14)
-				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+				self.mixtureDict = {'A-150 Tissue-Equivalent Plastic' : "a150",
+							        'Adipose Tissue (ICRU-44)' : "adipose",
+									'Dry Air (near sea level)': "air",
+									'Alanine' : "alanine",
+									'Bakelite' : "bakelite",
+									'Blood, Whole (ICRU-44)': "blood",
+									'Bone, Cortical (ICRU-44)':"bone",
+									'B-100 Bone-Equivalent Plastic':"b100",
+									'Brain, Grey/White Matter (ICRU-44)':"brain",
+									'Breast Tissue (ICRU-44)':"breast",
+									'C-552 Air-equivalent Plastic':"c552",
+									'Cadmium Telluride':"telluride",
+									'Calcium Fluoride':"fluoride",
+									'Calcium Sulfate':"calcium",
+									'15 mmol L-1 Ceric Ammonium Sulfate Solution':'ceric',
+									'Cesium Iodide':"cesium",
+									'Ordinary Concrete':"concrete",
+									'Barite Concrete (Type BA)':"concreteba",
+									'Eye Lens (ICRU-44)':"eye",
+									'Standard Fricke Ferrous Sulfate':"fricke",
+									'Gadolinium Oxysulfide':"gadolinium",
+									'Gafchromic Sensor':"gafchromic",
+									'Gallium Arsenide':"gallium",
+									'Pyrex (Borosilicate Glass)':"pyrex",
+									'Lead Glass':"glass",
+									'Lithium Fluoride':"lithiumflu",
+									'Lithium Tetraborate':"lithium",
+									'Lung Tissue (ICRU-44)':"lung",
+									'Magnesium Tetroborate':"magnesium",
+									'Mercuric Iodide':"mercuric",
+									'Muscle, Skeletal (ICRU-44)':"muscle",
+									'Ovary (ICRU-44)':"ovary",
+									'Photographic Emulsion, Kodak Type AA':"kodak",
+									'Photographic Emulsion, Standard Nuclear':"photoemul",
+									'Plastic Scintillator, Vinyltoluene':"vinyl",
+									'Polyethylene':"polyethylene",
+									'Mylar (Polyethylene Terephthalate)':"mylar",
+									'Polymethyl Methacrylate':"pmma",
+									'Polystyrene':"polystyrene",
+									'Teflon (Polytetrafluoroethylene)':"teflon",
+									'Polyvinyl Chloride':"polyvinyl",
+									'Radiochromic Dye Film, Nylon Base':"nylonfilm",
+									'Testis (ICRU-44)':"testis",
+									'Tissue, Soft (ICRU-44)':"tissue",
+									'Tissue, Soft (ICRU Four-Component)':"tissue4",
+									'Tissue-Equivalent Gas, Methane Based':"temethane",
+									'Tissue-Equivalent Gas, Propane Based':"tepropane",
+									'Liquid Water':"water"}
+				containerMixtureOptionMenu = OptionMenu(self.currentStrategyCrystal,self.materialMixture, self.materialMixture.get(), *self.mixtureDict.keys())
+				containerMixtureOptionMenu.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
 
 				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
 				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
@@ -620,7 +668,7 @@ class crystalMakerWindow(Frame):
 			# create dictionary for container info
 			self.containerInfoDict = {}
 			self.containerInfoDict["Type"] = self.containerTypeDict[self.containerType.get()]
-			self.containerInfoDict["Mixture"] = self.materialMixture.get()
+			self.containerInfoDict["Mixture"] = self.mixtureDict[self.materialMixture.get()]
 			self.containerInfoDict["Elements"] = self.materialElements.get()
 			self.containerInfoDict["Thickness"] = self.containerThickness.get()
 			self.containerInfoDict["Density"] = self.containerDensity.get()
