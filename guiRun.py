@@ -1608,7 +1608,7 @@ class RADDOSEgui(Frame):
 		#loop through each entry in the dictionary, create a string of the key
 		#and value from the dictionary and append that to the list created above
 		for crystProp in crystPropertyDict:
-			if crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName':
+			if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName' and crystProp != 'containerInfoDict'):
 				string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
 				crystLines.append(string)
 
