@@ -8,7 +8,28 @@ class crystals(object):
 		self.crystDimY        = crystDimY
 		self.crystDimZ        = crystDimZ
 		self.pixelsPerMicron  = crystPixPerMic
-		self.absCoefCalc      = crystAbsorpCoeff
+
+	def checkValidInputs(self):
+		ErrorMessage = ""
+		# check valid crystal type
+		if self.type not in ('Cuboid','Spherical','Cylindrical','Polyhedron'):
+			ErrorMessage = ErrorMessage +  'Crystal type %s not of compatible format.\n' %(self.type)
+
+		# check that crystal dimensions can be converted to float format (from string format)
+		try:
+			float(self.crystDimX)
+			float(self.crystDimY)
+			float(self.crystDimZ)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal dimensions not of compatible float format.\n'
+
+		# check that crystal pixelsPerMicron can be converted to float format (from string format)
+		try:
+			float(self.pixelsPerMicron)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal pixelsPerMicron input not of compatible float format.\n'
+
+		return ErrorMessage
 
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
@@ -21,6 +42,15 @@ class crystals_pdbCode(crystals):
 
 		self.pdbcode = pdbcode
 		self.solventHeavyConc = solventHeavyConc
+		self.absCoefCalc = 'PDB code'
+
+	def checkValidInputs_subclass(self):
+		ErrorMessage = ""
+		# check valid pdb code input
+		if len(self.pdbcode) != 4:
+			ErrorMessage = ErrorMessage +  'PDB code input %s not of compatible format.\n' %(self.pdbcode)
+
+		return ErrorMessage
 
 class crystals_userDefined(crystals):
 	# A subclass for a user defined crystal composition
@@ -48,6 +78,48 @@ class crystals_userDefined(crystals):
 		self.proteinHeavyAtoms = proteinHeavyAtoms
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
+		self.absCoefCalc = 'User Defined'
+
+	def checkValidInputs_subclass(self):
+		ErrorMessage = ""
+		# check that unit cell dimensions can be converted to float format (from string format)
+		try:
+			float(self.unitcell_a)
+			float(self.unitcell_b)
+			float(self.unitcell_c)
+			float(self.unitcell_alpha)
+			float(self.unitcell_beta)
+			float(self.unitcell_gamma)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Unit cell dimensions not of compatible float format.\n'
+
+		try:
+			float(self.numMonomers)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numMonomers input not of compatible float format.\n'
+
+		try:
+			float(self.numResidues)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numResidues input not of compatible float format.\n'
+
+		try:
+			float(self.numRNA)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numRNA input not of compatible float format.\n'
+
+		try:
+			float(self.numDNA)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numDNA input not of compatible float format.\n'
+
+		try:
+			float(self.solventFraction)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal solventFraction input not of compatible float format.\n'
+
+		return ErrorMessage
+
 
 class crystals_RADDOSEv2(crystals):
 	# A subclass for RADDOSE-v2 crystal inputs
@@ -75,6 +147,47 @@ class crystals_RADDOSEv2(crystals):
 		self.proteinHeavyAtoms = proteinHeavyAtoms
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
+		self.absCoefCalc = 'RADDOSE-v2'
+
+	def checkValidInputs_subclass(self):
+		ErrorMessage = ""
+		# check that unit cell dimensions can be converted to float format (from string format)
+		try:
+			float(self.unitcell_a)
+			float(self.unitcell_b)
+			float(self.unitcell_c)
+			float(self.unitcell_alpha)
+			float(self.unitcell_beta)
+			float(self.unitcell_gamma)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Unit cell dimensions not of compatible float format.\n'
+
+		try:
+			float(self.numMonomers)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numMonomers input not of compatible float format.\n'
+
+		try:
+			float(self.numResidues)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numResidues input not of compatible float format.\n'
+
+		try:
+			float(self.numRNA)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numRNA input not of compatible float format.\n'
+
+		try:
+			float(self.numDNA)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numDNA input not of compatible float format.\n'
+
+		try:
+			float(self.solventFraction)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal solventFraction input not of compatible float format.\n'
+
+		return ErrorMessage
 
 class crystals_seqFile(crystals):
 	# A subclass for sequence file-defined crystal composition
@@ -98,6 +211,32 @@ class crystals_seqFile(crystals):
 		self.proteinHeavyAtoms = proteinHeavyAtoms
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
+		self.absCoefCalc = 'Sequence File'
+
+	def checkValidInputs_subclass(self):
+		ErrorMessage = ""
+		# check that unit cell dimensions can be converted to float format (from string format)
+		try:
+			float(self.unitcell_a)
+			float(self.unitcell_b)
+			float(self.unitcell_c)
+			float(self.unitcell_alpha)
+			float(self.unitcell_beta)
+			float(self.unitcell_gamma)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Unit cell dimensions not of compatible float format.\n'
+
+		try:
+			float(self.numMonomers)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numMonomers input not of compatible float format.\n'
+
+		try:
+			float(self.solventFraction)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal solventFraction input not of compatible float format.\n'
+
+		return ErrorMessage
 
 class crystals_SAXSuserDefined(crystals):
 	# A subclass for user-defined SAXS crystal composition inputs
@@ -125,6 +264,42 @@ class crystals_SAXSuserDefined(crystals):
 		self.solventHeavyConc = solventHeavyConc
 		self.solventFraction = solventFraction
 		self.proteinConc = proteinConc
+		self.absCoefCalc = 'SAXS User Defined'
+
+	def checkValidInputs_subclass(self):
+		ErrorMessage = ""
+		# check that unit cell dimensions can be converted to float format (from string format)
+		try:
+			float(self.unitcell_a)
+			float(self.unitcell_b)
+			float(self.unitcell_c)
+			float(self.unitcell_alpha)
+			float(self.unitcell_beta)
+			float(self.unitcell_gamma)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Unit cell dimensions not of compatible float format.\n'
+
+		try:
+			float(self.numResidues)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numResidues input not of compatible float format.\n'
+
+		try:
+			float(self.numRNA)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numRNA input not of compatible float format.\n'
+
+		try:
+			float(self.numDNA)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal numDNA input not of compatible float format.\n'
+
+		try:
+			float(self.solventFraction)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal solventFraction input not of compatible float format.\n'
+
+		return ErrorMessage
 
 class crystals_SAXSseqFile(crystals):
 	# A subclass for sequence file-defined SAXS crystal composition inputs
@@ -149,3 +324,28 @@ class crystals_SAXSseqFile(crystals):
 		self.solventFraction = solventFraction
 		self.proteinConc = proteinConc
 		self.sequenceFile = sequenceFile
+		self.absCoefCalc = 'SAXS Sequence File'
+
+	def checkValidInputs_subclass(self):
+		ErrorMessage = ""
+		# check that unit cell dimensions can be converted to float format (from string format)
+		try:
+			float(self.unitcell_a)
+			float(self.unitcell_b)
+			float(self.unitcell_c)
+			float(self.unitcell_alpha)
+			float(self.unitcell_beta)
+			float(self.unitcell_gamma)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Unit cell dimensions not of compatible float format.\n'
+
+		try:
+			float(self.solventFraction)
+		except ValueError:
+			ErrorMessage = ErrorMessage + 'Crystal solventFraction input not of compatible float format.\n'
+
+		# check sequence file input is string
+		if not isinstance(self.sequenceFile, basestring):
+			ErrorMessage = ErrorMessage +  'Sequence file input %s not of compatible format.\n' %(self.sequenceFile)
+
+		return ErrorMessage
