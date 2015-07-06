@@ -195,25 +195,7 @@ class crystalMakerWindow(Frame):
 
 	def crystalCompositionInputs(self, absCoeffTypeValue):
 
-		if 'Average protein composition' in absCoeffTypeValue.get():
-			self.solventHeavyConc.set("0")
-			self.pdbcode.set("0")
-			self.unitcell_a.set("0")
-			self.unitcell_b.set("0")
-			self.unitcell_c.set("0")
-			self.unitcell_alpha.set("0")
-			self.unitcell_beta.set("0")
-			self.unitcell_gamma.set("0")
-			self.numMonomers.set("0")
-			self.numResidues.set("0")
-			self.numRNA.set("0")
-			self.numDNA.set("0")
-			self.proteinHeavyAtoms.set("Na 0")
-			self.solventFraction.set("0")
-			self.proteinConc.set("0")
-			self.sequenceFile.set("0")
-
-		elif 'Using PDB code' in absCoeffTypeValue.get():
+		if 'Using PDB code' in absCoeffTypeValue.get():
 			CrystalPDBLabel = Label(self.currentStrategyCrystal,text="PDB code",style="inputBoxes.TLabel")
 			CrystalPDBLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
 			self.hoverPDB = HoverInfo(CrystalPDBLabel, self.helpText.pdbText)
@@ -225,20 +207,6 @@ class crystalMakerWindow(Frame):
 			self.hoverSolHeavy = HoverInfo(CrystalHeavySolLabel, self.helpText.solHeavyText)
 			CrystalSolConcInputBox = Entry(self.currentStrategyCrystal,textvariable=self.solventHeavyConc,width=14)
 			CrystalSolConcInputBox.grid(row=4,column=3,columnspan=4,sticky=W,pady=5,padx=6)
-			self.unitcell_a.set("0")
-			self.unitcell_b.set("0")
-			self.unitcell_c.set("0")
-			self.unitcell_alpha.set("0")
-			self.unitcell_beta.set("0")
-			self.unitcell_gamma.set("0")
-			self.numMonomers.set("0")
-			self.numResidues.set("0")
-			self.numRNA.set("0")
-			self.numDNA.set("0")
-			self.proteinHeavyAtoms.set("Na 0")
-			self.solventFraction.set("0")
-			self.proteinConc.set("0")
-			self.sequenceFile.set("0")
 
 		elif 'User defined composition' in absCoeffTypeValue.get():
 			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Number of monomers",style="inputBoxes.TLabel")
@@ -312,9 +280,6 @@ class crystalMakerWindow(Frame):
 			unitCellGammaLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
 			unitCellGammaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_gamma,width=5)
 			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
-			self.pdbcode.set("0")
-			self.proteinConc.set("0")
-			self.sequenceFile.set("0")
 
 		elif 'RADDOSE version 2' in absCoeffTypeValue.get():
 			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Number of monomers",style="inputBoxes.TLabel")
@@ -388,9 +353,6 @@ class crystalMakerWindow(Frame):
 			unitCellGammaLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
 			unitCellGammaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_gamma,width=5)
 			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
-			self.pdbcode.set("0")
-			self.proteinConc.set("0")
-			self.sequenceFile.set("0")
 
 		elif 'using sequence file' in absCoeffTypeValue.get():
 			CrystalNumMonLabel = Label(self.currentStrategyCrystal,text="Number of monomers",style="inputBoxes.TLabel")
@@ -452,11 +414,6 @@ class crystalMakerWindow(Frame):
 			unitCellGammaLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
 			unitCellGammaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_gamma,width=5)
 			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
-			self.pdbcode.set("0")
-			self.proteinConc.set("0")
-			self.numResidues.set("0")
-			self.numRNA.set("0")
-			self.numDNA.set("0")
 
 		elif 'SAXS (user defined composition)' in absCoeffTypeValue.get():
 			CrystalProtConcLabel = Label(self.currentStrategyCrystal,text="Protein concentration",style="inputBoxes.TLabel")
@@ -530,9 +487,6 @@ class crystalMakerWindow(Frame):
 			unitCellGammaLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
 			unitCellGammaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_gamma,width=5)
 			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
-			self.pdbcode.set("0")
-			self.numMonomers.set("0")
-			self.sequenceFile.set("0")
 
 		elif 'SAXS (sequence file)' in absCoeffTypeValue.get():
 			CrystalProtConcLabel = Label(self.currentStrategyCrystal,text="Protein concentration",style="inputBoxes.TLabel")
@@ -594,11 +548,6 @@ class crystalMakerWindow(Frame):
 			unitCellGammaLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
 			unitCellGammaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_gamma,width=5)
 			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
-			self.pdbcode.set("0")
-			self.numMonomers.set("0")
-			self.numResidues.set("0")
-			self.numRNA.set("0")
-			self.numDNA.set("0")
 
 	def sampleContainerTypeInputs(self, MainGui):
 		# Crystal input  --> Sample container type
@@ -655,7 +604,6 @@ class crystalMakerWindow(Frame):
 				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
 				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
 				self.materialMixture.set("0")
-
 
 	def update(self, crystTypeValue, absCoeffTypeValue, containerTypeValue, MainGui):
 
