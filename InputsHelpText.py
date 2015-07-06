@@ -158,8 +158,8 @@ The default value is 0.
 """
 
         self.protHeavyText = """Specifies a list of atoms to add to the protein part of the absorption.
-Each species is defined by a two character string for the elemental symbol and an
-integer (whole) number of atoms of that species per monomer.
+Each atomic species is defined by a two character string for the elemental
+symbol and an integer (whole) number of atoms of that species per monomer.
 
 Example:
 To specify 10 sulfur atoms and 2 selenium atoms per monomer the input would be:
@@ -174,14 +174,69 @@ To specify 1 Molar sodium chloride in the solvent the input would be:
 Na 1000 Cl 1000
 """
 
-        self.solFracText = "Need to sort out the text: sol frac"
-        self.protConcText = "Need to sort out the text: prot conc"
-        self.conTypeText = "Need to sort out the text: con type"
-        self.conMixText = "Need to sort out the text: con mixture"
-        self.conElText = "Need to sort out the text: con Elemental"
-        self.conThick = "Need to sort out the text: con thickness"
-        self.conDens = "Need to sort out the text: con dens"
-        self.seqFileText= "Need to out the text: seq File"
+        self.solFracText = """Specifies the fraction of the unit cell that is occupied by the solvent.
+If this value is not given then it is estimated from the number of residues, RNA
+and DNA per monomer using the densities 1.35g/ml for protein, 1.35g/ml for DNA
+and 1.30g/ml for RNA.
+
+Only numerical values are accepted for this field and should be between 0 and 1.
+"""
+
+        self.protConcText = """Species the protein concentration of the sample in grams per litre.
+Only numerical values are accepted for this field
+"""
+
+        self.conTypeText = """Specifies the type of container in which the sample (SAXS solution or crystal) is contained.
+Currently there are three options:
+
+1) None - The sample is not contained in anything. This is the default option
+and is the case for any standard crystallography experiment.
+
+2) Mixture - Defines a container encasing the irradiated sample which is a
+mixture of elements, determined by the name of the mixture. There are specific
+mixtures available in a drop down list for this option.
+
+3) Elemental - Defines a container encasing the irradiated sample in terms of
+its component elements. If this option is selected then the user must specify
+the list of the material's component elements.
+
+The information about the absorption properties of the container material is
+extracted from the National Institute of Standards and Technology (NIST) tables
+online. Therefore you need an internet connection if you choose a "mixture" or
+"elemental" container composition.
+"""
+
+        self.conMixText = """Specifies the material of which the sample container is made given by the name of the mixture.
+Choose from the list of predefined mixtures that are available on the National
+Institute of Standards and Technology (NIST) website.
+"""
+
+        self.conElText = """Specifies the material of which the sample container is made given by the list of component elements.
+Each atomic species is defined by a two character string for the elemental symbol and an
+integer (whole) number of atoms.
+
+Example:
+If the material of the container is quartz (SAXS experiments are often performed
+using a quartz capillary) which has the atomic formula: Si02 then the input would
+be:
+Si 1 O 2
+"""
+        self.conThick = """Specifies the thickness of the container encasing the sample.
+The thickness should be given in units of microns.
+
+Only numerical values are accepted for this field.
+"""
+
+        self.conDens = """Specifies the density of the container encasing the sample.
+The density should be given in the units grams/centimetre.
+
+Only numerical values are accepted for this field.
+"""
+
+        self.seqFileText= """Specifies the path to the sequence file.
+This file should be a plain text file in fasta format:
+http://blast.ncbi.nlm.nih.gov/blastcgihelp.shtml.        
+"""
 
 
 class BeamInputHelp():
