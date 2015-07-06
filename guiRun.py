@@ -775,11 +775,7 @@ class RADDOSEgui(Frame):
 		tkMessageBox.showinfo( "View Crystal Information", crystInfo)
 
     def extractCrystalInfo(self, crystalObject):
-		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAbsorption Coefficient: %s\n
-""" %(str(crystalObject.crystName),str(crystalObject.type),
-		          		str(crystalObject.crystDimX),str(crystalObject.crystDimY),
-		          		str(crystalObject.crystDimZ),str(crystalObject.pixelsPerMicron),
-		          		'NEED TO SORT!!')
+		string = crystalObject.extractCrystalInfo()
 		return string
 
     def extractWedgeInfo(self, wedgeObject):

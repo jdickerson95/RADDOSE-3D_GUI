@@ -31,6 +31,14 @@ class crystals(object):
 
 		return ErrorMessage
 
+	def extractCrystalInfo(self):
+		# create a string containing information of current crystal
+		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\n
+""" %(str(self.crystName),str(self.type),
+		          		str(self.crystDimX),str(self.crystDimY),
+		          		str(self.crystDimZ),str(self.pixelsPerMicron))
+		return string
+
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
@@ -51,7 +59,6 @@ class crystals_pdbCode(crystals):
 		# check valid pdb code input
 		if len(self.pdbcode) != 4:
 			ErrorMessage = ErrorMessage +  'PDB code input %s not of compatible format.\n' %(self.pdbcode)
-
 		return ErrorMessage
 
 class crystals_userDefined(crystals):
