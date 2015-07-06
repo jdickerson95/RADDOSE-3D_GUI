@@ -25,7 +25,7 @@ import time
 from plotMaker import barplotWindow
 from beamMaker import beamMakerWindow
 from crystalMaker import crystalMakerWindow
-from  wedgeMaker import wedgeMakerWindow
+from wedgeMaker import wedgeMakerWindow
 from crystals import crystals
 from beams import beams
 from wedges import wedges
