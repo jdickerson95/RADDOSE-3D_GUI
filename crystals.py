@@ -15,13 +15,16 @@ class crystals(object):
 		self.angleL 		  = angleL
 		self.absCoeffCalc 	  = 'Average'
 
+		# find the crystal container information, if it was provided when the crystal object was created
 		try:
 			materialMixture,materialElements,containerThickness,containerDensity = self.getContainerInfo(containerInfoDict)
 			self.materialMixture  = materialMixture
 			self.materialElements = materialElements
 			self.containerThickness = containerThickness
 			self.containerDensity = containerDensity
+			self.containerInfo = True
 		except KeyError:
+			self.containerInfo = False
 			pass
 
 	def getContainerInfo(self,containerInfoDict):
@@ -63,12 +66,19 @@ class crystals(object):
 
 	def extractCrystalInfo(self):
 		# create a string containing information of current crystal
-		string = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAngle P: %s\nAngle L: %s\n
+		summaryString = """Crystal Name: %s\nType: %s\nDimensions: %s %s %s (microns in x,y,z)\nPixels per Micron: %s\nAngle P: %s\nAngle L: %s\n
 """ %(str(self.crystName),str(self.type),
 		          		str(self.crystDimX),str(self.crystDimY),
 		          		str(self.crystDimZ),str(self.pixelsPerMicron),
 		          		str(self.angleP),str(self.angleL))
-		return string
+
+		# if container information was provided, include in summary
+		if self.containerInfo == True:
+			containerString = """Container Information:\nMaterial Mixture: %s\nMaterial Elements: %s\nContainer Thickness: %s\nContainer Density: %s\n
+			""" %(str(self.materialMixture),str(self.materialElements),str(self.containerThickness),str(self.containerDensity))
+			summaryString += containerString
+			
+		return summaryString
 
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
