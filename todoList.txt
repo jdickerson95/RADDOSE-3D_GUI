@@ -43,6 +43,9 @@ should be an option box)
 - Increase width of the "File" field in the Beam Maker window when the
 "Experimental" beam type is selected.
 
+-make sure that the default values for any inputs that are optional but left
+null are the same as those specified in the RADDOSE-3D user manual. 
+
 -***************************-
 To do at some point
 -***************************-
