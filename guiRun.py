@@ -1131,8 +1131,14 @@ class RADDOSEgui(Frame):
     def checkCrystInputs(self,newCrystal):
         # additional check to ensure correct crystal properties have been read successively
         # from premade RD3D input file
-        ErrorMessage1 = newCrystal.checkValidInputs()
-        return ErrorMessage1
+        ErrorMessage = newCrystal.checkValidInputs()
+        # for the case where abscoefCalc is not 'Average', perform initial checks
+        try:
+            ErrorMessage2 = newCrystal.checkValidInputs_subclass()
+            ErrorMessage += ErrorMessage2
+        except AttributeError:
+            pass
+        return ErrorMessage
 
 	# functions for the manipulation of beam files and parameters
     def refreshBeamChoices(self):

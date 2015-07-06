@@ -54,7 +54,7 @@ class crystals(object):
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
 	def __init__(self,crystName="",crystType="",crystDimX=0,crystDimY=0,
-				 crystDimZ=0,crystPixPerMic=0,
+				 crystDimZ=0,crystPixPerMic=0,angleP=0,angleL=0,
 				 pdbcode="",solventHeavyConc=""):
 		super(crystals_pdbCode, self).__init__(
 					crystName,crystType,crystDimX,crystDimY,
@@ -63,7 +63,6 @@ class crystals_pdbCode(crystals):
 		self.pdbcode = pdbcode
 		self.solventHeavyConc = solventHeavyConc
 		self.absCoeffCalc = 'EXP'
-
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
