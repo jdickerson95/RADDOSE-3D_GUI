@@ -1,6 +1,26 @@
 class CrystalInputHelp():
     def __init__(self):
-        self.typeText = "Need to sort out the text: type"
+        self.typeText = """Specify the type of the crystal.
+This determines the shape of the crystal and ultimately determines the dimensions
+that are required for input. Currently there are 4 types that can be selected:
+
+1) Cuboid - defines a cuboid shaped crystal. Hence the dimensions required
+for specification are the length, width and height (x, y, z). the z dimension is
+parallel to the beam direction. The y direction is parallel to the rotation axis.
+the x direction is perpendicular to both y and z.
+
+2) Spherical - defines a spherical crystal. The dimension required for input is
+the diameter.
+
+3) Cylindrical - defines a cylindrical shaped crystal. The dimensions required
+for input are the diameter of the circular cross-section and the height of the
+cylinder.
+
+4) Polyhedron - defines an arbitrary shaped crystal as a polyhedron. Instead of
+explicitly giving dimensions for the arbitrary shaped crystal, a file containing
+the vertices and faces of the crystal object should be given.
+"""
+
         self.dimsText = "Need to sort out the text: dimensions"
         self.modelText = "Need to sort out the text: model"
         self.pixPerMicText = "Need to sort out the text: Pix per mic"
