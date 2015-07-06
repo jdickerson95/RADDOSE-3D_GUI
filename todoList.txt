@@ -44,7 +44,11 @@ should be an option box)
 "Experimental" beam type is selected.
 
 -make sure that the default values for any inputs that are optional but left
-null are the same as those specified in the RADDOSE-3D user manual. 
+null are the same as those specified in the RADDOSE-3D user manual.
+
+-some of the help text isn't formatted properly (there are hidden characters
+which don't show up in the editor but appear in the GUI). Need to get rid of
+these.
 
 -***************************-
 To do at some point
