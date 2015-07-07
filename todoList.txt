@@ -66,6 +66,12 @@ to ensure correct crystal subclasses are used when creating new crystal objects
 - Do the parsers handle container information correctly when reading from premade RD3D
 input files and creating crystal objects? Need to check this!
 
+- Sort out GUI so it adjusts to the correct size for the screen that it's being
+displayed on.
+
+- Perhaps change font of summary window output to see if that fixes the
+formatting issue
+
 -***************************-
 To do at some point
 -***************************-
@@ -73,3 +79,10 @@ To do at some point
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
 
 - Mixture list should appear in alphabetical order
+
+- Sort out the resolution problem: What voxel resolution is required for
+ sufficient convergence?
+
+ - Sort out optimisation problem: What offset to pick to get max DDE?
+
+ - Visualisation of the experiment so user can see what is going on.
