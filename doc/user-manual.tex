@@ -1,0 +1,133 @@
+% Sections removed from the paper version of the document
+% are marked with
+% XXXX  Removed from paper version
+
+\documentclass[a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[left=4.4cm,top=3.05cm, right=4.5cm]{geometry}
+\usepackage{xspace}
+\usepackage{setspace}
+\usepackage{courier}
+\usepackage{hyperref}
+\hypersetup{
+    hidelinks,
+    pdffitwindow=false,     % window fit to page when opened
+    pdfstartview={FitH},    % fits the width of the page to the window
+    pdftitle={RADDOSE-3D Command Reference},    % title
+    pdfauthor={Zeldin, O. B.; Gerstel, M.; Garman, E. F.},     % author
+   % pdfsubject={},   % subject of the document
+    pdfcreator={Gerstel, M.},   % creator of the document
+}
+\RequirePackage{graphicx}
+\usepackage{textcomp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  temporary margin adjustment
+
+\usepackage{chngpage}
+
+% \begin{adjustwidth}{-1in}{-1in}% adjust the L and R margins by 1 inch
+%  ..
+% \end{adjustwidth}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage[absolute,overlay]{textpos}
+\setlength{\TPHorizModule}{1cm}
+\setlength{\TPVertModule}{\TPHorizModule}
+\textblockorigin{0mm}{20mm} % start everything near the top-left corner
+
+\newcommand{\RDG}{\texttt{RADDOSE-3D GUI}\xspace}
+\newcommand{\RD}{\texttt{RADDOSE-3D}\xspace}
+\newcommand{\Class}[1]{\texttt{#1}\xspace}
+\newcommand{\Function}[1]{\textit{#1}\xspace}
+\newcommand{\Keyword}[1]{\texttt{\textbf{#1}}\xspace}
+\newcommand{\SB}{\\[0.2em]}
+
+\begin{document}
+
+\begin{center}
+\noindent \textsf{\huge\textbf{\RDG User Manual}}\\[0.3em]
+7 July 2015\\[3.5em]
+\end{center}
+
+\tableofcontents
+
+\newpage
+
+\section{Getting Started}
+I expect this section to contain general information such as why we created RADDOSE-3D GUI and the fact that it's free and open source.
+
+\subsection{Why \RDG ?}
+\begin{enumerate}
+\item Improve usability of \RD.
+\item Allow comparison of multiple \RD simulations.
+\item Free and open source.
+\end{enumerate}
+
+\subsection{Installing/Running \RDG}
+Here I guess we can talk about how to get the code (git clone ...) and run the right file for the GUI. We'll have to mention that they'll need Python at the very least to run the GUI. 
+
+\section{Using \RDG}
+This section will form the main bulk of the manual. We need to split this up well so that each individual section can be considered self contained (to a reasonable extent) and is as concise as possible.
+
+\subsection{Terminology}
+We should try to explain the terminology that we'll use regarding the Strategy GUI i.e. what do we mean by:
+\begin{itemize}
+\item Crystal
+\item Beam
+\item Strategy
+\item Experiment
+\end{itemize}
+And anything else you might think may not be so obvious.
+
+\subsection{Creating an Experiment}
+
+\subsubsection{Specifying a Crystal}
+i.e. How to make a crystal object.
+
+\subsubsection{Specifying a Beam}
+i.e. How to make a beam object.
+
+\subsubsection{Specifying a Strategy}
+i.e. How to make a wedge object. (Also explain why a beam is linked to a given strategy).
+
+\subsubsection{Running an experiment}
+Only a brief part about how to run the experiment, that they must supply an experiment name that will be linked to that crystal, beam and strategy combination. Also explain the experiment list window on the right. The summary analysis will be added later.
+
+\subsection{Loading Information from a Text File}
+Explain the different ways that \RDG can read information from a text file.
+
+\subsubsection{Crystal Information}
+How to read information about a crystal
+
+\subsubsection{Beam Information}
+How to read information about a beam
+
+\subsubsection{Experiment}
+Explain how to load an \RD input file and how it creates crystals and beams along with an experiment.
+
+\subsection{Analysing Results from Experiments}
+This section explains how to use the Summary/Output window.
+
+\subsubsection{Analyse Results from a Single Experiment}
+Explains how to view the log, the Experiment Summary and Dose Contours
+
+\subsubsection{Compare Results from Multiple Experiments}
+Explains how to plot the results, save the plots, show summary, save summary table. Also explains the experiment list drop down box and how to load/remove the experiments.
+
+\subsection{In-built Help Dialogue}
+Explain how they can use the help dialogue to help them with their next steps.
+
+\section{Glossary}
+This section is a glossary that will hopefully help users understand what each of the dose terms mean. e.g.
+\begin{itemize}
+\item Dose
+\item Diffraction Dose Efficiency (DDE)
+\item Diffraction Weighted Dose (DWD)
+\item etc.
+\end{itemize}
+
+\end{document}
