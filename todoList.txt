@@ -7,8 +7,6 @@
 To do before release (Aim for August 1st)
 -***************************-
 
-- Add more RADDOSE-3D input options for the manual input.
-
 - add functionaility to save summary of compared experiments currently loaded within
 summary window - Do we want CSV format for output?
 
@@ -23,18 +21,12 @@ in use by other programs.
 
 - Create user guide
 
-- Add more options to Help/Suggestion Dialogue
-
 - check cross platform image functionality (pkg PIL runs into problems on anaconda
 python 2.7.9 on mac). Need to test on ubuntu also...
 
 - When users change option in drop down list in crystalMaker/BeamMaketr/StrategyMaker windows
 they should retain the values in the fields that they have already entered in as
 opposed to setting the values to some default (often .set("0"))
-
-- Need to make dictionaries for the abs coeff list in the crystal maker window
-and a dictionary for the container mixture inputs (the container mixture input
-should be an option box)
 
 - Add units to the crystal input labels
 
@@ -57,23 +49,27 @@ input everything again.
 
 -Some of the help text isn't formatted properly (there are hidden characters
 which don't show up in the editor but appear in the GUI). Need to get rid of
-these. - Jonny do you mean in the help summary box or the hovering boxes?
+these. - Jonny do you mean in the help summary box or the hovering boxes? I mean
+in the hovering boxes. I copy pasted some of the text from a pdf file and there
+are hidden characters showing up!
 
 -Need to complete help.py class (the interactive help box). This will be best
 once all the other input sections are completed
 
--In guiRun.py, when a beam is loaded from a premade RD3D input file, it is created 
+-In guiRun.py, when a beam is loaded from a premade RD3D input file, it is created
 using the 'beams' class - this needs to be updated to instead use beams subclasses,
 dependent on which beam type is present
 
 - Similarly to above, when a crystal is loaded from a premade RD3D input file, need
 to ensure correct crystal subclasses are used when creating new crystal objects
 
-- Do the parsers handle container information correctly when reading from premade RD3D 
-input files and creating crystal objects? Need to check this! 
+- Do the parsers handle container information correctly when reading from premade RD3D
+input files and creating crystal objects? Need to check this!
 
 -***************************-
 To do at some point
 -***************************-
 
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
+
+- Mixture list should appear in alphabetical order
