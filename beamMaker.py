@@ -1,6 +1,6 @@
 from Tkinter import *
 from ttk import *
-from beams import beams
+from beams import *
 import tkMessageBox
 from HoverInfo import HoverInfo
 from InputsHelpText import BeamInputHelp
@@ -168,10 +168,18 @@ class beamMakerWindow(Frame):
 	def addMadeBeam(self,MainGui):
 		# make a new beam object from above entered parameters and add to both listbox beam list and
 		# also list of beam objects
-		newBeam = beams(MainGui.beamMakeName.get(),self.beamTypeDict[self.BeamType.get()],
-						[self.BeamFWHMVertical.get(),self.BeamFWHMHorizontal.get()],
-						self.BeamFlux.get(),self.BeamEnergy.get(),
-						[self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])
+
+		if self.beamTypeDict[self.BeamType.get()] == 'Gaussian':
+			newBeam = beams_Gaussian(MainGui.beamMakeName.get(),
+									 [self.BeamFWHMVertical.get(),self.BeamFWHMHorizontal.get()],
+									 self.BeamFlux.get(),self.BeamEnergy.get(),
+									 [self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])	
+		elif self.beamTypeDict[self.BeamType.get()] == 'Tophat':
+			newBeam = beams_Tophat(MainGui.beamMakeName.get(),self.BeamFlux.get(),self.BeamEnergy.get(),
+								   [self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])
+		elif self.beamTypeDict[self.BeamType.get()] == 'Experimental':
+			newBeam = beams_Experimental(MainGui.beamMakeName.get(),self.BeamFlux.get(),self.BeamEnergy.get(),
+									[self.beamPixSizeX.get(),self.beamPixSizeY.get()],self.beamFile.get())							
 
 		# check the beams parameters are valid
 		ErrorMessage = MainGui.checkBeamInputs(newBeam)

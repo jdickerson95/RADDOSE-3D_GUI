@@ -18,32 +18,27 @@ class crystals(object):
 
 		# find the crystal container information, if it was provided when the crystal object was created
 		self.containerInfoDict = containerInfoDict
-		try:
-			containerType, materialMixture,materialElements,containerThickness,containerDensity = self.getContainerInfo()
-			self.containerType      = containerType
-			self.materialMixture  	= materialMixture
-			self.materialElements 	= materialElements
-			self.containerThickness = containerThickness
-			self.containerDensity 	= containerDensity
-		except KeyError:
-			pass
+		if self.checkContainerInfoPresent() == True:
+			self.getContainerInfo()
 
 	def checkContainerInfoPresent(self):
 		# check whether container info has been provided for crystal
 		if len(self.containerInfoDict) != 0:
 			return True
+			print len(self.containerInfoDict)
+			print self.containerInfoDict
 		else:
 			return False
 
 	def getContainerInfo(self):
 		# get info regarding crystal container
-		containerType       = self.containerInfoDict["Type"]
-		materialMixture		= self.containerInfoDict["Mixture"]
-		materialElements 	= self.containerInfoDict["Elements"]
-		containerThickness 	= self.containerInfoDict["Thickness"]
-		containerDensity 	= self.containerInfoDict["Density"]
-
-		return (containerType,materialMixture,materialElements,containerThickness,containerDensity)
+		self.containerType       	= self.containerInfoDict["Type"]
+		self.containerThickness 	= self.containerInfoDict["Thickness"]
+		self.containerDensity 		= self.containerInfoDict["Density"]
+		if self.containerType == 'Mixture':
+			self.materialMixture	= self.containerInfoDict["Mixture"]
+		elif self.containerType == 'Elemental':
+			self.materialElements 	= self.containerInfoDict["Elements"]
 
 	def checkValidInputs(self):
 		ErrorMessage = ""
@@ -88,8 +83,10 @@ class crystals(object):
 		if self.checkContainerInfoPresent() == True:
 			containerString  	= 	"\nContainer Information:\n"
 			containerString 	+= 	"Container Type: {}\n".format(str(self.containerType))
-			containerString 	+= 	"Material Mixture: {}\n".format(str(self.materialMixture))
-			containerString 	+= 	"Material Elements: {}\n".format(str(self.materialElements))
+			if self.containerType == 'Mixture':
+				containerString 	+= 	"Material Mixture: {}\n".format(str(self.materialMixture))
+			elif self.containerType == 'Mixture':
+				containerString 	+= 	"Material Elements: {}\n".format(str(self.materialElements))
 			containerString 	+= 	"Container Thickness: {}\n".format(str(self.containerThickness))
 			containerString 	+= 	"Container Density: {}\n".format(str(self.containerDensity))
 			summaryString += containerString

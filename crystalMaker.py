@@ -571,13 +571,8 @@ class crystalMakerWindow(Frame):
 		containerTypeOptionMenu.grid(row=9,column=1,sticky=W,pady=5,padx=6)
 
 	def containerTypeInputs(self, containerTypeValue):
-			if 'No container' in containerTypeValue.get():
-				self.materialMixture.set("0")
-				self.materialElements.set("Na 0")
-				self.containerThickness.set("0")
-				self.containerDensity.set("0")
 
-			elif 'Specify mixture' in containerTypeValue.get():
+			if 'Specify mixture' in containerTypeValue.get():
 				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
 				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
 				self.hoverConMix = HoverInfo(containerMixtureLabel, self.helpText.conMixText)
@@ -629,6 +624,8 @@ class crystalMakerWindow(Frame):
 									'Tissue-Equivalent Gas, Methane Based':"temethane",
 									'Tissue-Equivalent Gas, Propane Based':"tepropane",
 									'Liquid Water':"water"}
+
+				self.materialMixture.set('Dry Air (near sea level)') # set initial material here
 				containerMixtureOptionMenu = OptionMenu(self.currentStrategyCrystal,self.materialMixture, self.materialMixture.get(), *self.mixtureDict.keys())
 				containerMixtureOptionMenu.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
 
@@ -643,7 +640,6 @@ class crystalMakerWindow(Frame):
 				self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
 				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
 				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
-				self.materialElements.set("Na 0")
 
 			elif 'Specify elemental composition' in containerTypeValue.get():
 				containerElementalLabel = Label(self.currentStrategyCrystal,text="Elemental composition",style="inputBoxes.TLabel")
@@ -663,15 +659,6 @@ class crystalMakerWindow(Frame):
 				self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
 				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
 				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
-				self.materialMixture.set("0")
-
-			# create dictionary for container info
-			self.containerInfoDict = {}
-			self.containerInfoDict["Type"] = self.containerTypeDict[self.containerType.get()]
-			self.containerInfoDict["Mixture"] = self.mixtureDict[self.materialMixture.get()]
-			self.containerInfoDict["Elements"] = self.materialElements.get()
-			self.containerInfoDict["Thickness"] = self.containerThickness.get()
-			self.containerInfoDict["Density"] = self.containerDensity.get()
 
 	def update(self, crystTypeValue, absCoeffTypeValue, containerTypeValue, MainGui):
 
@@ -698,6 +685,21 @@ class crystalMakerWindow(Frame):
 		# make a new crystal object from above entered parameters and add to both listbox crystal list and
 		# also list of crystal objects
 
+		# first create dictionary for container info
+		self.containerInfoDict = {}
+		if self.containerTypeDict[self.containerType.get()] == 'Mixture':
+			self.containerInfoDict["Type"] = self.containerTypeDict[self.containerType.get()]
+			self.containerInfoDict["Mixture"] = self.mixtureDict[self.materialMixture.get()]
+			self.containerInfoDict["Thickness"] = self.containerThickness.get()
+			self.containerInfoDict["Density"] = self.containerDensity.get()
+
+		elif self.containerTypeDict[self.containerType.get()] == 'Elemental':
+			self.containerInfoDict["Type"] = self.containerTypeDict[self.containerType.get()]
+			self.containerInfoDict["Elements"] = self.materialElements.get()
+			self.containerInfoDict["Thickness"] = self.containerThickness.get()
+			self.containerInfoDict["Density"] = self.containerDensity.get()
+
+		# make a new crystal object with class determined by absCoefCalc input type
 		if 'Average protein composition' in self.crystalAbsCoeffType.get():
 			newCryst = crystals(MainGui.crystMakeName.get(),self.crystTypeDict[self.CrystalType.get()],self.CrystalDimX.get(),
 								self.CrystalDimY.get(),self.CrystalDimZ.get(),self.CrystalPixPerMic.get(),

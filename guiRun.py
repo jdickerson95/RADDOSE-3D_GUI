@@ -26,8 +26,8 @@ from plotMaker import barplotWindow
 from beamMaker import beamMakerWindow
 from crystalMaker import crystalMakerWindow
 from wedgeMaker import wedgeMakerWindow
-from crystals import crystals
-from beams import beams
+from crystals import *
+from beams import *
 from wedges import wedges
 from experiments import Experiments
 from customMadeWidgets import *
@@ -404,8 +404,8 @@ class RADDOSEgui(Frame):
         scrollbarBeamList = Scrollbar(beamListFrame, orient=VERTICAL)
 
         # want to make a list of beam object instances (here two example beams are defined)
-        exampleBeam = beams('Example beam',"Gaussian",[25,25],10000000000,10,[100,100],[2,2])
-        exampleBeam2 = beams('Example beam 2',"TopHat",[50,50],20000000000,12,[120,120],[1,1])
+        exampleBeam = beams_Gaussian('Example beam',[25,25],10000000000,10,[100,100])
+        exampleBeam2 = beams_Tophat('Example beam 2',20000000000,12,[120,120])
         self.beamList = [exampleBeam,exampleBeam2]
 
         self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=loadListHeight)
@@ -1184,18 +1184,9 @@ class RADDOSEgui(Frame):
 		tkMessageBox.showinfo( "View Beam Information", beamInfo)
 
     def extractBeamInfo(self, beamObject):
-		# determine current beam object properties, dependent on beam type
-		if str(beamObject.type) == 'Gaussian':
-			string = """Beam Name: %s\nType: %s\nFWHM: %s (microns in x,y)\nFlux: %.1e (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
-"""%(str(beamObject.beamName),str(beamObject.type),
-		          		str(beamObject.fwhm), float(beamObject.flux),
-		          		str(beamObject.energy),str(beamObject.collimation))
-		elif str(beamObject.type) == 'TopHat':
-			string = """Beam Name: %s\nType: %s\nFlux: %.1e (photons per second)\nEnergy: %s keV\nRectangular Collimation: %s (microns in x,y)\n
-"""%(str(beamObject.beamName),str(beamObject.type),
-		          		float(beamObject.flux),str(beamObject.energy),
-		          		str(beamObject.collimation))
-		return string
+        # determine current beam object properties, dependent on beam type
+        string = beamObject.extractBeamInfo()
+        return string
 
     def deleteBeam(self):
         self.beamListbox.delete(ANCHOR)
@@ -1277,43 +1268,11 @@ class RADDOSEgui(Frame):
     def checkBeamInputs(self,newBeam):
 		# additional check to ensure correct beam properties have been read successively
 		# from premade RD3D input file
-		ErrorMessage = ""
-		if newBeam.type not in ('Gaussian','TopHat'):
-			ErrorMessage = ErrorMessage +  'Beam type %s not of compatible format.\n' %(newBeam.type)
-		if newBeam.type == 'Gaussian':
-			if len(newBeam.fwhm) != 2:
-				ErrorMessage = ErrorMessage + 'Gaussian beam type specified, but invalid FWHM inputs found.\n'
-			else:
-				# check that beam FWHM can be converted to float format (from string format)
-				try:
-					float(newBeam.fwhm[0])
-					float(newBeam.fwhm[1])
-				except ValueError:
-					ErrorMessage = ErrorMessage + 'Beam FWHM not of compatible float format.\n'
+        ErrorMessage = newBeam.checkValidInputs()
+        ErrorMessage2 = newBeam.checkValidInputs_subclass()
+        ErrorMessage += ErrorMessage2
 
-		if len(newBeam.collimation) != 2:
-			ErrorMessage = ErrorMessage + 'Rectangular collimation inputs of invalid format.\n'
-		else:
-			# check that beam collimation can be converted to float format (from string format)
-			try:
-				float(newBeam.collimation[0])
-				float(newBeam.collimation[1])
-			except ValueError:
-				ErrorMessage = ErrorMessage + 'Beam collimation not of compatible float format.\n'
-
-		# check that beam energy can be converted to float format (from string format)
-		try:
-			float(newBeam.energy)
-		except ValueError:
-			ErrorMessage = ErrorMessage + 'Beam energy not of compatible float format.\n'
-
-		# check that beam flux can be converted to float format (from string format)
-		try:
-			float(newBeam.flux)
-		except ValueError:
-			ErrorMessage = ErrorMessage + 'Beam flux not of compatible float format.\n'
-
-		return ErrorMessage
+        return ErrorMessage
 
     def onSelect(self, val):
 		# what happens when select button clicked
@@ -1618,52 +1577,50 @@ class RADDOSEgui(Frame):
 		return crystBlock #return the crystal block
 
     def writeBeamBlock(self, beamObj):
-		"""Write a text block of beam information for RADDOSE-3D
+        """Write a text block of beam information for RADDOSE-3D
 
-		Function to write a text block of the beam properties for a
-		RADDOSE-3D input file.
+        Function to write a text block of the beam properties for a
+        RADDOSE-3D input file.
 
-		=================
-		Keyword arguments
-		=================
-		beamObj:
-			a 'beams' object whose properties contain the required properties
-			for RADDOSE-3D input.
+        =================
+        Keyword arguments
+        =================
+        beamObj:
+        a 'beams' object whose properties contain the required properties
+        for RADDOSE-3D input.
 
-		=================
-		Return parameters
-		=================
-		beamBlock:
-			a string block that contains the beam information in the form
-			required for input into RADDOSE-3D
+        =================
+        Return parameters
+        =================
+        beamBlock:
+        a string block that contains the beam information in the form
+        required for input into RADDOSE-3D
 
-		"""
-		beamLines = [] #Inialise empty list
-		beamLines.append("Beam") # Append the string - "Beam" - to the list
-		beamPropertyDict = vars(beamObj) #create a dictionary from the beam object properties and corresponding values
+        """
+        beamLines = [] #Inialise empty list
+        beamLines.append("Beam") # Append the string - "Beam" - to the list
+        beamPropertyDict = vars(beamObj) #create a dictionary from the beam object properties and corresponding values
 
-		#Add a dictionary entry that puts beam FWHM dimensions values into a string
-		beamPropertyDict["FWHM"] = '{} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
-		#Add a dictionary entry that puts beam collimation dimensions values into a string
-		beamPropertyDict["Collimation Rectangular"] = '{} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
-		#Add a dictionary entry that puts beam pixel size dimensions values into a string
-		beamPropertyDict["PixelSize"] = '{} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
+        #loop through each entry in the dictionary, create a string of the key
+        #and value from the dictionary and append that to the list created above
+        for beamProp in beamPropertyDict:
+            if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName'):
+                string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
+                beamLines.append(string)
+            if beamProp == 'fwhm':
+                string = 'FWHM {} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
+                beamLines.append(string)
+            if beamProp == 'collimation':
+                string = 'Collimation Rectangular {} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
+                beamLines.append(string)
+            if beamProp == 'pixelSize': 
+                string = 'PixelSize {} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
+                beamLines.append(string)
 
-		#loop through each entry in the dictionary, create a string of the key
-		#and value from the dictionary and append that to the list created above
-		for beamProp in beamPropertyDict:
-			if beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'FWHM':
-					string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
-					beamLines.append(string)
-			# include FWHM for Gaussian beam type
-			if beamObj.type == 'Gaussian' and beamProp == 'FWHM':
-					string = '{} {}'.format(beamProp,str(beamPropertyDict[beamProp]))
-					beamLines.append(string)
-
-		#write list entries as a single text block with each list entry joined
-		#by a new line character
-		beamBlock = "\n".join(beamLines)
-		return beamBlock #return the beam block
+        #write list entries as a single text block with each list entry joined
+        #by a new line character
+        beamBlock = "\n".join(beamLines)
+        return beamBlock #return the beam block
 
     def writeWedgeBlock(self, wedgeObj):
 		"""Write a text block of wedge information for RADDOSE-3D
