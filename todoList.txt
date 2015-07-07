@@ -72,6 +72,8 @@ displayed on.
 - Perhaps change font of summary window output to see if that fixes the
 formatting issue
 
+- change location of dose contour button within main interface
+
 -***************************-
 To do at some point
 -***************************-
