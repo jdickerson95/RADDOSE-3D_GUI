@@ -57,7 +57,20 @@ input everything again.
 
 -Some of the help text isn't formatted properly (there are hidden characters
 which don't show up in the editor but appear in the GUI). Need to get rid of
-these.
+these. - Jonny do you mean in the help summary box or the hovering boxes?
+
+-Need to complete help.py class (the interactive help box). This will be best
+once all the other input sections are completed
+
+-In guiRun.py, when a beam is loaded from a premade RD3D input file, it is created 
+using the 'beams' class - this needs to be updated to instead use beams subclasses,
+dependent on which beam type is present
+
+- Similarly to above, when a crystal is loaded from a premade RD3D input file, need
+to ensure correct crystal subclasses are used when creating new crystal objects
+
+- Do the parsers handle container information correctly when reading from premade RD3D 
+input files and creating crystal objects? Need to check this! 
 
 -***************************-
 To do at some point
