@@ -42,7 +42,7 @@ if foundMayaMod:
     from doseStatePlot import doseStatePlot
 
 class RADDOSEgui(Frame):
-	# this is the main RADDOSE gui class here
+    # this is the main RADDOSE gui class here
 
     def __init__(self, parent):
         Frame.__init__(self, parent)
@@ -86,35 +86,35 @@ class RADDOSEgui(Frame):
         # set a basic style for the individual subframes within the body frame
         styleBodyLabelFrame = Style()
         styleBodyLabelFrame.configure("BodyGroovy.TFrame", foreground="black",
-        							background=self.lightcolour,relief=GROOVE,borderwidth=5)
+                                    background=self.lightcolour,relief=GROOVE,borderwidth=5)
 
         # make a style for the frame which surrounds entry box and label combos
         styleInputBoxesFrame = Style()
         styleInputBoxesFrame.configure("inputBoxes.TFrame",foreground="white",
-        							   background=self.lightcolour,borderwidth=5)
+                                       background=self.lightcolour,borderwidth=5)
         styleInputBoxes = Style()
         styleInputBoxes.configure("inputBoxes.TLabel",foreground="white",
-        					      background=self.lightcolour,borderwidth=5,font=("Helvetica", 12))
+                                  background=self.lightcolour,borderwidth=5,font=("Helvetica", 12))
 
         # make a style for the added gui header title label
         styleTitle = Style()
         styleTitle.configure("Title.TLabel",foreground="white",
-        					 background=self.headercolour,font=("Helvetica", 26))
+                             background=self.headercolour,font=("Helvetica", 26))
 
         # make a style for the gui header RD3D web address details
         styleTitle = Style()
         styleTitle.configure("RD3DheaderWebAddress.TLabel",foreground="white",
-        					 background=self.headercolour,font=("Helvetica", 14))
+                             background=self.headercolour,font=("Helvetica", 14))
 
         # make an additional style for the added label titles to labelframe widgets
         styleLabelFrameTitle = Style()
         styleLabelFrameTitle.configure("labelFrameTitle.TLabel",foreground="white",
-        							   background=self.lightcolour,font=("Helvetica", 14))
+                                       background=self.lightcolour,font=("Helvetica", 14))
 
         # make a style for the 'load/make a crystal/beam' frames
         styleMakeABeamFrame = Style()
         styleMakeABeamFrame.configure("MakeABeam.TFrame",foreground="white",relief=GROOVE,
-        							  background=self.lightcolour,font=("Helvetica", 14),borderwidth=5)
+                                      background=self.lightcolour,font=("Helvetica", 14),borderwidth=5)
 
         #####################################################################################################
         # make a menu bar header here
@@ -565,105 +565,103 @@ class RADDOSEgui(Frame):
         self.expCompDir = "ExpComp_"+dirTimestamp #Name of directory where strategy comparison files will be stored
         self.RADDOSEfilename = 'RADDOSE-3D-input.txt' #Create RADDOSE3D input file name
 
-	#####################################################################################################
-	# below is a list of button actions in the gui
+    #####################################################################################################
+    # below is a list of button actions in the gui
 
     def runManualExperiment(self):
-		"""Run the a manually experiment defined by the specified crystal, beam and wedge
+        """Run the a manually experiment defined by the specified crystal, beam and wedge
 
-		This function intiates the running of an experiment involving a manually defined
-		strategy by the user within the GUI
+        This function intiates the running of an experiment involving a manually defined
+        strategy by the user within the GUI
 
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
+        =================
+        Keyword arguments
+        =================
+        No explicit user defined parameters. Only the object is required for
+        implicit input.
 
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
 
-		"""
-		self.CurrentexpLoadName = self.expLoadName
-		self.strategyType = 'Manual'
-		self.runExperiment()
+        """
+        self.CurrentexpLoadName = self.expLoadName
+        self.strategyType = 'Manual'
+        self.runExperiment()
 
     def runPremadeRD3DExperiment(self):
-		"""Run the a premade RD3D job with premade input file
+        """Run the a premade RD3D job with premade input file
 
-		This function intiates the running of an experiment involving a premade RD3D
-		input file
+        This function intiates the running of an experiment involving a premade RD3D
+        input file
 
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
+        =================
+        Keyword arguments
+        =================
+        No explicit user defined parameters. Only the object is required for
+        implicit input.
 
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
 
-		"""
-		self.CurrentexpLoadName = self.premadeRD3DStrategyName
-		self.strategyType = 'Premade'
-		self.runExperiment()
+        """
+        self.CurrentexpLoadName = self.premadeRD3DStrategyName
+        self.strategyType = 'Premade'
+        self.runExperiment()
 
     def runExperiment(self):
-		"""Run the experiment defined by the specified crystal, beam and wedge
+        """Run the experiment defined by the specified crystal, beam and wedge
 
-		This function checks whether the experiment name already exists. If it
-		doesn't already exist then it will create a directory with the current
-		experiment name and then run RADDOSE-3D which the chosen crystal, beam
-		and wedge paramters. Otherwise, if the experiment name already exists
-		then a pop up dialogue is created which asks the user whether they want
-		to overwrite the current experiment that already exists under the same
-		name.
+        This function checks whether the experiment name already exists. If it
+        doesn't already exist then it will create a directory with the current
+        experiment name and then run RADDOSE-3D which the chosen crystal, beam
+        and wedge paramters. Otherwise, if the experiment name already exists
+        then a pop up dialogue is created which asks the user whether they want
+        to overwrite the current experiment that already exists under the same
+        name.
 
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
+        =================
+        Keyword arguments
+        =================
+        No explicit user defined parameters. Only the object is required for
+        implicit input.
 
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
 
-		"""
-		expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
+        """
+        expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
 
-		#First check that the experiment name hasn't been left blank. If so then
-		#tell user that they need to supply an experiment name.
-		#Otherwise check if the experiment name already exists as a directory in
-		#the current folder.if it does then ask the user if they want to
-		#overwrite the previous experiment.
-		#Otherwise create the experiment directory and run the experiment.
-		if not expName.strip():
-			string = """No experiment name has been given.\nPlease give a name to the experiment that you wish to run in the 'Experiment Name' field.
-			""" %()
-			tkMessageBox.showinfo( "No Experiment Name", string)
-		elif os.path.exists(expName):
-			addQuery = tkMessageBox.askquestion( "Duplicate Experiment Names",
-			"Experiment name %s already exists. Do you want to overwrite this experiment?"%(expName))
-			if addQuery == 'yes':
-				expTuple = self.expListbox.get(0, END) #extract list from list box
-				if expName in expTuple:
-					expIndex = expTuple.index(expName) #find the index with the corresponding experiment name
-				else:
-					expIndex = -1
-				self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
-				os.mkdir(expName) #make the new directory
-				self.runStrategy() #run the strategy
-			else:
-				pass
-		else:
-			os.mkdir(expName)
-			self.runStrategy()
+        #First check that the experiment name hasn't been left blank. If so then
+        #tell user that they need to supply an experiment name.
+        #Otherwise check if the experiment name already exists as a directory in
+        #the current folder.if it does then ask the user if they want to
+        #overwrite the previous experiment.
+        #Otherwise create the experiment directory and run the experiment.
+        if not expName.strip():
+            string = """No experiment name has been given.\nPlease give a name to the experiment that you wish to run in the 'Experiment Name' field.
+            """ %()
+            tkMessageBox.showinfo( "No Experiment Name", string)
+        elif os.path.exists(expName):
+            addQuery = tkMessageBox.askquestion( "Duplicate Experiment Names",
+            "Experiment name %s already exists. Do you want to overwrite this experiment?"%(expName))
+            if addQuery == 'yes':
+                expTuple = self.expListbox.get(0, END) #extract list from list box
+                if expName in expTuple:
+                    expIndex = expTuple.index(expName) #find the index with the corresponding experiment name
+                else:
+                    expIndex = -1
+                self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
+                self.runStrategy() #run the strategy
+            else:
+                pass
+        else:
+            self.runStrategy()
 
     def runStrategy(self):
         """Run RADDOSE-3D given specified crystal, beam and wedge objects
@@ -693,15 +691,15 @@ class RADDOSEgui(Frame):
         if self.strategyType == 'Manual':
             if not self.crystList or not self.beamList2Run or not self.wedgeList2Run:
                 string = """An object required to run RADDOSE-3D has not been selected for input.\nCheck that you have selected at least one crystal, beam and wedge.
-        		""" %()
+                """ %()
                 tkMessageBox.showinfo( "Missing object required for RADDOSE-3D input", string)
             else:
                 self.writeRaddose3DInputFile()
         elif self.strategyType == 'Premade':
-        	shutil.copy(self.RD3DinputLoad, expName)
-        	oldFilename = '{}/{}'.format(expName, self.RD3DinputLoad.split("/")[-1])
-        	newFilename = '{}/{}'.format(expName, self.RADDOSEfilename)
-        	os.rename(oldFilename, newFilename)
+            shutil.copy(self.RD3DinputLoad, expName)
+            oldFilename = '{}/{}'.format(expName, self.RD3DinputLoad.split("/")[-1])
+            newFilename = '{}/{}'.format(expName, self.RADDOSEfilename)
+            os.rename(oldFilename, newFilename)
 
         self.runRaddose3D()
         #Update the experiment list in the strategy window
@@ -710,12 +708,12 @@ class RADDOSEgui(Frame):
         self.refreshExperimentChoices()
 
     def clickAddBeamStrategy(self):
-		# what happens when add beam strategy button clicked. Makes a new small window allowing
-		# manual entry of wedge parameters for currently selected beam
+        # what happens when add beam strategy button clicked. Makes a new small window allowing
+        # manual entry of wedge parameters for currently selected beam
         self.top_WedgeMaker=Toplevel()
         self.top_WedgeMaker.title("Make a wedge")
 
-		# give the new window a dark background colour
+        # give the new window a dark background colour
         self.top_WedgeMaker.configure(bg=self.darkcolour)
 
         # finds separate class for secondary crystal-maker window
@@ -725,7 +723,7 @@ class RADDOSEgui(Frame):
         # add a new beam+wedge strategy to the treeview of coupled beam+wedge strategies to be input into RADDOSE3D
 
         Index = self.BeamStratTree.insert("" , len(self.treeviewIndexlist),    text=str(len(self.treeviewIndexlist)+1),
-        						 values=(self.beamChoice.get(),wedge.angStart,wedge.angStop,wedge.exposureTime))
+                                 values=(self.beamChoice.get(),wedge.angStart,wedge.angStop,wedge.exposureTime))
         self.treeviewIndexlist.append(Index)
 
         # get the index of the selected beam from the list of added beams (in the optionmenu list)
@@ -765,22 +763,22 @@ class RADDOSEgui(Frame):
         self.updateHelp()
 
     def refreshCrystChoices(self):
-	    # Reset the option menu of added crystals and delete crystals not now
-	    # included in the list of added crystals
-	    self.crystChoice.set('')
-	    self.crystChoiceMenu['menu'].delete(0, 'end')
+        # Reset the option menu of added crystals and delete crystals not now
+        # included in the list of added crystals
+        self.crystChoice.set('')
+        self.crystChoiceMenu['menu'].delete(0, 'end')
 
-	    # Insert list of new options (tk._setit hooks them up to self.crystChoice)
-	    new_CrystChoices = [cryst.crystName for cryst in self.crystList]
-	    for choice in new_CrystChoices:
-	        self.crystChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.crystChoice, choice))
+        # Insert list of new options (tk._setit hooks them up to self.crystChoice)
+        new_CrystChoices = [cryst.crystName for cryst in self.crystList]
+        for choice in new_CrystChoices:
+            self.crystChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.crystChoice, choice))
 
-	# functions for the manipulation of crystal files and parameters
+    # functions for the manipulation of crystal files and parameters
     def clickCrystView(self):
-		# what happens when crystal view button clicked
-		crystToView = self.crystList[self.crystListbox.index(ANCHOR)]
-		crystInfo = self.extractCrystalInfo(crystToView)
-		tkMessageBox.showinfo( "View Crystal Information", crystInfo)
+        # what happens when crystal view button clicked
+        crystToView = self.crystList[self.crystListbox.index(ANCHOR)]
+        crystInfo = self.extractCrystalInfo(crystToView)
+        tkMessageBox.showinfo( "View Crystal Information", crystInfo)
 
     def extractCrystalInfo(self, crystalObject):
         string = crystalObject.extractCrystalInfo()
@@ -794,10 +792,10 @@ class RADDOSEgui(Frame):
         return string
 
     def extractWedgeInfo(self, wedgeObject):
-		string = """Total Oscillation %.2f (Angle Start: %s, End: %s) in degrees\nTotal Exposure Time: %s seconds\n
+        string = """Total Oscillation %.2f (Angle Start: %s, End: %s) in degrees\nTotal Exposure Time: %s seconds\n
 """ %(float(wedgeObject.angStop) - float(wedgeObject.angStart), wedgeObject.angStart,
-		          		wedgeObject.angStop, wedgeObject.exposureTime)
-		return string
+                          wedgeObject.angStop, wedgeObject.exposureTime)
+        return string
 
     def updateSummary(self,summaryOption):
         if self.expNameList:
@@ -812,42 +810,42 @@ class RADDOSEgui(Frame):
             tkMessageBox.showinfo( "No experiments loaded", string)
 
     def displaySummary(self, expName):
-		#extract the experiment object corresponding to the chosen
-		#experiment in the list
-		expObject = self.experimentDict[expName]
+        #extract the experiment object corresponding to the chosen
+        #experiment in the list
+        expObject = self.experimentDict[expName]
 
-		#Write first line of the summary giving the experiment name
-		self.inputtxt.delete(1.0, END) #Delete any text already in the box
-		self.inputtxt.insert(1.0, "Summary of experiment: %s\n\n"%(expName))
+        #Write first line of the summary giving the experiment name
+        self.inputtxt.delete(1.0, END) #Delete any text already in the box
+        self.inputtxt.insert(1.0, "Summary of experiment: %s\n\n"%(expName))
 
-		#Time stamp
-		self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
-		self.inputtxt.insert(END, "\n")
+        #Time stamp
+        self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
+        self.inputtxt.insert(END, "\n")
 
-		#Dose Summary
-		self.inputtxt.insert(END, "Dose Summary:\n"%())
-		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Diffraction Weighted Dose (DWD)",expObject.dwd))
-		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Maximum Dose",expObject.maxDose))
-		self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
-		self.inputtxt.insert(END, "%-50s: %-.2e photons\n"%("Elastic Yield",expObject.elasticYield))
-		self.inputtxt.insert(END, "%-50s: %-.2e photons/MGy\n"%("Diffraction Efficiency (Elastic Yield/DWD)",expObject.diffractionEfficiency))
-		self.inputtxt.insert(END, "%-50s: %-.1f%%\n"%("Used Volume",expObject.usedVolume))
-		self.inputtxt.insert(END, "%-50s: %-.2e J\n"%("Absorbed Energy",expObject.absEnergy))
-		self.inputtxt.insert(END, "%-50s: %-.2e 1/g\n"%("Dose Inefficiency (Max Dose/mj Absorbed)",expObject.doseInefficiency))
-		self.inputtxt.insert(END, "\n")
+        #Dose Summary
+        self.inputtxt.insert(END, "Dose Summary:\n"%())
+        self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Diffraction Weighted Dose (DWD)",expObject.dwd))
+        self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Maximum Dose",expObject.maxDose))
+        self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
+        self.inputtxt.insert(END, "%-50s: %-.2e photons\n"%("Elastic Yield",expObject.elasticYield))
+        self.inputtxt.insert(END, "%-50s: %-.2e photons/MGy\n"%("Diffraction Efficiency (Elastic Yield/DWD)",expObject.diffractionEfficiency))
+        self.inputtxt.insert(END, "%-50s: %-.1f%%\n"%("Used Volume",expObject.usedVolume))
+        self.inputtxt.insert(END, "%-50s: %-.2e J\n"%("Absorbed Energy",expObject.absEnergy))
+        self.inputtxt.insert(END, "%-50s: %-.2e 1/g\n"%("Dose Inefficiency (Max Dose/mj Absorbed)",expObject.doseInefficiency))
+        self.inputtxt.insert(END, "\n")
 
-		self.inputtxt.insert(END, "Experiment parameters:\n"%())
-		#Add crystal summary
-		crystalInfo = self.extractCrystalInfo(expObject.crystal)
-		self.inputtxt.insert(END, crystalInfo)
-		#Add beam and wedge summaries
-		counter = -1
-		for beamObject in expObject.beamList:
-			counter += 1
-			beamString = self.extractBeamInfo(beamObject)
-			wedgeObject = expObject.wedgeList[counter]
-			wedgeString =self.extractWedgeInfo(wedgeObject)
-			self.inputtxt.insert(END, beamString+wedgeString)
+        self.inputtxt.insert(END, "Experiment parameters:\n"%())
+        #Add crystal summary
+        crystalInfo = self.extractCrystalInfo(expObject.crystal)
+        self.inputtxt.insert(END, crystalInfo)
+        #Add beam and wedge summaries
+        counter = -1
+        for beamObject in expObject.beamList:
+            counter += 1
+            beamString = self.extractBeamInfo(beamObject)
+            wedgeObject = expObject.wedgeList[counter]
+            wedgeString =self.extractWedgeInfo(wedgeObject)
+            self.inputtxt.insert(END, beamString+wedgeString)
 
     def displayLog(self, expName):
         """Display RADDOSE-3D log file for currently selected experiment within summary window
@@ -883,39 +881,39 @@ class RADDOSEgui(Frame):
         self.inputtxt.insert(END,expObject.log)
 
     def clickBarplotter(self):
-		# button to first check whether any strategies are loaded within summary window and
-		# then create a separate window for a bar plot comparing dose metrics for all strategies
-		# currently loaded within summary window
-		if self.expNameList:
-			# Makes a new window allowing which will contain bar plots
-			self.top_summaryBarplotMaker=Toplevel()
-			self.top_summaryBarplotMaker.title("Summary Dose Plots")
-			# give the new window a dark background colour
-			self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
-			# finds separate class for secondary barplotting window
-			self.app = barplotWindow(self)
+        # button to first check whether any strategies are loaded within summary window and
+        # then create a separate window for a bar plot comparing dose metrics for all strategies
+        # currently loaded within summary window
+        if self.expNameList:
+            # Makes a new window allowing which will contain bar plots
+            self.top_summaryBarplotMaker=Toplevel()
+            self.top_summaryBarplotMaker.title("Summary Dose Plots")
+            # give the new window a dark background colour
+            self.top_summaryBarplotMaker.configure(bg=self.darkcolour)
+            # finds separate class for secondary barplotting window
+            self.app = barplotWindow(self)
 
-		else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
+        else:
+            string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+            """ %()
+            tkMessageBox.showinfo( "No experiments loaded", string)
 
     def clickDoseContours(self):
-		# button to first check whether any strategies are loaded within summary window and
-		# then create a separate window for a bar plot comparing dose metrics for all strategies
-		# currently loaded within summary window
-		if self.expNameList:
-			if foundMayaMod:
-				m = doseStatePlot(self)
-				m.configure_traits()
-			else:
-				string = """The Mayavi module is required to view dose contour plots but hasn't been found on your system.\nPlease check that you have it or visit \n\"http://docs.enthought.com/mayavi/mayavi/installation.html\" for installation notes.
-				""" %()
-				tkMessageBox.showinfo( "Mayavi Not Found", string)
-		else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
+        # button to first check whether any strategies are loaded within summary window and
+        # then create a separate window for a bar plot comparing dose metrics for all strategies
+        # currently loaded within summary window
+        if self.expNameList:
+            if foundMayaMod:
+                m = doseStatePlot(self)
+                m.configure_traits()
+            else:
+                string = """The Mayavi module is required to view dose contour plots but hasn't been found on your system.\nPlease check that you have it or visit \n\"http://docs.enthought.com/mayavi/mayavi/installation.html\" for installation notes.
+                """ %()
+                tkMessageBox.showinfo( "Mayavi Not Found", string)
+        else:
+            string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+            """ %()
+            tkMessageBox.showinfo( "No experiments loaded", string)
 
 
     def clickExpShowSummary(self):
@@ -926,12 +924,12 @@ class RADDOSEgui(Frame):
             for row in self.tableRowEntries:
                 self.inputtxt.insert(END, "{:s}\n".format(row))
         else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
+            string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+            """ %()
+            tkMessageBox.showinfo( "No experiments loaded", string)
 
     def clickExpSave(self):
-		#Check to see if there are experiments loaded in the summary window
+        #Check to see if there are experiments loaded in the summary window
         if self.expNameList:
             #Check if Experiment compasion directory exists
             if not os.path.exists(self.expCompDir):
@@ -946,9 +944,9 @@ class RADDOSEgui(Frame):
                 summaryFile.write(row+"\n")
             summaryFile.close()
         else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
+            string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+            """ %()
+            tkMessageBox.showinfo( "No experiments loaded", string)
 
     def createSummaryTable(self):
         self.tableRowEntries = []
@@ -1003,27 +1001,27 @@ class RADDOSEgui(Frame):
         self.updateHelp()
 
     def clickCrystMake(self):
-		# what happens when crystal make button clicked. Makes a new small window allowing
-		# manual entry of crystal parameters
+        # what happens when crystal make button clicked. Makes a new small window allowing
+        # manual entry of crystal parameters
 
-		# first ensure that crystal to be made has been given a name, and that this is
-		# different than all other loaded crystals
-		if not str(self.crystMakeName.get()).strip():
-			string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to make.""" %()
-			tkMessageBox.showinfo( "No Crystal Name", string)
-		elif str(self.crystMakeName.get()) in [cryst.crystName for cryst in self.crystList]:
-			tkMessageBox.showinfo( "Duplicate Crystal Names",
-			"Crystal name %s already exists. Please choose another name." %(self.crystMakeName.get()))
-		else:
-			# if unique crystal name was given, create new pop-up window, in which to set crystal properties
-			self.top_CrystMaker=Toplevel()
-			self.top_CrystMaker.title("Make a crystal")
+        # first ensure that crystal to be made has been given a name, and that this is
+        # different than all other loaded crystals
+        if not str(self.crystMakeName.get()).strip():
+            string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to make.""" %()
+            tkMessageBox.showinfo( "No Crystal Name", string)
+        elif str(self.crystMakeName.get()) in [cryst.crystName for cryst in self.crystList]:
+            tkMessageBox.showinfo( "Duplicate Crystal Names",
+            "Crystal name %s already exists. Please choose another name." %(self.crystMakeName.get()))
+        else:
+            # if unique crystal name was given, create new pop-up window, in which to set crystal properties
+            self.top_CrystMaker=Toplevel()
+            self.top_CrystMaker.title("Make a crystal")
 
-			# give the new window a dark background colour
-			self.top_CrystMaker.configure(bg=self.darkcolour)
+            # give the new window a dark background colour
+            self.top_CrystMaker.configure(bg=self.darkcolour)
 
-			# finds separate class for secondary crystal-maker window
-			self.app = crystalMakerWindow(self)
+            # finds separate class for secondary crystal-maker window
+            self.app = crystalMakerWindow(self)
 
     def addCrystalToList(self, crystal):
         # add a crystal object to the list of crystals (outside of listbox)
@@ -1037,90 +1035,90 @@ class RADDOSEgui(Frame):
         self.updateHelp()
 
     def addToExperimentList(self):
-		if self.emptyExpListString in self.expListbox.get(0):
-			self.expListbox.delete(0, END)
-		experimentName = str(self.CurrentexpLoadName.get())
-		self.expListbox.insert(END, experimentName)
+        if self.emptyExpListString in self.expListbox.get(0):
+            self.expListbox.delete(0, END)
+        experimentName = str(self.CurrentexpLoadName.get())
+        self.expListbox.insert(END, experimentName)
 
     def findExperimentTodelete(self):
-		expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
-		experimentName = self.expListbox.get(expListIndex) #get experiment name
+        expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
+        experimentName = self.expListbox.get(expListIndex) #get experiment name
 
-		#Ask if user actually wants to delete the experiment
-		addQuery = tkMessageBox.askquestion( "Delete Experiment",
-		"Are you sure you want to delete experiment: %s?"%(experimentName))
-		if addQuery == 'yes':
-			self.deleteExperiment(expListIndex, experimentName)
-		else:
-			pass
+        #Ask if user actually wants to delete the experiment
+        addQuery = tkMessageBox.askquestion( "Delete Experiment",
+        "Are you sure you want to delete experiment: %s?"%(experimentName))
+        if addQuery == 'yes':
+            self.deleteExperiment(expListIndex, experimentName)
+        else:
+            pass
 
     def deleteExperiment(self, expListIndex, experimentName):
-		if expListIndex != -1:
-			self.expListbox.delete(expListIndex) #remove from experiment list box
-			del self.experimentDict[experimentName] #delete from dictionary
-		shutil.rmtree(experimentName) # Delete experiment directory
-		#check if experiment was also loaded into summary window (i.e. if
-		#it's in the experiment dictionary)
-		if experimentName in self.expNameList:
-			self.expNameList.remove(experimentName) #remove from experiment list
-			self.refreshExperimentChoices() #refresh experiment list in summary window
+        if expListIndex != -1:
+            self.expListbox.delete(expListIndex) #remove from experiment list box
+            del self.experimentDict[experimentName] #delete from dictionary
+        shutil.rmtree(experimentName) # Delete experiment directory
+        #check if experiment was also loaded into summary window (i.e. if
+        #it's in the experiment dictionary)
+        if experimentName in self.expNameList:
+            self.expNameList.remove(experimentName) #remove from experiment list
+            self.refreshExperimentChoices() #refresh experiment list in summary window
 
-		#If experiment dictionary is empty then print string to experiment
-		#list box to notify user that there are no existing experiments.
-		if not self.experimentDict:
-			self.expListbox.insert(0, self.emptyExpListString)
+        #If experiment dictionary is empty then print string to experiment
+        #list box to notify user that there are no existing experiments.
+        if not self.experimentDict:
+            self.expListbox.insert(0, self.emptyExpListString)
 
     def clickLoadExperiment(self):
-		expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
-		experimentName = self.expListbox.get(expListIndex) #get experiment name
+        expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
+        experimentName = self.expListbox.get(expListIndex) #get experiment name
 
-		#Check if the experiment name has already been added to the summary
-		#window list. If so then tell the user in a pop up window
-		if experimentName in self.expNameList:
-			string = """Experiment %s is already loaded.\n
-			""" %(experimentName)
-			tkMessageBox.showinfo( "Experiment already loaded", string)
-		else:
-			self.expNameList.append(experimentName) #add experiment name to list
-			self.refreshExperimentChoices() #refresh experiment list in summary window
+        #Check if the experiment name has already been added to the summary
+        #window list. If so then tell the user in a pop up window
+        if experimentName in self.expNameList:
+            string = """Experiment %s is already loaded.\n
+            """ %(experimentName)
+            tkMessageBox.showinfo( "Experiment already loaded", string)
+        else:
+            self.expNameList.append(experimentName) #add experiment name to list
+            self.refreshExperimentChoices() #refresh experiment list in summary window
 
     def removeExperimentFromList(self):
-		experimentName = str(self.expChoice.get()) #get the experiment name
-		self.expNameList.remove(experimentName) #remove experiment from list
-		self.refreshExperimentChoices() # update the experiment list in the summary window.
+        experimentName = str(self.expChoice.get()) #get the experiment name
+        self.expNameList.remove(experimentName) #remove experiment from list
+        self.refreshExperimentChoices() # update the experiment list in the summary window.
 
 
     def clickCrystLoad(self):
-		# what happens when crystal load button clicked
-		self.crystLoad = tkFileDialog.askopenfilename(parent=self,title='Open crystal file to load')
-		self.crystLoadBox.delete(0,END)
-		self.crystLoadBox.insert(0,self.crystLoad)
+        # what happens when crystal load button clicked
+        self.crystLoad = tkFileDialog.askopenfilename(parent=self,title='Open crystal file to load')
+        self.crystLoadBox.delete(0,END)
+        self.crystLoadBox.insert(0,self.crystLoad)
 
     def clickCrystAdd(self):
-		# what happens when crystal add button clicked:
-		# ensure that crystals added to GUI are given a name, and that this is different than all other loaded crystals
-		if not str(self.crystLoadName.get()).strip():
-			string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to add.""" %()
-			tkMessageBox.showinfo( "No Crystal Name", string)
-		elif str(self.crystLoadName.get()) in [cryst.crystName for cryst in self.crystList]:
-			tkMessageBox.showinfo( "Duplicate Crystal Names",
-								   "Crystal name %s already exists. Please choose another name." %(self.crystLoadName.get()))
-		else:
-			addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
-			if addQuery == 'yes':
-				# read in RADDOSE-3D style input file to get crystal properties
-				newCrystal = self.parseRaddoseInput(self.crystLoadBox.get(),'crystal')
-				newCrystal.crystName = str(self.crystLoadName.get())
+        # what happens when crystal add button clicked:
+        # ensure that crystals added to GUI are given a name, and that this is different than all other loaded crystals
+        if not str(self.crystLoadName.get()).strip():
+            string = """No crystal name has been given.\nPlease give a name to the crystal that you wish to add.""" %()
+            tkMessageBox.showinfo( "No Crystal Name", string)
+        elif str(self.crystLoadName.get()) in [cryst.crystName for cryst in self.crystList]:
+            tkMessageBox.showinfo( "Duplicate Crystal Names",
+                                   "Crystal name %s already exists. Please choose another name." %(self.crystLoadName.get()))
+        else:
+            addQuery = tkMessageBox.askquestion( "Add Crystal?", "Do you want to add crystal %s?"%(str(self.crystLoadName.get())))
+            if addQuery == 'yes':
+                # read in RADDOSE-3D style input file to get crystal properties
+                newCrystal = self.parseRaddoseInput(self.crystLoadBox.get(),'crystal')
+                newCrystal.crystName = str(self.crystLoadName.get())
 
-				# check correct crystal properties have been read from RD3D input file
-				ErrorMessage = self.checkCrystInputs(newCrystal)
-				if ErrorMessage != "":
-					tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
-				else:
-					# add crystal to loaded crystal list
-					self.addCrystalToList(newCrystal)
-			else:
-				pass
+                # check correct crystal properties have been read from RD3D input file
+                ErrorMessage = self.checkCrystInputs(newCrystal)
+                if ErrorMessage != "":
+                    tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+                else:
+                    # add crystal to loaded crystal list
+                    self.addCrystalToList(newCrystal)
+            else:
+                pass
 
     def checkCrystInputs(self,newCrystal):
         # additional check to ensure correct crystal properties have been read successively
@@ -1134,41 +1132,41 @@ class RADDOSEgui(Frame):
             pass
         return ErrorMessage
 
-	# functions for the manipulation of beam files and parameters
+    # functions for the manipulation of beam files and parameters
     def refreshBeamChoices(self):
-	    # Reset the option menu of added beam and delete beams not now
-	    # included in the list of added beams
-	    self.beamChoice.set('')
-	    self.beamChoiceMenu['menu'].delete(0, 'end')
+        # Reset the option menu of added beam and delete beams not now
+        # included in the list of added beams
+        self.beamChoice.set('')
+        self.beamChoiceMenu['menu'].delete(0, 'end')
 
-	    # Insert list of new options (tk._setit hooks them up to self.beamChoice)
-	    new_BeamChoices = [bm.beamName for bm in self.beamList]
-	    for choice in new_BeamChoices:
-	        self.beamChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.beamChoice, choice))
+        # Insert list of new options (tk._setit hooks them up to self.beamChoice)
+        new_BeamChoices = [bm.beamName for bm in self.beamList]
+        for choice in new_BeamChoices:
+            self.beamChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.beamChoice, choice))
 
     def refreshExperimentChoices(self):
-    	# delete all options from menu
-    	self.expChoiceMenu['menu'].delete(0, 'end')
-    	# get a list of all of the current keys from the dictionary of experiments
-    	new_expChoices = self.expNameList
-    	# Insert list of new options
-    	for choice in new_expChoices:
-    		self.expChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.expChoice, choice))
-    	#Check if there any experiments loaded. If so then choose the first key
-    	#in the experiment dictionary as an option and create the comparison
+        # delete all options from menu
+        self.expChoiceMenu['menu'].delete(0, 'end')
+        # get a list of all of the current keys from the dictionary of experiments
+        new_expChoices = self.expNameList
+        # Insert list of new options
+        for choice in new_expChoices:
+            self.expChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.expChoice, choice))
+        #Check if there any experiments loaded. If so then choose the first key
+        #in the experiment dictionary as an option and create the comparison
         #summary table. Otherwise let the user know
-    	#that there are no loaded experiments
+        #that there are no loaded experiments
         if self.expNameList:
             self.expChoice.set(self.expNameList[0])
             self.createSummaryTable()
-    	else:
-    		self.expChoice.set('No existing experiments')
+        else:
+            self.expChoice.set('No existing experiments')
 
     def clickBeamView(self):
-		# what happens when beam view button clicked
-		beamToView = self.beamList[self.beamListbox.index(ANCHOR)]
-		beamInfo = self.extractBeamInfo(beamToView)
-		tkMessageBox.showinfo( "View Beam Information", beamInfo)
+        # what happens when beam view button clicked
+        beamToView = self.beamList[self.beamListbox.index(ANCHOR)]
+        beamInfo = self.extractBeamInfo(beamToView)
+        tkMessageBox.showinfo( "View Beam Information", beamInfo)
 
     def extractBeamInfo(self, beamObject):
         # determine current beam object properties, dependent on beam type
@@ -1185,28 +1183,28 @@ class RADDOSEgui(Frame):
         self.updateHelp()
 
     def clickBeamMake(self):
-		# what happens when beam make button clicked. Makes a new small window allowing
-		# manual entry of beam parameters
+        # what happens when beam make button clicked. Makes a new small window allowing
+        # manual entry of beam parameters
 
-		# first ensure that beam to be made has been given a name, and that this is
-		# different than all other loaded beams
-		if not str(self.beamMakeName.get()).strip():
-			string = """No beam name has been given.\nPlease give a name to the beam that you wish to make.""" %()
-			tkMessageBox.showinfo( "No Beam Name", string)
-		elif str(self.beamMakeName.get()) in [beam.beamName for beam in self.beamList]:
-			tkMessageBox.showinfo( "Duplicate Beam Names",
-			"Beam name %s already exists. Please choose another name." %(self.beamMakeName.get()))
-		else:
-			# if a unique beam name has been given, proceed to produce pop-up window in which beam
-			# parameters can be set
-			self.top_BeamMaker=Toplevel()
-			self.top_BeamMaker.title("Make a beam")
+        # first ensure that beam to be made has been given a name, and that this is
+        # different than all other loaded beams
+        if not str(self.beamMakeName.get()).strip():
+            string = """No beam name has been given.\nPlease give a name to the beam that you wish to make.""" %()
+            tkMessageBox.showinfo( "No Beam Name", string)
+        elif str(self.beamMakeName.get()) in [beam.beamName for beam in self.beamList]:
+            tkMessageBox.showinfo( "Duplicate Beam Names",
+            "Beam name %s already exists. Please choose another name." %(self.beamMakeName.get()))
+        else:
+            # if a unique beam name has been given, proceed to produce pop-up window in which beam
+            # parameters can be set
+            self.top_BeamMaker=Toplevel()
+            self.top_BeamMaker.title("Make a beam")
 
-			# give the new window a dark background colour
-			self.top_BeamMaker.configure(bg=self.darkcolour)
+            # give the new window a dark background colour
+            self.top_BeamMaker.configure(bg=self.darkcolour)
 
-			# finds a separate class for secondary beam-maker window
-			self.app = beamMakerWindow(self)
+            # finds a separate class for secondary beam-maker window
+            self.app = beamMakerWindow(self)
 
     def addBeamToList(self, beam):
         # add beam name to loaded beam list
@@ -1220,41 +1218,41 @@ class RADDOSEgui(Frame):
         self.updateHelp()
 
     def clickBeamLoad(self):
-		# what happens when beam load button clicked
-		self.beamLoad = tkFileDialog.askopenfilename(parent=self,title='Open beam file to load')
-		self.beamLoadBox.delete(0,END)
-		self.beamLoadBox.insert(0,self.beamLoad)
+        # what happens when beam load button clicked
+        self.beamLoad = tkFileDialog.askopenfilename(parent=self,title='Open beam file to load')
+        self.beamLoadBox.delete(0,END)
+        self.beamLoadBox.insert(0,self.beamLoad)
 
     def clickBeamAdd(self):
-		# what happens when beam add button clicked:
-		# ensure that beams added to GUI are given a name, and that this is different than all other loaded beams
-		if not str(self.beamLoadName.get()).strip():
-			string = """No beam name has been given.\nPlease give a name to the beam that you wish to add.""" %()
-			tkMessageBox.showinfo( "No Beam Name", string)
-		elif str(self.beamLoadName.get()) in [beam.beamName for beam in self.beamList]:
-			tkMessageBox.showinfo( "Duplicate Beam Names",
-			"Beam name %s already exists. Please choose another name." %(self.beamLoadName.get()))
-		else:
-			addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
-			if addQuery == 'yes':
-				# read in RADDOSE-3D style input file to get beam properties
-				newBeamList = self.parseRaddoseInput(self.beamLoadBox.get(),'beam')
+        # what happens when beam add button clicked:
+        # ensure that beams added to GUI are given a name, and that this is different than all other loaded beams
+        if not str(self.beamLoadName.get()).strip():
+            string = """No beam name has been given.\nPlease give a name to the beam that you wish to add.""" %()
+            tkMessageBox.showinfo( "No Beam Name", string)
+        elif str(self.beamLoadName.get()) in [beam.beamName for beam in self.beamList]:
+            tkMessageBox.showinfo( "Duplicate Beam Names",
+            "Beam name %s already exists. Please choose another name." %(self.beamLoadName.get()))
+        else:
+            addQuery = tkMessageBox.askquestion( "Add Beam?", "Do you want to add beam %s?"%(str(self.beamLoadName.get())))
+            if addQuery == 'yes':
+                # read in RADDOSE-3D style input file to get beam properties
+                newBeamList = self.parseRaddoseInput(self.beamLoadBox.get(),'beam')
 
-				# check correct beam properties have been read from RD3D input file
-				beamError = False
-				for newBeam in newBeamList:
-					ErrorMessage = self.checkBeamInputs(newBeam)
-					if ErrorMessage != "":
-						tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
-						beamError = True
-				if beamError == False:
-					self.addRD3DInputBeamsToList(newBeamList,str(self.beamLoadName.get()))
-			else:
-				pass
+                # check correct beam properties have been read from RD3D input file
+                beamError = False
+                for newBeam in newBeamList:
+                    ErrorMessage = self.checkBeamInputs(newBeam)
+                    if ErrorMessage != "":
+                        tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+                        beamError = True
+                if beamError == False:
+                    self.addRD3DInputBeamsToList(newBeamList,str(self.beamLoadName.get()))
+            else:
+                pass
 
     def checkBeamInputs(self,newBeam):
-		# additional check to ensure correct beam properties have been read successively
-		# from premade RD3D input file
+        # additional check to ensure correct beam properties have been read successively
+        # from premade RD3D input file
         ErrorMessage = newBeam.checkValidInputs()
         ErrorMessage2 = newBeam.checkValidInputs_subclass()
         ErrorMessage += ErrorMessage2
@@ -1262,11 +1260,11 @@ class RADDOSEgui(Frame):
         return ErrorMessage
 
     def onSelect(self, val):
-		# what happens when select button clicked
-		sender = val.widget
-		idx = sender.curselection()
-		value = sender.get(idx)
-		self.var3.set(value)
+        # what happens when select button clicked
+        sender = val.widget
+        idx = sender.curselection()
+        value = sender.get(idx)
+        self.var3.set(value)
 
     def updateHelp(self):
         # update the help window
@@ -1284,287 +1282,336 @@ class RADDOSEgui(Frame):
         self.helpBox.insert(END, quote)
 
     def writeRaddose3DInputFile(self):
-		"""Writes an input file for RADDOSE-3D
+        """Writes an input file for RADDOSE-3D
 
-		This function writes an input file suitable for input to RADDOSE-3D.
-		This input file is placed in the corresponding experiment directory.
+        This function writes an input file suitable for input to RADDOSE-3D.
+        This input file is placed in the corresponding experiment directory.
 
-		=================
-		Keyword arguments
-		=================
+        =================
+        Keyword arguments
+        =================
 
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
+        No explicit user defined parameters. Only the object is required for
+        implicit input.
 
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
 
-		"""
+        """
 
-		# run the current designed strategy here
+        # run the current designed strategy here
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
-		self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
+        self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
         # get the index of the selected beam from the list of added beams (in the optionmenu list)
-		self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
+        self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
 
-		currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
-		crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
+        currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
+        crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
 
-		#Create RADDOSE-3D filename
-		RADDOSEfilename = '{}/{}'.format(str(self.CurrentexpLoadName.get()), self.RADDOSEfilename)
+        #Write the RADDOSE3D input file here
+        RADDOSEfile = open(self.RADDOSEfilename,'w')
+        RADDOSEfile.write(crystalBlock)
+        RADDOSEfile.write("\n\n")
+        RADDOSEfile.close()
 
-		#Write the RADDOSE3D input file here
-		RADDOSEfile = open(RADDOSEfilename,'w')
-		RADDOSEfile.write(crystalBlock)
-		RADDOSEfile.write("\n\n")
-		RADDOSEfile.close()
+        # for each added beam+wedge couple in the treeview list of current strategies, create a
+        # RADDOSE3D input
+        # first check that number of included beam and wedge objects to be written into RADDOSE3D
+        # input file is the same here
+        if len(self.beamList2Run) != len(self.wedgeList2Run):
+            print 'Inconsistent numbers of beam and wedges to be written to RADDOSE-3D input file'
+            print '---> terminating script'
+            sys.exit()
 
-		# for each added beam+wedge couple in the treeview list of current strategies, create a
-		# RADDOSE3D input
-		# first check that number of included beam and wedge objects to be written into RADDOSE3D
-		# input file is the same here
-		if len(self.beamList2Run) != len(self.wedgeList2Run):
-			print 'Inconsistent numbers of beam and wedges to be written to RADDOSE-3D input file'
-			print '---> terminating script'
-			sys.exit()
+        RADDOSEfile = open(self.RADDOSEfilename,'a')
+        counter = -1
+        for currentBeam in self.beamList2Run:
+            counter += 1
+            currentWedge = self.wedgeList2Run[counter]
+            beamBlock = self.writeBeamBlock(currentBeam)
+            RADDOSEfile.write(beamBlock)
+            RADDOSEfile.write("\n\n")
+            Wedgeblock = self.writeWedgeBlock(currentWedge)
+            RADDOSEfile.write(Wedgeblock)
+            RADDOSEfile.write("\n\n")
+        RADDOSEfile.close()
 
-		RADDOSEfile = open(RADDOSEfilename,'a')
-		counter = -1
-		for currentBeam in self.beamList2Run:
-			counter += 1
-			currentWedge = self.wedgeList2Run[counter]
-			beamBlock = self.writeBeamBlock(currentBeam)
-			RADDOSEfile.write(beamBlock)
-			RADDOSEfile.write("\n\n")
-			Wedgeblock = self.writeWedgeBlock(currentWedge)
-			RADDOSEfile.write(Wedgeblock)
-			RADDOSEfile.write("\n\n")
-		RADDOSEfile.close()
-
-		#Delete contents of summary window and tell user that RADDOSE-3D is
-		#being run with the specified inputs
-		self.inputtxt.delete(1.0, END)
-		self.inputtxt.insert(1.0, "RADDOSE-3D is now running with the following inputs:\n")
-		self.readRADDOSEInputFile(RADDOSEfilename)
-		quote = self.raddose3Dinputtxt.get()
-		self.inputtxt.insert(END, quote)
+        #Delete contents of summary window and tell user that RADDOSE-3D is
+        #being run with the specified inputs
+        self.inputtxt.delete(1.0, END)
+        self.inputtxt.insert(1.0, "RADDOSE-3D is now running with the following inputs:\n")
+        self.readRADDOSEInputFile(self.RADDOSEfilename)
+        quote = self.raddose3Dinputtxt.get()
+        self.inputtxt.insert(END, quote)
 
     def runRaddose3D(self):
-		"""Run RADDOSE-3D
+        """Run RADDOSE-3D
 
-		This function runs RADDOSE-3D and puts all of the output files into the
-		corresponding experiment directory.
+        This function runs RADDOSE-3D and puts all of the output files into the
+        corresponding experiment directory.
 
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
+        =================
+        Keyword arguments
+        =================
+        No explicit user defined parameters. Only the object is required for
+        implicit input.
 
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
 
-		"""
-		experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
-		os.chdir(experimentName) #change directory into experiment folder
+        """
+        experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 
-		#write terminal command to run RADDOSE-3D
-		terminalCommand = "java -jar ../raddose3d.jar -i {}".format(self.RADDOSEfilename)
-		process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True) #Run RADDOSE-3D
-		(outputLog, stderr) = process.communicate() # extract the output log
+        #write terminal command to run RADDOSE-3D
+        terminalCommand = "java -jar raddose3d.jar -i {}".format(self.RADDOSEfilename)
+        process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True) #Run RADDOSE-3D
+        output = process.communicate() # interact with the process to get the data from the log.
+        outputLog = output[0] # extract the output log
 
-		if process.returncode != 0:
-			print outputLog
-			os.chdir("..") #Go back to original directory
-			string = """There was an error whilst running RADDOSE-3D.\nPlease check the log file ("outputLog.txt") and your crystal, beam and wedge parameters.\nOtherwise contact the Garman Group: elspeth.garman@bioch.ox.ac.uk
-			""" %()
-			tkMessageBox.showinfo( "RADDOSE-3D Error", string)
+        if process.returncode != 0:
+            print outputLog
+            os.chdir("..") #Go back to original directory
+            string = """There was an error whilst running RADDOSE-3D.\nPlease check the log file ("outputLog.txt") and your crystal, beam and wedge parameters.\nOtherwise contact the Garman Group: elspeth.garman@bioch.ox.ac.uk
+            """ %()
+            tkMessageBox.showinfo( "RADDOSE-3D Error", string)
 
-		#write the output log file
-		outputLogFilename = 'outputLog.txt'
-		outputLogfile = open(outputLogFilename,'w')
-		outputLogfile.write(outputLog)
-		outputLogfile.close()
+        #write the output log file
+        outputLogFilename = 'outputLog.txt'
+        outputLogfile = open(outputLogFilename,'w')
+        outputLogfile.write(outputLog)
+        outputLogfile.close()
 
-		os.chdir("..") #Go back to original directory
+        #Create a list of all of the possible output files that are created
+        fileList = [self.RADDOSEfilename, "output-DoseState.csv", "output-DoseState.R",
+        "output-Summary.txt", "output-Summary.csv", "outputLog.txt",
+        "output-FluencePerDoseHistCSV.csv"]
 
-		#Create an experiment object and add it to the experiment dictionary
-		pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
-		if self.strategyType == 'Manual':
-			currentCrystal = self.crystList[self.currentCrystIndex]
-			experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
-		elif self.strategyType == 'Premade':
-			pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
-			crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
+        ########################################################################
+        ########################################################################
+        # HERE WE CAN CHECK IF THERE WERE OTHER FILES THAT WERE NECESSARY FOR
+        # THE RADDOSE-3D RUN. I.E. WAS THERE A MODEL FILE, SEQUENCE FILE OR AN
+        # EXPERIMENTAL BEAM FILE? IF THE ANSWER IS YES THEN WE CAN APPEND THESE
+        # FILES TO THE LIST READY TO BE MOVED. THIS CAN BE DONE ONCE THE CRYSTAL
+        # AND BEAMS OBJECTS ARE MOVED BEFORE THE CALL TO RUN RADDOSE-3D.
+        ########################################################################
+        ########################################################################
 
-			# give crystal object a name here
-			crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
-			self.addCrystalToList(crystalObject)
-			self.addRD3DInputBeamsToList(beamList,experimentName)
-			experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
+        #Move selected files to the directory corresponding to the named
+        #experiment
+        self.moveFiles(fileList, experimentName)
 
-		self.experimentDict[experimentName] = copy.deepcopy(experiment)
-		self.expNameList.append(experimentName)
+        #Create an experiment object and add it to the experiment dictionary
+        pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
+        if self.strategyType == 'Manual':
+            currentCrystal = self.crystList[self.currentCrystIndex]
+            experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
+        elif self.strategyType == 'Premade':
+            pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
+            crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
 
-		# Print a summary of the RADDOSE-3D run.
-		self.displaySummary(experimentName)
+            # give crystal object a name here
+            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
+            self.addCrystalToList(crystalObject)
+            self.addRD3DInputBeamsToList(beamList,experimentName)
+            experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
+
+        self.experimentDict[experimentName] = copy.deepcopy(experiment)
+        self.expNameList.append(experimentName)
+
+        # Print a summary of the RADDOSE-3D run.
+        self.displaySummary(experimentName)
 
     def addRD3DInputBeamsToList(self,beamList,experimentName):
-		# for each beam object found in RD3D input file, give beam an unique name
-		# and add to list of loaded beams
-		uniqueBeamCounter = 1
-		for i in xrange(0,len(beamList)):
-			beam = copy.deepcopy(beamList[i])
-			if i == 0:
-				beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
-				self.addBeamToList(beam)
-			elif i > 0:
-				for j in xrange(0,i):
-					if beam.__eq__(beamList[j]):
-						break
-					elif j == i-1:
-						uniqueBeamCounter += 1
-						beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
-						self.addBeamToList(beam)
+        # for each beam object found in RD3D input file, give beam an unique name
+        # and add to list of loaded beams
+        uniqueBeamCounter = 1
+        for i in xrange(0,len(beamList)):
+            beam = copy.deepcopy(beamList[i])
+            if i == 0:
+                beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+                self.addBeamToList(beam)
+            elif i > 0:
+                for j in xrange(0,i):
+                    if beam.__eq__(beamList[j]):
+                        break
+                    elif j == i-1:
+                        uniqueBeamCounter += 1
+                        beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+                        self.addBeamToList(beam)
 
     def parseRaddoseInput(self,pathToRaddoseInput,returnType):
-		"""Parses the RADDOSE-3D Input file and returns the a crystal object, a
-		list of beam objects and a list of wedge objects. returnType specifies
-		which objects should be returned ('crystal': crystal, 'beam': beam list,
-		 'all': everything)
-		"""
-		commentChars = ['#','!']
+        """Parses the RADDOSE-3D Input file and returns the a crystal object, a
+        list of beam objects and a list of wedge objects. returnType specifies
+        which objects should be returned ('crystal': crystal, 'beam': beam list,
+         'all': everything)
+        """
+        commentChars = ['#','!']
 
-		raddoseInput = open(pathToRaddoseInput,'r')
+        raddoseInput = open(pathToRaddoseInput,'r')
 
-		crystalBlock = False
-		beamBlock    = False
-		wedgeBlock   = False
+        crystalBlock = False
+        beamBlock    = False
+        wedgeBlock   = False
 
-		crystal = crystals() #create default crystal
-		beam = beams() #create default beam
-		wedge = wedges() #create default wedge
-		beamList = [] #create beam list
-		wedgeList = [] #create wedge list
+        crystal = crystals() #create default crystal
+        beam = beams() #create default beam
+        wedge = wedges() #create default wedge
+        beamList = [] #create beam list
+        wedgeList = [] #create wedge list
 
-		for line in raddoseInput:
-			if "Crystal" in line:
-				crystalBlock = True
-				beamBlock    = False
-				wedgeBlock   = False
+        for line in raddoseInput:
+            if "Crystal" in line:
+                crystalBlock = True
+                beamBlock    = False
+                wedgeBlock   = False
 
-			elif "Beam" in line:
-				crystalBlock = False
-				beamBlock    = True
-				wedgeBlock   = False
+            elif "Beam" in line:
+                crystalBlock = False
+                beamBlock    = True
+                wedgeBlock   = False
 
-			elif "Wedge" in line:
-				crystalBlock = False
-				beamBlock    = False
-				wedgeBlock   = True
-				beamList.append(copy.deepcopy(beam))
-				if wedge.angStart and wedge.angStop and wedge.exposureTime:
-					wedgeList.append(copy.deepcopy(wedge))
+            elif "Wedge" in line:
+                crystalBlock = False
+                beamBlock    = False
+                wedgeBlock   = True
+                beamList.append(copy.deepcopy(beam))
+                if wedge.angStart and wedge.angStop and wedge.exposureTime:
+                    wedgeList.append(copy.deepcopy(wedge))
 
-			#remove comment part from line
-			commentCharIndices = []
-			for commentChar in commentChars: #look for comment characters and store the index in list
-				index = line.find(commentChar)
-				commentCharIndices.append(index)
+            #remove comment part from line
+            commentCharIndices = []
+            for commentChar in commentChars: #look for comment characters and store the index in list
+                index = line.find(commentChar)
+                commentCharIndices.append(index)
 
-			if sorted(commentCharIndices)[-1] > -1: # check for positive indices
-				minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
-				line = line[0:minIndex] #remove comment part from line
+            if sorted(commentCharIndices)[-1] > -1: # check for positive indices
+                minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
+                line = line[0:minIndex] #remove comment part from line
 
-			if crystalBlock:
-				if "Dimensions" in line:
-					dims = line.split()[1:]
-					while dims < 3:
-						dims.append(0)
-					crystal.crystDimX = float(dims[0])
-					crystal.crystDimY = float(dims[1])
-					crystal.crystDimZ = float(dims[2])
-				elif "Type" in line:
-					crystal.type = line.split()[1]
-				elif "PixelsPerMicron" in line:
-					crystal.pixelsPerMicron = float(line.split()[1])
-				# elif "CoefCalc" in line:
-				# 	crystal.absCoefCalc = line.split()[1]
+            if crystalBlock:
+                if "Dimensions" in line:
+                    dims = line.split()[1:]
+                    while dims < 3:
+                        dims.append(0)
+                    crystal.crystDimX = float(dims[0])
+                    crystal.crystDimY = float(dims[1])
+                    crystal.crystDimZ = float(dims[2])
+                elif "Type" in line:
+                    crystal.type = line.split()[1]
+                elif "PixelsPerMicron" in line:
+                    crystal.pixelsPerMicron = float(line.split()[1])
+                # elif "CoefCalc" in line:
+                # 	crystal.absCoefCalc = line.split()[1]
 
-			elif beamBlock:
-				if "Type" in line:
-					beam.type = line.split()[1]
-				elif "Flux" in line:
-					beam.flux = float(line.split()[1])
-				elif "Energy" in line:
-					beam.energy = float(line.split()[1])
-				elif "FWHM" in line:
-					beam.fwhm = line.split()[1:]
-				elif "Collimation Rectangular" in line:
-					beam.collimation = line.split()[2:]
+            elif beamBlock:
+                if "Type" in line:
+                    beam.type = line.split()[1]
+                elif "Flux" in line:
+                    beam.flux = float(line.split()[1])
+                elif "Energy" in line:
+                    beam.energy = float(line.split()[1])
+                elif "FWHM" in line:
+                    beam.fwhm = line.split()[1:]
+                elif "Collimation Rectangular" in line:
+                    beam.collimation = line.split()[2:]
 
-			elif wedgeBlock:
-				if "Wedge" in line:
-					angles = line.split()[1:]
-					wedge.angStart = angles[0]
-					wedge.angStop  = angles[1]
-				elif "ExposureTime" in line:
-					wedge.exposureTime = line.split()[1]
+            elif wedgeBlock:
+                if "Wedge" in line:
+                    angles = line.split()[1:]
+                    wedge.angStart = angles[0]
+                    wedge.angStop  = angles[1]
+                elif "ExposureTime" in line:
+                    wedge.exposureTime = line.split()[1]
 
-		wedgeList.append(copy.deepcopy(wedge)) #append final wedge
-		raddoseInput.close()
+        wedgeList.append(copy.deepcopy(wedge)) #append final wedge
+        raddoseInput.close()
 
-		if returnType == 'all':
-			return (crystal, beamList, wedgeList)
-		if returnType == 'crystal':
-			return (crystal)
-		if returnType == 'beam':
-			return (beamList)
+        if returnType == 'all':
+            return (crystal, beamList, wedgeList)
+        if returnType == 'crystal':
+            return (crystal)
+        if returnType == 'beam':
+            return (beamList)
 
+    def moveFiles(self, srcFileList, dirPath):
+        """Move Source Files
+
+        This function takes a list of files and moves them to a specified
+        directory. If the specified directory doesn't already exist then it is
+        created.
+
+        =================
+        Keyword arguments
+        =================
+        srcFileList:
+            a list object where is element of the list is a string that
+            corresponds to a file that is intended to be moved.
+
+        dirPath:
+            The name of the directory that the files will be moved to. This is
+            a string object input.
+
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
+
+        """
+        if not os.path.isdir(dirPath): #check to determine if directory already exists
+            os.mkdir(dirPath) # make the directory if it doesn't exist
+
+        #Loop through the list of files. For each one we need to check if a file
+        #with an identical name already exists in the specified directory. If it
+        #does then we need to delete it first before moving the file over.
+        for srcFile in srcFileList:
+            if os.path.isfile(srcFile):
+                if os.path.isfile("{}/{}".format(dirPath,srcFile)):
+                    os.remove("{}/{}".format(dirPath,srcFile))
+                shutil.move(srcFile,"{}/{}".format(dirPath,srcFile))
 
     def writeCrystalBlock(self, crystalObj):
-		"""Write a text block of crystal information for RADDOSE-3D
+        """Write a text block of crystal information for RADDOSE-3D
 
-		Function to write a text block of the crystal properties for a
-		RADDOSE-3D input file.
+        Function to write a text block of the crystal properties for a
+        RADDOSE-3D input file.
 
-		=================
-		Keyword arguments
-		=================
-		crystalObj:
-			a 'crystals' object whose properties contain the required properties
-			for RADDOSE-3D input.
+        =================
+        Keyword arguments
+        =================
+        crystalObj:
+            a 'crystals' object whose properties contain the required properties
+            for RADDOSE-3D input.
 
-		=================
-		Return parameters
-		=================
-		crystBlock:
-			a string block that contains the crystal information in the form
-			required for input into RADDOSE-3D
+        =================
+        Return parameters
+        =================
+        crystBlock:
+            a string block that contains the crystal information in the form
+            required for input into RADDOSE-3D
 
-		"""
-		crystLines = [] #Inialise empty list
-		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
-		crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and corresponding values
+        """
+        crystLines = [] #Inialise empty list
+        crystLines.append("Crystal") # Append the string - "Crystal" - to the list
+        crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and corresponding values
 
-		#Add a dictionary entry that puts all three crystal dimension values into a string
-		crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
+        #Add a dictionary entry that puts all three crystal dimension values into a string
+        crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
 
-		#loop through each entry in the dictionary, create a string of the key
-		#and value from the dictionary and append that to the list created above
-		for crystProp in crystPropertyDict:
-			if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName' and crystProp != 'containerInfoDict'):
-				string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
-				crystLines.append(string)
+        #loop through each entry in the dictionary, create a string of the key
+        #and value from the dictionary and append that to the list created above
+        for crystProp in crystPropertyDict:
+            if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName' and crystProp != 'containerInfoDict'):
+                string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
+                crystLines.append(string)
 
-		#write list entries as a single text block with each list entry joined
-		#by a new line character
-		crystBlock = "\n".join(crystLines)
-		return crystBlock #return the crystal block
+        #write list entries as a single text block with each list entry joined
+        #by a new line character
+        crystBlock = "\n".join(crystLines)
+        return crystBlock #return the crystal block
 
     def writeBeamBlock(self, beamObj):
         """Write a text block of beam information for RADDOSE-3D
@@ -1613,85 +1660,85 @@ class RADDOSEgui(Frame):
         return beamBlock #return the beam block
 
     def writeWedgeBlock(self, wedgeObj):
-		"""Write a text block of wedge information for RADDOSE-3D
+        """Write a text block of wedge information for RADDOSE-3D
 
-		Function to write a text block of the wedge properties for a
-		RADDOSE-3D input file.
+        Function to write a text block of the wedge properties for a
+        RADDOSE-3D input file.
 
-		=================
-		Keyword arguments
-		=================
-		wedgeObj:
-			a 'wedges' object whose properties contain the required properties
-			for RADDOSE-3D input.
+        =================
+        Keyword arguments
+        =================
+        wedgeObj:
+            a 'wedges' object whose properties contain the required properties
+            for RADDOSE-3D input.
 
-		=================
-		Return parameters
-		=================
-		wedgeBlock:
-			a string block that contains the wedge information in the form
-			required for input into RADDOSE-3D
+        =================
+        Return parameters
+        =================
+        wedgeBlock:
+            a string block that contains the wedge information in the form
+            required for input into RADDOSE-3D
 
-		"""
-		wedgeLines = [] #Inialise empty list
-		#Ensure the Wedge line is written first into the RADDOSE-3D input file.
-		wedgeString = "Wedge {} {}".format(wedgeObj.angStart, wedgeObj.angStop)
-		wedgeLines.append(wedgeString)
+        """
+        wedgeLines = [] #Inialise empty list
+        #Ensure the Wedge line is written first into the RADDOSE-3D input file.
+        wedgeString = "Wedge {} {}".format(wedgeObj.angStart, wedgeObj.angStop)
+        wedgeLines.append(wedgeString)
 
-		wedgePropertyDict = vars(wedgeObj) #create a dictionary from the wedge object properties and corresponding values
+        wedgePropertyDict = vars(wedgeObj) #create a dictionary from the wedge object properties and corresponding values
 
-		#loop through each entry in the dictionary, create a string of the key
-		#and value from the dictionary and append that to the list created above
-		for wedgeProp in wedgePropertyDict:
-			if wedgeProp != 'angStart' and wedgeProp != 'angStop':
-				string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
-				wedgeLines.append(string)
+        #loop through each entry in the dictionary, create a string of the key
+        #and value from the dictionary and append that to the list created above
+        for wedgeProp in wedgePropertyDict:
+            if wedgeProp != 'angStart' and wedgeProp != 'angStop':
+                string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
+                wedgeLines.append(string)
 
-		#write list entries as a single text block with each list entry joined
-		#by a new line character
-		wedgeBlock = "\n".join(wedgeLines)
-		return wedgeBlock
+        #write list entries as a single text block with each list entry joined
+        #by a new line character
+        wedgeBlock = "\n".join(wedgeLines)
+        return wedgeBlock
 
     def readRADDOSEInputFile(self,filename):
-		# read in a RADDOSE-3D input txt file
-		fileOpen = open(filename,'r')
-		filelines = fileOpen.readlines()
-		fileString = ' '.join(filelines)
-		self.raddose3Dinputtxt.set(fileString)
+        # read in a RADDOSE-3D input txt file
+        fileOpen = open(filename,'r')
+        filelines = fileOpen.readlines()
+        fileString = ' '.join(filelines)
+        self.raddose3Dinputtxt.set(fileString)
 
     def clickRD3DinputLoad(self):
-		"""Load a pre-made RADDOSE-3D input file
+        """Load a pre-made RADDOSE-3D input file
 
-		Function to allow file search and load of a pre-made RADDOSE-3D input file to
-		be directly run within the RADDOSE-3D GUI
+        Function to allow file search and load of a pre-made RADDOSE-3D input file to
+        be directly run within the RADDOSE-3D GUI
 
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
+        =================
+        Keyword arguments
+        =================
+        No explicit user defined parameters. Only the object is required for
+        implicit input.
 
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
 
-		"""
-		self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
-		self.RD3DinputLoadBox.delete(0,END)
-		self.RD3DinputLoadBox.insert(0,self.RD3DinputLoad)
+        """
+        self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
+        self.RD3DinputLoadBox.delete(0,END)
+        self.RD3DinputLoadBox.insert(0,self.RD3DinputLoad)
 
     def clickHelp(self):
-		# what happens when help button clicked
-		tkMessageBox.showinfo( "Help", "You clicked help")
+        # what happens when help button clicked
+        tkMessageBox.showinfo( "Help", "You clicked help")
 
     def _quit(self):
-		# what happens when close button clicked.
-		self.quit()     # stops mainloop
-		self.destroy()  # this is necessary on Windows to prevent
+        # what happens when close button clicked.
+        self.quit()     # stops mainloop
+        self.destroy()  # this is necessary on Windows to prevent
 
 def main():
-	# when the script is run in python, do the following:
+    # when the script is run in python, do the following:
     root = Tk()
     app = RADDOSEgui(root)
     root.mainloop()
