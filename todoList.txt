@@ -10,8 +10,6 @@ To do before release (Aim for August 1st)
 - add functionaility to save summary of compared experiments currently loaded within
 summary window - Do we want CSV format for output?
 
-- change %s syntax to .format() throughout for consistency
-
 - Checks for inputs in a pre-made RADDOSE-3D file
 
 - Need to add a check when experiments are run to see if any files are already
@@ -74,6 +72,25 @@ formatting issue
 
 - change location of dose contour button within main interface
 
+- Just uninstalled my Python(x,y) distribution in favour of Anaconda (it works
+better with Julia). Now the image import does not work on my system. It think
+this is more than a platform dependent issue. We'll need to sort this out. (Jonny)
+
+-RADDOSE-3D GUI is not running anymore. Problem with the directory. I think I'm
+going to change how it works. Rather than what it's currently doing (creating a
+directory then going into the directory and running RADDOSE-3D so that the
+output files are automatically created in the new directory) I think I'll make
+the program run in the current directory and move all of the other files
+afterwards.
+
+- Load premade Crystal, Beam and experiment options need to also read in the new
+ inputs too.
+
+- Currently user can only load in input file if they want to run an experiment.
+However they may also have other files that need to be loaded (e.g. model
+geometry file or experimental beam file). We need to work out a way that the
+RADDOSE-3D GUI can read these when necessary to run RADDOSE-3D.
+
 -***************************-
 To do at some point
 -***************************-
@@ -88,3 +105,5 @@ To do at some point
  - Sort out optimisation problem: What offset to pick to get max DDE?
 
  - Visualisation of the experiment so user can see what is going on.
+
+ - change %s syntax to .format() throughout for consistency
