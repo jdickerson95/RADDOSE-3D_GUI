@@ -2,6 +2,7 @@ from Tkinter import *
 from ttk import *
 from wedges import wedges
 from HoverInfo import HoverInfo
+import tkMessageBox
 from InputsHelpText import WedgeInputHelp
 
 class wedgeMakerWindow():
@@ -175,7 +176,13 @@ class wedgeMakerWindow():
         currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get(),
                               self.angRes.get(),[self.startOffsetX.get(),self.startOffsetY.get(),self.startOffsetZ.get()],
                               [self.transPerDegX.get(),self.transPerDegY.get(),self.transPerDegZ.get()],self.rotAxBeamOffset.get())
-        #update the tree view
-        MainGui.updateTreeView(currentWedge)
-        # once this function runs, the toplevel window should be exited
-        self.master.destroy()
+        
+        # check the wedge parameters are valid
+        ErrorMessage = currentWedge.checkValidInputs()
+        if ErrorMessage != "":
+                    tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+        else:
+            #update the tree view
+            MainGui.updateTreeView(currentWedge)
+            # once this function runs, the toplevel window should be exited
+            self.master.destroy()
