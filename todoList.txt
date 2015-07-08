@@ -8,86 +8,71 @@ To do before release (Aim for August 1st)
 -***************************-
 
 - add functionaility to save summary of compared experiments currently loaded within
-summary window - Do we want CSV format for output?
+summary window - Do we want CSV format for output? (JBB)
 
-- Checks for inputs in a pre-made RADDOSE-3D file
+- Checks for inputs in a pre-made RADDOSE-3D file (CSB)
 
 - Need to add a check when experiments are run to see if any files are already
-in use by other programs.
+in use by other programs.(JBB)
 
-- Fix the scroll bars (they don't always seem to work)
-
-- Create user guide
+- Create user guide (JBB + CSB LATER)
 
 - check cross platform image functionality (pkg PIL runs into problems on anaconda
-python 2.7.9 on mac). Need to test on ubuntu also...
+python 2.7.9 on mac). Need to test on ubuntu also... Try dials.python and logging into DLS (JBB)
 
 - When users change option in drop down list in crystalMaker/BeamMaketr/StrategyMaker windows
 they should retain the values in the fields that they have already entered in as
-opposed to setting the values to some default (often .set("0"))
+opposed to setting the values to some default (often .set("0")) (CSB)
 
-- Add units to the crystal input labels
-
-- Increase width of the "File" field in the Beam Maker window when the
-"Experimental" beam type is selected.
+- Add units to the crystal input labels - or remove?? Also add titles to help input text (JBB)
 
 - Make sure that the default values for any inputs that are optional but left
-null are the same as those specified in the RADDOSE-3D user manual.
+null are the same as those specified in the RADDOSE-3D user manual. (JBB)
 
 - Make sure that the GUI reads integers as well as floats for fields that
-require floating point values.
+require floating point values. (CSB)
 
-- If you don't put valid inputs in for the crystal and you try to make a crystal
-it wont let you make that crystal but the crystal maker window closes and you
-lose the inputs that you did have. This needs to be changed so that the window
-doesn't close and you keep the inputs that you did have so you don't have to
-input everything again.
+- Add additional crystal/beam class checks (CSB)
 
--include RADDOSE FORTRAN executable so that users can run RADDOSE V2.
+- Add warnings as well as the current checks for crystals/beam classes (CSB)
+
+-include RADDOSE FORTRAN executable so that users can run RADDOSE V2. (JBB)
 
 -Some of the help text isn't formatted properly (there are hidden characters
 which don't show up in the editor but appear in the GUI). Need to get rid of
 these. - Jonny do you mean in the help summary box or the hovering boxes? I mean
 in the hovering boxes. I copy pasted some of the text from a pdf file and there
-are hidden characters showing up!
-
--Need to complete help.py class (the interactive help box). This will be best
-once all the other input sections are completed
+are hidden characters showing up! (JBB)
 
 -In guiRun.py, when a beam is loaded from a premade RD3D input file, it is created
 using the 'beams' class - this needs to be updated to instead use beams subclasses,
-dependent on which beam type is present
+dependent on which beam type is present (CSB)
 
 - Similarly to above, when a crystal is loaded from a premade RD3D input file, need
-to ensure correct crystal subclasses are used when creating new crystal objects
+to ensure correct crystal subclasses are used when creating new crystal objects (CSB)
 
 - Do the parsers handle container information correctly when reading from premade RD3D
-input files and creating crystal objects? Need to check this!
+input files and creating crystal objects? Need to check this! (CSB)
 
 - Sort out GUI so it adjusts to the correct size for the screen that it's being
-displayed on.
+displayed on. Also work out how to scale summary text box with screen & frame sizes (JBB)
 
 - Perhaps change font of summary window output to see if that fixes the
-formatting issue
-
-- Just uninstalled my Python(x,y) distribution in favour of Anaconda (it works
-better with Julia). Now the image import does not work on my system. It think
-this is more than a platform dependent issue. We'll need to sort this out. (Jonny)
+formatting issue (JBB)
 
 -RADDOSE-3D GUI is not running anymore. Problem with the directory. I think I'm
 going to change how it works. Rather than what it's currently doing (creating a
 directory then going into the directory and running RADDOSE-3D so that the
 output files are automatically created in the new directory) I think I'll make
 the program run in the current directory and move all of the other files
-afterwards.
+afterwards. (JBB)
 
-- Load premade Crystal, Beam and experiment options need to also read in the new
- inputs too.
+- Add experimental beam image file converter code (JBB)
 
 - Currently user can only load in input file if they want to run an experiment.
 However they may also have other files that need to be loaded (e.g. model
 geometry file or experimental beam file). We need to work out a way that the
-RADDOSE-3D GUI can read these when necessary to run RADDOSE-3D.
+RADDOSE-3D GUI can read these when necessary to run RADDOSE-3D. (JBB)
 
 -***************************-
 To do at some point
@@ -105,3 +90,9 @@ To do at some point
  - Visualisation of the experiment so user can see what is going on.
 
  - change %s syntax to .format() throughout for consistency
+
+- sort out how container info passed to crystal class - is a dictionary really
+the easiest way?
+
+-Need to complete help.py class (the interactive help box). This will be best
+once all the other input sections are completed
