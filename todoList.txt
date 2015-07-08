@@ -36,8 +36,6 @@ require floating point values. (CSB)
 
 - Add warnings as well as the current checks for crystals/beam classes (CSB)
 
--include RADDOSE FORTRAN executable so that users can run RADDOSE V2. (JBB)
-
 -Some of the help text isn't formatted properly (there are hidden characters
 which don't show up in the editor but appear in the GUI). Need to get rid of
 these. - Jonny do you mean in the help summary box or the hovering boxes? I mean
@@ -60,13 +58,6 @@ displayed on. Also work out how to scale summary text box with screen & frame si
 - Perhaps change font of summary window output to see if that fixes the
 formatting issue (JBB)
 
--RADDOSE-3D GUI is not running anymore. Problem with the directory. I think I'm
-going to change how it works. Rather than what it's currently doing (creating a
-directory then going into the directory and running RADDOSE-3D so that the
-output files are automatically created in the new directory) I think I'll make
-the program run in the current directory and move all of the other files
-afterwards. (JBB)
-
 - Add experimental beam image file converter code (JBB)
 
 - Currently user can only load in input file if they want to run an experiment.
@@ -76,7 +67,7 @@ RADDOSE-3D GUI can read these when necessary to run RADDOSE-3D. (JBB)
 
 - If the same pre-made input file is loaded twice then the crystals and beams
 with the same names are loaded twice. - want to be able to have same crystal loaded
-twice, but names MUST be different & have a warning if an identical crystal has been 
+twice, but names MUST be different & have a warning if an identical crystal has been
 loaded (JBB)
 
 -***************************-
