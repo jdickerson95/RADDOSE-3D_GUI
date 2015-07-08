@@ -35,10 +35,10 @@ values are microns.
         self.modelText = """Model (Geometry) File
 
 Specifies the filename for the file containing the geometry of the crystal.
-Currently only .obj (geometry denition) files can be read. The model and the
-.obj files can be generated using the free and open source 3D animation software
-BLENDER. (NOTE: if you are exporting a Wavefront (.obj) file in BLENDER, then
-select the option "Triangulate Faces" before you finalise the export. RADDOSE-3D
+Currently only .obj (geometry definition) files can be read. The model and the
+.obj files can be generated using the free and open source 3D animation software
+BLENDER. (NOTE: if you are exporting a Wavefront (.obj) file in BLENDER, then
+select the option "Triangulate Faces" before you finalise the export. RADDOSE-3D
 only works with triangular faces for the polygons).
 """
 
@@ -384,7 +384,7 @@ in the crystal. If this value is not given then it will default to 2 degrees.
 
 Only numerical values are accepted for this field.
 
-Note: If very small wedges are being used e.g. < 5 degress then the angular
+Note: If very small wedges are being used (e.g. < 5 degrees) then the angular
 resolution should be decreased.
 """
         self.startOffText = """Starting Offset
