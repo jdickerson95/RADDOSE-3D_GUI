@@ -566,17 +566,21 @@ class RADDOSEgui(Frame):
 
     def runManualExperiment(self):
 		"""Run the a manually experiment defined by the specified crystal, beam and wedge
+
 		This function intiates the running of an experiment involving a manually defined
 		strategy by the user within the GUI
+
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
+
 		=================
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		self.CurrentexpLoadName = self.expLoadName
 		self.strategyType = 'Manual'
@@ -584,17 +588,21 @@ class RADDOSEgui(Frame):
 
     def runPremadeRD3DExperiment(self):
 		"""Run the a premade RD3D job with premade input file
+
 		This function intiates the running of an experiment involving a premade RD3D
 		input file
+
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
+
 		=================
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		self.CurrentexpLoadName = self.premadeRD3DStrategyName
 		self.strategyType = 'Premade'
@@ -602,6 +610,7 @@ class RADDOSEgui(Frame):
 
     def runExperiment(self):
 		"""Run the experiment defined by the specified crystal, beam and wedge
+
 		This function checks whether the experiment name already exists. If it
 		doesn't already exist then it will create a directory with the current
 		experiment name and then run RADDOSE-3D which the chosen crystal, beam
@@ -609,15 +618,18 @@ class RADDOSEgui(Frame):
 		then a pop up dialogue is created which asks the user whether they want
 		to overwrite the current experiment that already exists under the same
 		name.
+
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
+
 		=================
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
 
@@ -651,20 +663,24 @@ class RADDOSEgui(Frame):
 
     def runStrategy(self):
         """Run RADDOSE-3D given specified crystal, beam and wedge objects
+
         For a manually defined strategy, this function writes an input file
         from the given crystal, beam and wedge objects. For a premade RD3D
         input file, the suitable input file is copied into the working directory
         for the experimental run. Then it runs RADDOSE-3D with that input
         file and puts all of the output files in the corresponding experiment folder.
+
         =================
         Keyword arguments
         =================
         No explicit user defined parameters. Only the object is required for
         implicit input.
+
         =================
         Return parameters
         =================
         No explicit return parameters
+
         """
         # for manual strategy need to write RD3D input file. for premade RD3D input file
         # need to copy file to new working directory for experiment and rename the file
@@ -831,18 +847,22 @@ class RADDOSEgui(Frame):
 
     def displayLog(self, expName):
         """Display RADDOSE-3D log file for currently selected experiment within summary window
+
         The RADDOSE-3D log file for the currently selected experiment is printed to the summary
         text box within the left-hand side experiment summary window
+
         =================
         Keyword arguments
         =================
         expName:
             a unique experiment name corresponding to a unique RADDOSE-3D run,
             located within a directory of the same name
+
         =================
         Return parameters
         =================
         No explicit return parameters
+
         """
         # extract the experiment object corresponding to the chosen
         # experiment in the list
@@ -1261,17 +1281,22 @@ class RADDOSEgui(Frame):
 
     def writeRaddose3DInputFile(self):
 		"""Writes an input file for RADDOSE-3D
+
 		This function writes an input file suitable for input to RADDOSE-3D.
 		This input file is placed in the corresponding experiment directory.
+
 		=================
 		Keyword arguments
 		=================
+
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
+
 		=================
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 
 		# run the current designed strategy here
@@ -1324,17 +1349,21 @@ class RADDOSEgui(Frame):
 
     def runRaddose3D(self):
 		"""Run RADDOSE-3D
+
 		This function runs RADDOSE-3D and puts all of the output files into the
 		corresponding experiment directory.
+
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
+
 		=================
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 		os.chdir(experimentName) #change directory into experiment folder
@@ -1495,20 +1524,24 @@ class RADDOSEgui(Frame):
 
     def writeCrystalBlock(self, crystalObj):
 		"""Write a text block of crystal information for RADDOSE-3D
+
 		Function to write a text block of the crystal properties for a
 		RADDOSE-3D input file.
+
 		=================
 		Keyword arguments
 		=================
 		crystalObj:
 			a 'crystals' object whose properties contain the required properties
 			for RADDOSE-3D input.
+
 		=================
 		Return parameters
 		=================
 		crystBlock:
 			a string block that contains the crystal information in the form
 			required for input into RADDOSE-3D
+
 		"""
 		crystLines = [] #Inialise empty list
 		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
@@ -1531,20 +1564,24 @@ class RADDOSEgui(Frame):
 
     def writeBeamBlock(self, beamObj):
         """Write a text block of beam information for RADDOSE-3D
+
         Function to write a text block of the beam properties for a
         RADDOSE-3D input file.
+
         =================
         Keyword arguments
         =================
         beamObj:
         a 'beams' object whose properties contain the required properties
         for RADDOSE-3D input.
+
         =================
         Return parameters
         =================
         beamBlock:
         a string block that contains the beam information in the form
         required for input into RADDOSE-3D
+
         """
         beamLines = [] #Inialise empty list
         beamLines.append("Beam") # Append the string - "Beam" - to the list
@@ -1573,20 +1610,24 @@ class RADDOSEgui(Frame):
 
     def writeWedgeBlock(self, wedgeObj):
 		"""Write a text block of wedge information for RADDOSE-3D
+
 		Function to write a text block of the wedge properties for a
 		RADDOSE-3D input file.
+
 		=================
 		Keyword arguments
 		=================
 		wedgeObj:
 			a 'wedges' object whose properties contain the required properties
 			for RADDOSE-3D input.
+
 		=================
 		Return parameters
 		=================
 		wedgeBlock:
 			a string block that contains the wedge information in the form
 			required for input into RADDOSE-3D
+
 		"""
 		wedgeLines = [] #Inialise empty list
 		#Ensure the Wedge line is written first into the RADDOSE-3D input file.
@@ -1616,17 +1657,21 @@ class RADDOSEgui(Frame):
 
     def clickRD3DinputLoad(self):
 		"""Load a pre-made RADDOSE-3D input file
+
 		Function to allow file search and load of a pre-made RADDOSE-3D input file to
 		be directly run within the RADDOSE-3D GUI
+
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
+
 		=================
 		Return parameters
 		=================
 		No explicit return parameters
+        
 		"""
 		self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
 		self.RD3DinputLoadBox.delete(0,END)
