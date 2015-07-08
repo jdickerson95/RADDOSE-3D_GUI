@@ -102,21 +102,21 @@ class crystals_pdbCode(crystals):
 		super(crystals_pdbCode, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
 											   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc)
 
-		self.pdbcode 			= pdbcode
+		self.pdb 			= pdbcode
 		self.solventHeavyConc 	= solventHeavyConc
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
 		# check valid pdb code input
-		if len(self.pdbcode) != 4:
-			ErrorMessage = ErrorMessage +  'PDB code input {} not of compatible format.\n'.format(str(self.pdbcode))
+		if len(self.pdb) != 4:
+			ErrorMessage = ErrorMessage +  'PDB code input {} not of compatible format.\n'.format(str(self.pdb))
 
 		return ErrorMessage
 
 	def extractCrystalInfo_composition(self):
 		# create a string containing information of current crystal composition
 		compositionString  	= 	"\nComposition Information:\n"
-		compositionString 	+= 	"PDB code: {}\n".format(str(self.pdbcode))
+		compositionString 	+= 	"PDB code: {}\n".format(str(self.pdb))
 		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 
 		return compositionString
@@ -302,7 +302,7 @@ class crystals_seqFile(crystals):
 		self.unitcell_beta 		= unitcell_beta
 		self.unitcell_gamma 	= unitcell_gamma
 		self.numMonomers 		=  numMonomers
-		self.sequenceFile		= sequenceFile
+		self.seqFile			= sequenceFile
 		self.proteinHeavyAtoms 	= proteinHeavyAtoms
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
@@ -341,6 +341,7 @@ class crystals_seqFile(crystals):
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
 		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
+		compositionString 	+= 	"Sequence File: {}\n".format(str(self.seqFile))
 
 		return compositionString
 
@@ -443,7 +444,7 @@ class crystals_SAXSseqFile(crystals):
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
 		self.proteinConc 		= proteinConc
-		self.sequenceFile 		= sequenceFile
+		self.seqFile 		= sequenceFile
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
@@ -464,8 +465,8 @@ class crystals_SAXSseqFile(crystals):
 			ErrorMessage += 'Crystal solventFraction input not of compatible float format.\n'
 
 		# check sequence file input is string
-		if not isinstance(self.sequenceFile, basestring):
-			ErrorMessage += 'Sequence file input {} not of compatible format.\n'.format(str(self.sequenceFile))
+		if not isinstance(self.seqFile, basestring):
+			ErrorMessage += 'Sequence file input {} not of compatible format.\n'.format(str(self.seqFile))
 
 		return ErrorMessage
 
@@ -478,6 +479,6 @@ class crystals_SAXSseqFile(crystals):
 		compositionString 	+= 	"Solvent Heavy Atom Concenctration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
 		compositionString 	+= 	"Protein Concentration: {}\n".format(str(self.proteinConc))
-		compositionString 	+= 	"Sequence File: {}\n".format(str(self.sequenceFile))
+		compositionString 	+= 	"Sequence File: {}\n".format(str(self.seqFile))
 
 		return compositionString
