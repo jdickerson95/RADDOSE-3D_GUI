@@ -1617,7 +1617,7 @@ class RADDOSEgui(Frame):
             if beamProp == 'collimation':
                 string = 'Collimation Rectangular {} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
                 beamLines.append(string)
-            if beamProp == 'pixelSize': 
+            if beamProp == 'pixelSize':
                 string = 'PixelSize {} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
                 beamLines.append(string)
 

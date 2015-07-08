@@ -125,7 +125,7 @@ class beamMakerWindow(Frame):
 			BeamFileInputLabel.grid(row=4,column=0,sticky=E,pady=5,padx=6)
 			self.hoverFile = HoverInfo(BeamFileInputLabel, self.helpText.fileText)
 			BeamFileInputBox = Entry(self.currentStrategyBeam,textvariable=self.beamFile,width=5)
-			BeamFileInputBox.grid(row=4,column=1,columnspan=3,sticky=W,pady=5,padx=6)
+			BeamFileInputBox.grid(row=4,column=1,columnspan=2,sticky=W+E,pady=5,padx=6)
 		else:
 			self.beamFile.set("")
 
@@ -173,13 +173,13 @@ class beamMakerWindow(Frame):
 			newBeam = beams_Gaussian(MainGui.beamMakeName.get(),
 									 [self.BeamFWHMVertical.get(),self.BeamFWHMHorizontal.get()],
 									 self.BeamFlux.get(),self.BeamEnergy.get(),
-									 [self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])	
+									 [self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])
 		elif self.beamTypeDict[self.BeamType.get()] == 'Tophat':
 			newBeam = beams_Tophat(MainGui.beamMakeName.get(),self.BeamFlux.get(),self.BeamEnergy.get(),
 								   [self.BeamRectCollVert.get(),self.BeamRectCollHoriz.get()])
 		elif self.beamTypeDict[self.BeamType.get()] == 'Experimental':
 			newBeam = beams_Experimental(MainGui.beamMakeName.get(),self.BeamFlux.get(),self.BeamEnergy.get(),
-									[self.beamPixSizeX.get(),self.beamPixSizeY.get()],self.beamFile.get())							
+									[self.beamPixSizeX.get(),self.beamPixSizeY.get()],self.beamFile.get())
 
 		# check the beams parameters are valid
 		ErrorMessage = MainGui.checkBeamInputs(newBeam)
