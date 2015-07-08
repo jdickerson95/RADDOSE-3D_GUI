@@ -24,4 +24,5 @@ where it is assumed to have been read in.
 correctly on my machine -> the title row and experiment rows don't match up
 
 - With the input file changes, the example crystal doesn't work anymore. Need to
-sort this out and check the other example objects.
+sort this out and check the other example objects. <-- the example crystals now work, need to check 
+other example objects

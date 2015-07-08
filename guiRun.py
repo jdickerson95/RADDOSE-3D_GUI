@@ -333,8 +333,8 @@ class RADDOSEgui(Frame):
         scrollbarCrystList = Scrollbar(crystListFrame, orient=VERTICAL)
 
         # want to make a list of crystal object instances (here two example crystals are defined)
-        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1)
-        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2)
+        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1,0,0,{},'Average')
+        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,0,0,{},'Average')
         self.crystList = [exampleCryst,exampleCryst2]
 
         self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=loadListHeight)
