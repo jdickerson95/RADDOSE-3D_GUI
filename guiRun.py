@@ -1366,7 +1366,7 @@ class RADDOSEgui(Frame):
         experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 
         #write terminal command to run RADDOSE-3D
-        terminalCommand = "java -jar raddose3d.jar -i {}".format(self.RADDOSEfilename)
+        terminalCommand = "java -jar raddose3d.jar -i {} -r raddose.exe".format(self.RADDOSEfilename)
         process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True) #Run RADDOSE-3D
         output = process.communicate() # interact with the process to get the data from the log.
         outputLog = output[0] # extract the output log
