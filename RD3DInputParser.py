@@ -3,7 +3,6 @@ from beams import *
 from wedges import *
 import copy
 
-
 class parsedRD3Dinput(object):
 	# this class is for a parsed RD3D input file
 	def __init__(self,RD3DInputPath="",crystal=[],beamList=[],wedgeList=[]):
@@ -109,6 +108,7 @@ class parsedRD3Dinput(object):
 		crystal = self.getCrystalDictInfo(crystalInfoDict,crystal)
 		crystal = self.getUnitCellDictInfo(crystalInfoDict,crystal)
 		crystal = self.getCrystCompositionDictInfo(crystalInfoDict,crystal)
+		crystal = self.getCrystalContainerInfo(crystalInfoDict,crystal)
 
 		return crystal
 
@@ -180,6 +180,31 @@ class parsedRD3Dinput(object):
 		if not crystalInfoDict["abscoefcalc"].lower() in ('exp'):
 			crystal.proteinHeavyAtoms 	= crystalInfoDict["proteinheavyatoms"]
 			crystal.solventFraction 	= crystalInfoDict["solventfraction"]
+
+		return crystal
+
+	def getCrystalContainerInfo(self,crystalInfoDict,crystal):
+		# get crystal container information if present
+		try:
+			crystal.containerType 	= crystalInfoDict["containertype"]
+		except KeyError:
+			pass
+		try:
+			crystal.materialElements 	= crystalInfoDict["materialelements"]
+		except KeyError:
+			pass
+		try:
+			crystal.materialMixture 	= crystalInfoDict["materialmixture"]
+		except KeyError:
+			pass
+		try:
+			crystal.containerThickness 	= crystalInfoDict["containerthickness"]
+		except KeyError:
+			pass
+		try:
+			crystal.containerDensity 	= crystalInfoDict["containerdensity"]
+		except KeyError:
+			pass
 
 		return crystal
 
