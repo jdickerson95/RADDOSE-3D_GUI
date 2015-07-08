@@ -18,12 +18,10 @@ or parsers will crash
 
 - If pre-made RD3D file read for full experiment, or just to input beam parameters, the
 PixelSize property must be present, otherwise this causes a crash within the clickBeamAdd method,
-where it is assumed to habe been read in.
-
-- The crystal maker will not work!!! This is because I've set the labels to be
-understandable for the user (as much as possible anyway) rather than set them to
-be the same as for the RADDOSE-3D input. I will sort this out when I've finished
-sorting out all of the inputs and help comments (Jonny)
+where it is assumed to have been read in.
 
 - the summary table between multiple RD3D runs in the left summary window is not aligned
 correctly on my machine -> the title row and experiment rows don't match up
+
+- With the input file changes, the example crystal doesn't work anymore. Need to
+sort this out and check the other example objects.
