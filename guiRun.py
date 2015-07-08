@@ -228,19 +228,19 @@ class RADDOSEgui(Frame):
         self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
         self.expChoiceMenu.grid(row=0, column=0, columnspan=1,pady=5, padx=3, sticky=W+E)
 
-        # create an experiment summary button here to refresh the summary output text bar (below) to
-        # show the details of the currently selected experiment (selected in expChoiceMenu)
-        expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.clickSummary)
-        expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+        # create an experiment summary option list here to refresh the summary output text bar (below) to
+        # show the details of the currently selected experiment (selected in expChoiceMenu) - either a summary
+        # or the full RD3D log file can be selected
+        summaryOptions = ['Experiment Summary', 'Experiment Log']
+        summaryOption = StringVar()
+        summaryOption.set(summaryOptions[0]) # set initial entry here
+        summaryOptionMenu = OptionMenu(chooseExpFrame, summaryOption, summaryOption.get(),*summaryOptions, command= lambda x: self.updateSummary(summaryOption))
+        summaryOptionMenu.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to remove currently selected experiment from list of loaded experiments
         removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
         removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-        # create a button to display log file of currently selected experiment (in expChoiceMenu)
-        # within summary text box
-        expLogShowButton = Button(chooseExpFrame, text="Log",command=self.clickLogShow)
-        expLogShowButton.grid(row=1, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         #create text box with scrollbar to detail the summary output for currently selected experiment
         expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
@@ -566,16 +566,13 @@ class RADDOSEgui(Frame):
 
     def runManualExperiment(self):
 		"""Run the a manually experiment defined by the specified crystal, beam and wedge
-
 		This function intiates the running of an experiment involving a manually defined
 		strategy by the user within the GUI
-
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
-
 		=================
 		Return parameters
 		=================
@@ -587,16 +584,13 @@ class RADDOSEgui(Frame):
 
     def runPremadeRD3DExperiment(self):
 		"""Run the a premade RD3D job with premade input file
-
 		This function intiates the running of an experiment involving a premade RD3D
 		input file
-
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
-
 		=================
 		Return parameters
 		=================
@@ -608,7 +602,6 @@ class RADDOSEgui(Frame):
 
     def runExperiment(self):
 		"""Run the experiment defined by the specified crystal, beam and wedge
-
 		This function checks whether the experiment name already exists. If it
 		doesn't already exist then it will create a directory with the current
 		experiment name and then run RADDOSE-3D which the chosen crystal, beam
@@ -616,13 +609,11 @@ class RADDOSEgui(Frame):
 		then a pop up dialogue is created which asks the user whether they want
 		to overwrite the current experiment that already exists under the same
 		name.
-
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
-
 		=================
 		Return parameters
 		=================
@@ -660,19 +651,16 @@ class RADDOSEgui(Frame):
 
     def runStrategy(self):
         """Run RADDOSE-3D given specified crystal, beam and wedge objects
-
         For a manually defined strategy, this function writes an input file
         from the given crystal, beam and wedge objects. For a premade RD3D
         input file, the suitable input file is copied into the working directory
         for the experimental run. Then it runs RADDOSE-3D with that input
         file and puts all of the output files in the corresponding experiment folder.
-
         =================
         Keyword arguments
         =================
         No explicit user defined parameters. Only the object is required for
         implicit input.
-
         =================
         Return parameters
         =================
@@ -791,14 +779,17 @@ class RADDOSEgui(Frame):
 		          		wedgeObject.angStop, wedgeObject.exposureTime)
 		return string
 
-    def clickSummary(self):
-		if self.expNameList:
-			expName = str(self.expChoice.get())
-			self.displaySummary(expName)
-		else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
+    def updateSummary(self,summaryOption):
+        if self.expNameList:
+            expName = str(self.expChoice.get())
+            if summaryOption.get() == 'Experiment Summary':
+                self.displaySummary(expName)
+            elif summaryOption.get() == 'Experiment Log':
+                self.displayLog(expName)
+        else:
+            string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+                     """ %()
+            tkMessageBox.showinfo( "No experiments loaded", string)
 
     def displaySummary(self, expName):
 		#extract the experiment object corresponding to the chosen
@@ -838,6 +829,35 @@ class RADDOSEgui(Frame):
 			wedgeString =self.extractWedgeInfo(wedgeObject)
 			self.inputtxt.insert(END, beamString+wedgeString)
 
+    def displayLog(self, expName):
+        """Display RADDOSE-3D log file for currently selected experiment within summary window
+        The RADDOSE-3D log file for the currently selected experiment is printed to the summary
+        text box within the left-hand side experiment summary window
+        =================
+        Keyword arguments
+        =================
+        expName:
+            a unique experiment name corresponding to a unique RADDOSE-3D run,
+            located within a directory of the same name
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
+        """
+        # extract the experiment object corresponding to the chosen
+        # experiment in the list
+        expObject = self.experimentDict[expName]
+        # Write first line of the summary giving the experiment name
+        self.inputtxt.delete(1.0, END) #Delete any text already in the box
+        self.inputtxt.insert(1.0, "Log for experiment: %s\n\n"%(expName))
+
+        # Time stamp
+        self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
+        self.inputtxt.insert(END, "\n")
+
+        # RD3D log printed to summary text box here
+        self.inputtxt.insert(END,expObject.log)
+
     def clickBarplotter(self):
 		# button to first check whether any strategies are loaded within summary window and
 		# then create a separate window for a bar plot comparing dose metrics for all strategies
@@ -873,63 +893,6 @@ class RADDOSEgui(Frame):
 			""" %()
 			tkMessageBox.showinfo( "No experiments loaded", string)
 
-    def clickLogShow(self):
-		""" Response to log button click within experiment summary window
-
-		Log button which calls displayLog when clicked, to print the currently
-		selected experiment RADDOSE--3D log file to the summary text box
-		 within the left hand side summary window
-
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
-
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
-		"""
-		if self.expNameList:
-			expName = str(self.expChoice.get())
-			self.displayLog(expName)
-		else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
-
-    def displayLog(self, expName):
-		"""Display RADDOSE-3D log file for currently selected experiment within summary window
-
-		The RADDOSE-3D log file for the currently selected experiment is printed to the summary
-		text box within the left-hand side experiment summary window
-
-		=================
-		Keyword arguments
-		=================
-		expName:
-			a unique experiment name corresponding to a unique RADDOSE-3D run,
-			located within a directory of the same name
-
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
-		"""
-		# extract the experiment object corresponding to the chosen
-		# experiment in the list
-		expObject = self.experimentDict[expName]
-		# Write first line of the summary giving the experiment name
-		self.inputtxt.delete(1.0, END) #Delete any text already in the box
-		self.inputtxt.insert(1.0, "Log for experiment: %s\n\n"%(expName))
-
-		# Time stamp
-		self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
-		self.inputtxt.insert(END, "\n")
-
-		# RD3D log printed to summary text box here
-		self.inputtxt.insert(END,expObject.log)
 
     def clickExpShowSummary(self):
         #Check to see if there are experiments loaded in the summary window
@@ -1298,16 +1261,13 @@ class RADDOSEgui(Frame):
 
     def writeRaddose3DInputFile(self):
 		"""Writes an input file for RADDOSE-3D
-
 		This function writes an input file suitable for input to RADDOSE-3D.
 		This input file is placed in the corresponding experiment directory.
-
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
-
 		=================
 		Return parameters
 		=================
@@ -1364,16 +1324,13 @@ class RADDOSEgui(Frame):
 
     def runRaddose3D(self):
 		"""Run RADDOSE-3D
-
 		This function runs RADDOSE-3D and puts all of the output files into the
 		corresponding experiment directory.
-
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
-
 		=================
 		Return parameters
 		=================
@@ -1538,24 +1495,20 @@ class RADDOSEgui(Frame):
 
     def writeCrystalBlock(self, crystalObj):
 		"""Write a text block of crystal information for RADDOSE-3D
-
 		Function to write a text block of the crystal properties for a
 		RADDOSE-3D input file.
-
 		=================
 		Keyword arguments
 		=================
 		crystalObj:
 			a 'crystals' object whose properties contain the required properties
 			for RADDOSE-3D input.
-
 		=================
 		Return parameters
 		=================
 		crystBlock:
 			a string block that contains the crystal information in the form
 			required for input into RADDOSE-3D
-
 		"""
 		crystLines = [] #Inialise empty list
 		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
@@ -1578,24 +1531,20 @@ class RADDOSEgui(Frame):
 
     def writeBeamBlock(self, beamObj):
         """Write a text block of beam information for RADDOSE-3D
-
         Function to write a text block of the beam properties for a
         RADDOSE-3D input file.
-
         =================
         Keyword arguments
         =================
         beamObj:
         a 'beams' object whose properties contain the required properties
         for RADDOSE-3D input.
-
         =================
         Return parameters
         =================
         beamBlock:
         a string block that contains the beam information in the form
         required for input into RADDOSE-3D
-
         """
         beamLines = [] #Inialise empty list
         beamLines.append("Beam") # Append the string - "Beam" - to the list
@@ -1624,24 +1573,20 @@ class RADDOSEgui(Frame):
 
     def writeWedgeBlock(self, wedgeObj):
 		"""Write a text block of wedge information for RADDOSE-3D
-
 		Function to write a text block of the wedge properties for a
 		RADDOSE-3D input file.
-
 		=================
 		Keyword arguments
 		=================
 		wedgeObj:
 			a 'wedges' object whose properties contain the required properties
 			for RADDOSE-3D input.
-
 		=================
 		Return parameters
 		=================
 		wedgeBlock:
 			a string block that contains the wedge information in the form
 			required for input into RADDOSE-3D
-
 		"""
 		wedgeLines = [] #Inialise empty list
 		#Ensure the Wedge line is written first into the RADDOSE-3D input file.
@@ -1671,16 +1616,13 @@ class RADDOSEgui(Frame):
 
     def clickRD3DinputLoad(self):
 		"""Load a pre-made RADDOSE-3D input file
-
 		Function to allow file search and load of a pre-made RADDOSE-3D input file to
 		be directly run within the RADDOSE-3D GUI
-
 		=================
 		Keyword arguments
 		=================
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
-
 		=================
 		Return parameters
 		=================
