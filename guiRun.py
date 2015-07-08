@@ -662,6 +662,7 @@ class RADDOSEgui(Frame):
             else:
                 pass
         else:
+            shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
             self.runStrategy()
 
     def runStrategy(self):
