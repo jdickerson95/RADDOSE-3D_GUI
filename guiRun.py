@@ -268,7 +268,9 @@ class RADDOSEgui(Frame):
         l = Label(FrameBodyLeftBottom,text="Compare Experiments",style="labelFrameTitle.TLabel")
         ExpPlotButtonsFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
         ExpPlotButtonsFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
-        ExpPlotButtonsFrame.columnconfigure(1, weight=1)
+        # add equal weighting to 3 buttons to stretch + fill frame
+        for i in range(3):
+            ExpPlotButtonsFrame.columnconfigure(i, weight=1)
 
         # create button to plot dose metrics for currently loaded experiments within summary window
         expBarplotterButton = Button(ExpPlotButtonsFrame, text="Plot",command=self.clickBarplotter)
@@ -277,12 +279,12 @@ class RADDOSEgui(Frame):
         # create button to display summary details to the summary text window for currently
         # loaded experiments within summary window
         expSummaryShowButton = Button(ExpPlotButtonsFrame, text="Show Summary",command=self.clickExpShowSummary)
-        expSummaryShowButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+        expSummaryShowButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to save summary details to new directory for currently loaded experiments
         # within summary window
         expSaveButton = Button(ExpPlotButtonsFrame, text="Save",command=self.clickExpSave)
-        expSaveButton.grid(row=0, column=3, columnspan=1, pady=5, padx=3, sticky=W+E)
+        expSaveButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         #####################################################################################################
         # for top middle body --> make-a-crystal window
