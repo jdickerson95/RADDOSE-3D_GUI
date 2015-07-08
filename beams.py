@@ -116,7 +116,7 @@ class beams_Experimental(beams):
 
 		self.type         	= 'Experimental'
 		self.pixelSize		= beamPixelSize
-		self.fileName  		= fileName
+		self.file  		= fileName
 
 	def extractBeamInfo(self):
 		# create a string containing information of current beam
@@ -124,7 +124,7 @@ class beams_Experimental(beams):
 		infoString += "Beam Type: {}\n".format(str(self.type))
 		infoString += "Beam Flux: {} photons per second\n".format(str(self.flux))
 		infoString += "Beam Energy: {} keV\n".format(str(self.energy))
-		infoString += "Beam File Name: {}\n".format(str(self.fileName))
+		infoString += "Beam File Name: {}\n".format(str(self.file))
 		infoString += "Beam Pixel Size: x = {} microns, y = {} microns\n".format(str(self.pixelSize[0]),str(self.pixelSize[1]))
 		return infoString
 

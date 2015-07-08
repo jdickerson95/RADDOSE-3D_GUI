@@ -32,6 +32,7 @@ from wedges import wedges
 from experiments import Experiments
 from customMadeWidgets import *
 from help import help
+from RD3DInputParser import parsedRD3Dinput
 
 try:
     imp.find_module('mayavi')
@@ -203,7 +204,6 @@ class RADDOSEgui(Frame):
         helpButton.pack(side=TOP,pady=5)
         printButton = Button(miniButtonFrame, text="Print")
         printButton.pack(side=BOTTOM,pady=5)
-
 
         #####################################################################################################
         # for bottom left body --> summary/output window
@@ -1449,93 +1449,102 @@ class RADDOSEgui(Frame):
         which objects should be returned ('crystal': crystal, 'beam': beam list,
          'all': everything)
         """
-        commentChars = ['#','!']
-
-        raddoseInput = open(pathToRaddoseInput,'r')
-
-        crystalBlock = False
-        beamBlock    = False
-        wedgeBlock   = False
-
-        crystal = crystals() #create default crystal
-        beam = beams() #create default beam
-        wedge = wedges() #create default wedge
-        beamList = [] #create beam list
-        wedgeList = [] #create wedge list
-
-        for line in raddoseInput:
-            if "Crystal" in line:
-                crystalBlock = True
-                beamBlock    = False
-                wedgeBlock   = False
-
-            elif "Beam" in line:
-                crystalBlock = False
-                beamBlock    = True
-                wedgeBlock   = False
-
-            elif "Wedge" in line:
-                crystalBlock = False
-                beamBlock    = False
-                wedgeBlock   = True
-                beamList.append(copy.deepcopy(beam))
-                if wedge.angStart and wedge.angStop and wedge.exposureTime:
-                    wedgeList.append(copy.deepcopy(wedge))
-
-            #remove comment part from line
-            commentCharIndices = []
-            for commentChar in commentChars: #look for comment characters and store the index in list
-                index = line.find(commentChar)
-                commentCharIndices.append(index)
-
-            if sorted(commentCharIndices)[-1] > -1: # check for positive indices
-                minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
-                line = line[0:minIndex] #remove comment part from line
-
-            if crystalBlock:
-                if "Dimensions" in line:
-                    dims = line.split()[1:]
-                    while dims < 3:
-                        dims.append(0)
-                    crystal.crystDimX = float(dims[0])
-                    crystal.crystDimY = float(dims[1])
-                    crystal.crystDimZ = float(dims[2])
-                elif "Type" in line:
-                    crystal.type = line.split()[1]
-                elif "PixelsPerMicron" in line:
-                    crystal.pixelsPerMicron = float(line.split()[1])
-                # elif "CoefCalc" in line:
-                # 	crystal.absCoefCalc = line.split()[1]
-
-            elif beamBlock:
-                if "Type" in line:
-                    beam.type = line.split()[1]
-                elif "Flux" in line:
-                    beam.flux = float(line.split()[1])
-                elif "Energy" in line:
-                    beam.energy = float(line.split()[1])
-                elif "FWHM" in line:
-                    beam.fwhm = line.split()[1:]
-                elif "Collimation Rectangular" in line:
-                    beam.collimation = line.split()[2:]
-
-            elif wedgeBlock:
-                if "Wedge" in line:
-                    angles = line.split()[1:]
-                    wedge.angStart = angles[0]
-                    wedge.angStop  = angles[1]
-                elif "ExposureTime" in line:
-                    wedge.exposureTime = line.split()[1]
-
-        wedgeList.append(copy.deepcopy(wedge)) #append final wedge
-        raddoseInput.close()
-
-        if returnType == 'all':
-            return (crystal, beamList, wedgeList)
+        parsedInput = parsedRD3Dinput(pathToRaddoseInput)
+        parsedInput.parseRaddoseInput()
         if returnType == 'crystal':
-            return (crystal)
-        if returnType == 'beam':
-            return (beamList)
+            return (parsedInput.crystal)
+        elif returnType == 'beam':
+            return (parsedInput.beamList)
+        elif returnType == 'all':
+            return (parsedInput.crystal,parsedInput.beamList,parsedInput.wedgeList)
+
+		# commentChars = ['#','!']
+
+		# raddoseInput = open(pathToRaddoseInput,'r')
+
+		# crystalBlock = False
+		# beamBlock    = False
+		# wedgeBlock   = False
+
+		# crystal = crystals() #create default crystal
+		# beam = beams() #create default beam
+		# wedge = wedges() #create default wedge
+		# beamList = [] #create beam list
+		# wedgeList = [] #create wedge list
+
+		# for line in raddoseInput:
+		# 	if "Crystal" in line:
+		# 		crystalBlock = True
+		# 		beamBlock    = False
+		# 		wedgeBlock   = False
+
+		# 	elif "Beam" in line:
+		# 		crystalBlock = False
+		# 		beamBlock    = True
+		# 		wedgeBlock   = False
+
+		# 	elif "Wedge" in line:
+		# 		crystalBlock = False
+		# 		beamBlock    = False
+		# 		wedgeBlock   = True
+		# 		beamList.append(copy.deepcopy(beam))
+		# 		if wedge.angStart and wedge.angStop and wedge.exposureTime:
+		# 			wedgeList.append(copy.deepcopy(wedge))
+
+		# 	#remove comment part from line
+		# 	commentCharIndices = []
+		# 	for commentChar in commentChars: #look for comment characters and store the index in list
+		# 		index = line.find(commentChar)
+		# 		commentCharIndices.append(index)
+
+		# 	if sorted(commentCharIndices)[-1] > -1: # check for positive indices
+		# 		minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
+		# 		line = line[0:minIndex] #remove comment part from line
+
+		# 	if crystalBlock:
+		# 		if "Dimensions" in line:
+		# 			dims = line.split()[1:]
+		# 			while dims < 3:
+		# 				dims.append(0)
+		# 			crystal.crystDimX = float(dims[0])
+		# 			crystal.crystDimY = float(dims[1])
+		# 			crystal.crystDimZ = float(dims[2])
+		# 		elif "Type" in line:
+		# 			crystal.type = line.split()[1]
+		# 		elif "PixelsPerMicron" in line:
+		# 			crystal.pixelsPerMicron = float(line.split()[1])
+		# 		# elif "CoefCalc" in line:
+		# 		# 	crystal.absCoefCalc = line.split()[1]
+
+		# 	elif beamBlock:
+		# 		if "Type" in line:
+		# 			beam.type = line.split()[1]
+		# 		elif "Flux" in line:
+		# 			beam.flux = float(line.split()[1])
+		# 		elif "Energy" in line:
+		# 			beam.energy = float(line.split()[1])
+		# 		elif "FWHM" in line:
+		# 			beam.fwhm = line.split()[1:]
+		# 		elif "Collimation Rectangular" in line:
+		# 			beam.collimation = line.split()[2:]
+
+		# 	elif wedgeBlock:
+		# 		if "Wedge" in line:
+		# 			angles = line.split()[1:]
+		# 			wedge.angStart = angles[0]
+		# 			wedge.angStop  = angles[1]
+		# 		elif "ExposureTime" in line:
+		# 			wedge.exposureTime = line.split()[1]
+
+		# wedgeList.append(copy.deepcopy(wedge)) #append final wedge
+		# raddoseInput.close()
+
+		# if returnType == 'all':
+		# 	return (crystal, beamList, wedgeList)
+		# if returnType == 'crystal':
+		# 	return (crystal)
+		# if returnType == 'beam':
+		# 	return (beamList)
 
     def moveFiles(self, srcFileList, dirPath):
         """Move Source Files
@@ -1543,7 +1552,6 @@ class RADDOSEgui(Frame):
         This function takes a list of files and moves them to a specified
         directory. If the specified directory doesn't already exist then it is
         created.
-
         =================
         Keyword arguments
         =================
