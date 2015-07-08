@@ -4,24 +4,3 @@
 
 Add any spotted bugs as they are found upon GUI testing:
 
-- RADDOSE-3D doesn't tell the user if it completely fails to run. If the only
-input is a crystal object (no beam or wedge parameters specified) then pressing
-the run button still works.
-
-- If the same pre-made input file is loaded twice then the crystals and beams
-with the same names are loaded twice. We may want this but I thought it would be
-good to dicuss
-
-- Beam parsers currently search for pixelsize and FWHM values irrespective of beam type.
-This means that any added beams must have all properties specified regardless of beam type,
-or parsers will crash
-
-- If pre-made RD3D file read for full experiment, or just to input beam parameters, the
-PixelSize property must be present, otherwise this causes a crash within the clickBeamAdd method,
-where it is assumed to have been read in.
-
-- the summary table between multiple RD3D runs in the left summary window is not aligned
-correctly on my machine -> the title row and experiment rows don't match up
-
-- With the input file changes, the example crystal doesn't work anymore. Need to
-sort this out and check the other example objects.

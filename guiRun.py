@@ -214,6 +214,9 @@ class RADDOSEgui(Frame):
         l = Label(FrameBodyLeftBottom,text="Choose an experiment",style="labelFrameTitle.TLabel")
         chooseExpFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
         chooseExpFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
+        # add equal weighting to 2 columns to stretch + fill frame
+        for i in range(2):
+            chooseExpFrame.columnconfigure(i, weight=1)
 
         self.expChoice = StringVar(self)
         #Check if there any experiments loaded. If so then choose the first key
@@ -228,19 +231,22 @@ class RADDOSEgui(Frame):
         self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
         self.expChoiceMenu.grid(row=0, column=0, columnspan=1,pady=5, padx=3, sticky=W+E)
 
-        # create an experiment summary button here to refresh the summary output text bar (below) to
-        # show the details of the currently selected experiment (selected in expChoiceMenu)
-        expSummaryButton = Button(chooseExpFrame, text="Experiment Summary",command=self.clickSummary)
-        expSummaryButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+        # create an experiment summary option list here to refresh the summary output text bar (below) to
+        # show the details of the currently selected experiment (selected in expChoiceMenu) - either a summary
+        # or the full RD3D log file can be selected
+        summaryOptions = ['Experiment Summary', 'Experiment Log']
+        summaryOption = StringVar()
+        summaryOption.set(summaryOptions[0]) # set initial entry here
+        summaryOptionMenu = OptionMenu(chooseExpFrame, summaryOption, summaryOption.get(),*summaryOptions, command= lambda x: self.updateSummary(summaryOption))
+        summaryOptionMenu.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to remove currently selected experiment from list of loaded experiments
         removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
         removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-        # create a button to display log file of currently selected experiment (in expChoiceMenu)
-        # within summary text box
-        expLogShowButton = Button(chooseExpFrame, text="Log",command=self.clickLogShow)
-        expLogShowButton.grid(row=1, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+        # create button to plot isosurfaces for currently loaded experiments within summary window
+        expIsosurfacesButton = Button(chooseExpFrame, text="Dose Contours",command=self.clickDoseContours)
+        expIsosurfacesButton.grid(row=1, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         #create text box with scrollbar to detail the summary output for currently selected experiment
         expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
@@ -265,25 +271,23 @@ class RADDOSEgui(Frame):
         l = Label(FrameBodyLeftBottom,text="Compare Experiments",style="labelFrameTitle.TLabel")
         ExpPlotButtonsFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
         ExpPlotButtonsFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
-        ExpPlotButtonsFrame.columnconfigure(1, weight=1)
+        # add equal weighting to 3 buttons to stretch + fill frame
+        for i in range(3):
+            ExpPlotButtonsFrame.columnconfigure(i, weight=1)
 
         # create button to plot dose metrics for currently loaded experiments within summary window
         expBarplotterButton = Button(ExpPlotButtonsFrame, text="Plot",command=self.clickBarplotter)
         expBarplotterButton.grid(row=0, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-        # create button to plot isosurfaces for currently loaded experiments within summary window
-        expIsosurfacesButton = Button(ExpPlotButtonsFrame, text="Dose Contours",command=self.clickDoseContours)
-        expIsosurfacesButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
-
         # create button to display summary details to the summary text window for currently
         # loaded experiments within summary window
         expSummaryShowButton = Button(ExpPlotButtonsFrame, text="Show Summary",command=self.clickExpShowSummary)
-        expSummaryShowButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+        expSummaryShowButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to save summary details to new directory for currently loaded experiments
         # within summary window
         expSaveButton = Button(ExpPlotButtonsFrame, text="Save",command=self.clickExpSave)
-        expSaveButton.grid(row=0, column=3, columnspan=1, pady=5, padx=3, sticky=W+E)
+        expSaveButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         #####################################################################################################
         # for top middle body --> make-a-crystal window
@@ -333,8 +337,8 @@ class RADDOSEgui(Frame):
         scrollbarCrystList = Scrollbar(crystListFrame, orient=VERTICAL)
 
         # want to make a list of crystal object instances (here two example crystals are defined)
-        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1)
-        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2)
+        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1,0,0,{},'Average')
+        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,0,0,{},'Average')
         self.crystList = [exampleCryst,exampleCryst2]
 
         self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=loadListHeight)
@@ -580,6 +584,7 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		self.CurrentexpLoadName = self.expLoadName
 		self.strategyType = 'Manual'
@@ -601,6 +606,7 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		self.CurrentexpLoadName = self.premadeRD3DStrategyName
 		self.strategyType = 'Premade'
@@ -627,6 +633,7 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
 
@@ -677,6 +684,7 @@ class RADDOSEgui(Frame):
         Return parameters
         =================
         No explicit return parameters
+
         """
         # for manual strategy need to write RD3D input file. for premade RD3D input file
         # need to copy file to new working directory for experiment and rename the file
@@ -791,14 +799,17 @@ class RADDOSEgui(Frame):
 		          		wedgeObject.angStop, wedgeObject.exposureTime)
 		return string
 
-    def clickSummary(self):
-		if self.expNameList:
-			expName = str(self.expChoice.get())
-			self.displaySummary(expName)
-		else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
+    def updateSummary(self,summaryOption):
+        if self.expNameList:
+            expName = str(self.expChoice.get())
+            if summaryOption.get() == 'Experiment Summary':
+                self.displaySummary(expName)
+            elif summaryOption.get() == 'Experiment Log':
+                self.displayLog(expName)
+        else:
+            string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
+                     """ %()
+            tkMessageBox.showinfo( "No experiments loaded", string)
 
     def displaySummary(self, expName):
 		#extract the experiment object corresponding to the chosen
@@ -838,6 +849,39 @@ class RADDOSEgui(Frame):
 			wedgeString =self.extractWedgeInfo(wedgeObject)
 			self.inputtxt.insert(END, beamString+wedgeString)
 
+    def displayLog(self, expName):
+        """Display RADDOSE-3D log file for currently selected experiment within summary window
+
+        The RADDOSE-3D log file for the currently selected experiment is printed to the summary
+        text box within the left-hand side experiment summary window
+
+        =================
+        Keyword arguments
+        =================
+        expName:
+            a unique experiment name corresponding to a unique RADDOSE-3D run,
+            located within a directory of the same name
+
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
+
+        """
+        # extract the experiment object corresponding to the chosen
+        # experiment in the list
+        expObject = self.experimentDict[expName]
+        # Write first line of the summary giving the experiment name
+        self.inputtxt.delete(1.0, END) #Delete any text already in the box
+        self.inputtxt.insert(1.0, "Log for experiment: %s\n\n"%(expName))
+
+        # Time stamp
+        self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
+        self.inputtxt.insert(END, "\n")
+
+        # RD3D log printed to summary text box here
+        self.inputtxt.insert(END,expObject.log)
+
     def clickBarplotter(self):
 		# button to first check whether any strategies are loaded within summary window and
 		# then create a separate window for a bar plot comparing dose metrics for all strategies
@@ -873,63 +917,6 @@ class RADDOSEgui(Frame):
 			""" %()
 			tkMessageBox.showinfo( "No experiments loaded", string)
 
-    def clickLogShow(self):
-		""" Response to log button click within experiment summary window
-
-		Log button which calls displayLog when clicked, to print the currently
-		selected experiment RADDOSE--3D log file to the summary text box
-		 within the left hand side summary window
-
-		=================
-		Keyword arguments
-		=================
-		No explicit user defined parameters. Only the object is required for
-		implicit input.
-
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
-		"""
-		if self.expNameList:
-			expName = str(self.expChoice.get())
-			self.displayLog(expName)
-		else:
-			string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
-			""" %()
-			tkMessageBox.showinfo( "No experiments loaded", string)
-
-    def displayLog(self, expName):
-		"""Display RADDOSE-3D log file for currently selected experiment within summary window
-
-		The RADDOSE-3D log file for the currently selected experiment is printed to the summary
-		text box within the left-hand side experiment summary window
-
-		=================
-		Keyword arguments
-		=================
-		expName:
-			a unique experiment name corresponding to a unique RADDOSE-3D run,
-			located within a directory of the same name
-
-		=================
-		Return parameters
-		=================
-		No explicit return parameters
-		"""
-		# extract the experiment object corresponding to the chosen
-		# experiment in the list
-		expObject = self.experimentDict[expName]
-		# Write first line of the summary giving the experiment name
-		self.inputtxt.delete(1.0, END) #Delete any text already in the box
-		self.inputtxt.insert(1.0, "Log for experiment: %s\n\n"%(expName))
-
-		# Time stamp
-		self.inputtxt.insert(END, "This experiment was run on: %s\n"%(expObject.timestamp))
-		self.inputtxt.insert(END, "\n")
-
-		# RD3D log printed to summary text box here
-		self.inputtxt.insert(END,expObject.log)
 
     def clickExpShowSummary(self):
         #Check to see if there are experiments loaded in the summary window
@@ -1305,6 +1292,7 @@ class RADDOSEgui(Frame):
 		=================
 		Keyword arguments
 		=================
+
 		No explicit user defined parameters. Only the object is required for
 		implicit input.
 
@@ -1312,6 +1300,7 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 
 		# run the current designed strategy here
@@ -1378,6 +1367,7 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 		os.chdir(experimentName) #change directory into experiment folder
@@ -1685,6 +1675,7 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		No explicit return parameters
+
 		"""
 		self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
 		self.RD3DinputLoadBox.delete(0,END)
