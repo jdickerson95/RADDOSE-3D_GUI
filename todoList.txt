@@ -24,8 +24,6 @@ python 2.7.9 on mac). Need to test on ubuntu also... Try dials.python and loggin
 they should retain the values in the fields that they have already entered in as
 opposed to setting the values to some default (often .set("0")) (CSB)
 
-- Add units to the crystal input labels - or remove?? Also add titles to help input text (JBB)
-
 - Make sure that the default values for any inputs that are optional but left
 null are the same as those specified in the RADDOSE-3D user manual. (JBB)
 
