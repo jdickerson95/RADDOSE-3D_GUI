@@ -74,6 +74,11 @@ However they may also have other files that need to be loaded (e.g. model
 geometry file or experimental beam file). We need to work out a way that the
 RADDOSE-3D GUI can read these when necessary to run RADDOSE-3D. (JBB)
 
+- If the same pre-made input file is loaded twice then the crystals and beams
+with the same names are loaded twice. - want to be able to have same crystal loaded
+twice, but names MUST be different & have a warning if an identical crystal has been 
+loaded (JBB)
+
 -***************************-
 To do at some point
 -***************************-
