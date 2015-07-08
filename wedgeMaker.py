@@ -172,7 +172,9 @@ class wedgeMakerWindow():
 
     def addStrategy(self, MainGui):
         # make a new wedge object
-        currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get())
+        currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get(),
+                              self.angRes.get(),[self.startOffsetX.get(),self.startOffsetY.get(),self.startOffsetZ.get()],
+                              [self.transPerDegX.get(),self.transPerDegY.get(),self.transPerDegZ.get()],self.rotAxBeamOffset.get())
         #update the tree view
         MainGui.updateTreeView(currentWedge)
         # once this function runs, the toplevel window should be exited
