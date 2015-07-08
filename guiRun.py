@@ -252,7 +252,7 @@ class RADDOSEgui(Frame):
         expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
 
         self.raddose3Dinputtxt = StringVar()
-        self.inputtxt = Text(expSummaryTextFrame, height=20,width=60,wrap=NONE,font=("Helvetica", 8))
+        self.inputtxt = Text(expSummaryTextFrame, height=20,width=60,wrap=NONE)
         yscrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=VERTICAL, command=self.inputtxt.yview)
         xscrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=HORIZONTAL, command=self.inputtxt.xview)
         yscrollbarRaddoseInputFile.pack(side=LEFT,fill=Y)
@@ -791,7 +791,7 @@ class RADDOSEgui(Frame):
         return string
 
     def extractWedgeInfo(self, wedgeObject):
-        string = """Total Oscillation %.2f (Angle Start: %s, End: %s) in degrees\nTotal Exposure Time: %s seconds\n
+        string = """Total Oscillation %.2f (Angle Start: %s, End: %s) degrees\nTotal Exposure Time: %s seconds\n
 """ %(float(wedgeObject.angStop) - float(wedgeObject.angStart), wedgeObject.angStart,
                           wedgeObject.angStop, wedgeObject.exposureTime)
         return string
@@ -823,14 +823,14 @@ class RADDOSEgui(Frame):
 
         #Dose Summary
         self.inputtxt.insert(END, "Dose Summary:\n"%())
-        self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Diffraction Weighted Dose (DWD)",expObject.dwd))
-        self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Maximum Dose",expObject.maxDose))
-        self.inputtxt.insert(END, "%-50s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
-        self.inputtxt.insert(END, "%-50s: %-.2e photons\n"%("Elastic Yield",expObject.elasticYield))
-        self.inputtxt.insert(END, "%-50s: %-.2e photons/MGy\n"%("Diffraction Efficiency (Elastic Yield/DWD)",expObject.diffractionEfficiency))
-        self.inputtxt.insert(END, "%-50s: %-.1f%%\n"%("Used Volume",expObject.usedVolume))
-        self.inputtxt.insert(END, "%-50s: %-.2e J\n"%("Absorbed Energy",expObject.absEnergy))
-        self.inputtxt.insert(END, "%-50s: %-.2e 1/g\n"%("Dose Inefficiency (Max Dose/mj Absorbed)",expObject.doseInefficiency))
+        self.inputtxt.insert(END, "%-43s: %-.2f MGy\n"%("Average Diffraction Weighted Dose (DWD)",expObject.dwd))
+        self.inputtxt.insert(END, "%-43s: %-.2f MGy\n"%("Maximum Dose",expObject.maxDose))
+        self.inputtxt.insert(END, "%-43s: %-.2f MGy\n"%("Average Dose",expObject.avgDose))
+        self.inputtxt.insert(END, "%-43s: %-.2e photons\n"%("Elastic Yield",expObject.elasticYield))
+        self.inputtxt.insert(END, "%-43s: %-.2e photons/MGy\n"%("Diffraction Efficiency (Elastic Yield/DWD)",expObject.diffractionEfficiency))
+        self.inputtxt.insert(END, "%-43s: %-.1f%%\n"%("Used Volume",expObject.usedVolume))
+        self.inputtxt.insert(END, "%-43s: %-.2e J\n"%("Absorbed Energy",expObject.absEnergy))
+        self.inputtxt.insert(END, "%-43s: %-.2e 1/g\n"%("Dose Inefficiency (Max Dose/mj Absorbed)",expObject.doseInefficiency))
         self.inputtxt.insert(END, "\n")
 
         self.inputtxt.insert(END, "Experiment parameters:\n"%())
@@ -950,7 +950,7 @@ class RADDOSEgui(Frame):
     def createSummaryTable(self):
         self.tableRowEntries = []
         header = "Dose Summary Comparison Table"
-        expHead = "{:^30s}".format("Experiment Name")
+        expHead = "{:^20s}".format("Experiment Name")
         dwdHead = "{:^10s}".format("DWD (MGy)")
         maxDoseHead = "{:^15s}".format("Max Dose (MGy)")
         avgDoseHead = "{:^15s}".format("Avg Dose (MGy)")
@@ -965,7 +965,7 @@ class RADDOSEgui(Frame):
         diffEffHead, usedVolHead, absEnHead, doseInEffHead]
 
         tableHeader = separator.join(summaryHeaders)
-        splitHeader = "-"*(30+10+15+15+25+38+15+
+        splitHeader = "-"*(20+10+15+15+25+38+15+
         20+18+((len(summaryHeaders) - 1) * 2))
 
         self.tableRowEntries.append(header)
@@ -974,7 +974,7 @@ class RADDOSEgui(Frame):
         self.tableRowEntries.append(splitHeader)
         for expName in self.expNameList:
             expObject = self.experimentDict[expName]
-            expNameEntry = "{:^30s}".format(expName)
+            expNameEntry = "{:^20s}".format(expName)
             dwdEntry = "{:^10s}".format(str(expObject.dwd))
             maxDoseEntry = "{:^15s}".format(str(expObject.maxDose))
             avgDoseEntry = "{:^15s}".format(str(expObject.avgDose))
