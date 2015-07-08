@@ -302,6 +302,7 @@ class crystals_seqFile(crystals):
 		self.unitcell_beta 		= unitcell_beta
 		self.unitcell_gamma 	= unitcell_gamma
 		self.numMonomers 		=  numMonomers
+		self.sequenceFile		= sequenceFile
 		self.proteinHeavyAtoms 	= proteinHeavyAtoms
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
