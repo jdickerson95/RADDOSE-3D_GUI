@@ -190,20 +190,13 @@ class RADDOSEgui(Frame):
         self.helpObj = help() # create help object to be updated as inputs are loaded
 
         scrollbarStrategyList = Scrollbar(FrameBodyLeftTop, orient=VERTICAL)
-        self.helpBox = Text(FrameBodyLeftTop, height=8, width=35,wrap=WORD)
+        self.helpBox = Text(FrameBodyLeftTop, height=8, width=60,wrap=WORD)
         scrollbarStrategyList.pack(side=LEFT,fill=Y)
         self.helpBox.pack(side=LEFT,expand=True)
         scrollbarStrategyList.config(command=self.helpBox.yview)
         self.helpBox.config(yscrollcommand=scrollbarStrategyList.set)
         # update help window
         self.updateHelp()
-
-        miniButtonFrame = Frame(FrameBodyLeftTop,style="labelFrameTitle.TLabel")
-        miniButtonFrame.pack(side=RIGHT,padx=5)
-        helpButton = Button(miniButtonFrame, text="Help",command=self.clickHelp)
-        helpButton.pack(side=TOP,pady=5)
-        printButton = Button(miniButtonFrame, text="Print")
-        printButton.pack(side=BOTTOM,pady=5)
 
         #####################################################################################################
         # for bottom left body --> summary/output window
@@ -1660,10 +1653,6 @@ class RADDOSEgui(Frame):
         self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
         self.RD3DinputLoadBox.delete(0,END)
         self.RD3DinputLoadBox.insert(0,self.RD3DinputLoad)
-
-    def clickHelp(self):
-        # what happens when help button clicked
-        tkMessageBox.showinfo( "Help", "You clicked help")
 
     def _quit(self):
         # what happens when close button clicked.
