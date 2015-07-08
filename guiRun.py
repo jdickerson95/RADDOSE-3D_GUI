@@ -662,6 +662,7 @@ class RADDOSEgui(Frame):
             else:
                 pass
         else:
+            shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
             self.runStrategy()
 
     def runStrategy(self):
@@ -935,13 +936,20 @@ class RADDOSEgui(Frame):
                 os.mkdir(self.expCompDir)
             #Create the file name for the summary table
             expsToCompare = "_".join(self.expNameList)
-            summaryFileName = "summaryTable_"+expsToCompare+".txt"
-            fullpath = "{}/{}".format(self.expCompDir, summaryFileName)
+            summaryFileNameText = "summaryTable_"+expsToCompare+".txt"
+            summaryFileNameCSV = "summaryTable_"+expsToCompare+".csv"
+            fullpathText = "{}/{}".format(self.expCompDir, summaryFileNameText)
+            fullpathCSV = "{}/{}".format(self.expCompDir, summaryFileNameCSV)
             #Write the table to summary file
-            summaryFile = open(fullpath, 'w')
+            summaryFileText = open(fullpathText, 'w')
             for row in self.tableRowEntries:
-                summaryFile.write(row+"\n")
-            summaryFile.close()
+                summaryFileText.write(row+"\n")
+            summaryFileText.close()
+
+            summaryFileCSV = open(fullpathCSV, 'w')
+            for row in self.csvRowEntries:
+                summaryFileCSV.write(row+"\n")
+            summaryFileCSV.close()
         else:
             string = """No experiments loaded into summary window.\nPlease select an experiment on the right and click "Load to summary window".
             """ %()
@@ -949,6 +957,7 @@ class RADDOSEgui(Frame):
 
     def createSummaryTable(self):
         self.tableRowEntries = []
+        self.csvRowEntries = []
         header = "Dose Summary Comparison Table"
         expHead = "{:^20s}".format("Experiment Name")
         dwdHead = "{:^10s}".format("DWD (MGy)")
@@ -959,19 +968,23 @@ class RADDOSEgui(Frame):
         usedVolHead = "{:^15s}".format("Used Vol (%)")
         absEnHead = "{:^20s}".format("Abs Energy (Joules)")
         doseInEffHead = "{:^18s}".format("Dose Ineff (1/g)")
-        separator = "{:2s}".format("|")
+        separatorText = "{:2s}".format("|")
+        separatorCSV = ","
         #Store all of the headers in a list
         summaryHeaders = [expHead, dwdHead, maxDoseHead, avgDoseHead, elasHead,
         diffEffHead, usedVolHead, absEnHead, doseInEffHead]
 
-        tableHeader = separator.join(summaryHeaders)
+        textTableHeader = separatorText.join(summaryHeaders)
+        csvTableHeader = separatorCSV.join(summaryHeaders)
         splitHeader = "-"*(20+10+15+15+25+38+15+
         20+18+((len(summaryHeaders) - 1) * 2))
 
         self.tableRowEntries.append(header)
         self.tableRowEntries.append("\n")
-        self.tableRowEntries.append(tableHeader)
+        self.tableRowEntries.append(textTableHeader)
         self.tableRowEntries.append(splitHeader)
+
+        self.csvRowEntries.append(csvTableHeader)
         for expName in self.expNameList:
             expObject = self.experimentDict[expName]
             expNameEntry = "{:^20s}".format(expName)
@@ -985,8 +998,10 @@ class RADDOSEgui(Frame):
             doseInEffEntry = "{:^18s}".format(str(expObject.doseInefficiency))
             entryList = [expNameEntry, dwdEntry, maxDoseEntry, avgDoseEntry, elasEntry,
             diffEffEntry, usedVolEntry, absEnEntry, doseInEffEntry]
-            tableEntry = separator.join(entryList)
-            self.tableRowEntries.append(tableEntry)
+            textTableEntry = separatorText.join(entryList)
+            csvTableEntry = separatorCSV.join(entryList)
+            self.tableRowEntries.append(textTableEntry)
+            self.csvRowEntries.append(csvTableEntry)
 
     def deleteCryst(self):
         # delete the selected crystal from the listbox of added crystals. Also remove the

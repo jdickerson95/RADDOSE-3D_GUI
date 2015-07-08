@@ -7,9 +7,6 @@
 To do before release (Aim for August 1st)
 -***************************-
 
-- add functionaility to save summary of compared experiments currently loaded within
-summary window - Do we want CSV format for output? (JBB)
-
 - Checks for inputs in a pre-made RADDOSE-3D file (CSB)
 
 - Need to add a check when experiments are run to see if any files are already
