@@ -696,10 +696,9 @@ class RADDOSEgui(Frame):
             else:
                 self.writeRaddose3DInputFile()
         elif self.strategyType == 'Premade':
-            shutil.copy(self.RD3DinputLoad, expName)
-            oldFilename = '{}/{}'.format(expName, self.RD3DinputLoad.split("/")[-1])
-            newFilename = '{}/{}'.format(expName, self.RADDOSEfilename)
-            os.rename(oldFilename, newFilename)
+            shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
+            oldFilename = self.RD3DinputLoad.split("/")[-1] # get the name of the file without the rest of the path
+            os.rename(oldFilename, self.RADDOSEfilename) # rename the file
 
         self.runRaddose3D()
         #Update the experiment list in the strategy window
@@ -1374,7 +1373,6 @@ class RADDOSEgui(Frame):
 
         if process.returncode != 0:
             print outputLog
-            os.chdir("..") #Go back to original directory
             string = """There was an error whilst running RADDOSE-3D.\nPlease check the log file ("outputLog.txt") and your crystal, beam and wedge parameters.\nOtherwise contact the Garman Group: elspeth.garman@bioch.ox.ac.uk
             """ %()
             tkMessageBox.showinfo( "RADDOSE-3D Error", string)
