@@ -214,6 +214,9 @@ class RADDOSEgui(Frame):
         l = Label(FrameBodyLeftBottom,text="Choose an experiment",style="labelFrameTitle.TLabel")
         chooseExpFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
         chooseExpFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
+        # add equal weighting to 2 columns to stretch + fill frame
+        for i in range(2):
+            chooseExpFrame.columnconfigure(i, weight=1)
 
         self.expChoice = StringVar(self)
         #Check if there any experiments loaded. If so then choose the first key
