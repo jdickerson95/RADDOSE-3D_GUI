@@ -150,7 +150,7 @@ class wedgeMakerWindow():
 
     def rotAxBeamOffsetInput(self):
         # Wedge input --> The offset between the beam axis and the rotation axis
-        WedgeinputLabel = Label(self.currentStrategyWedge,text="rotation and beam axis offset",style="inputBoxes.TLabel")
+        WedgeinputLabel = Label(self.currentStrategyWedge,text="Rotation and beam axis offset",style="inputBoxes.TLabel")
         WedgeinputLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
         self.hoverRot = HoverInfo(WedgeinputLabel, self.helpText.rotText)
         WedgeinputBox = Entry(self.currentStrategyWedge,textvariable=self.rotAxBeamOffset,width=5)
