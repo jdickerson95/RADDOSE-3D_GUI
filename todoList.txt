@@ -70,8 +70,6 @@ displayed on.
 - Perhaps change font of summary window output to see if that fixes the
 formatting issue
 
-- change location of dose contour button within main interface
-
 - Just uninstalled my Python(x,y) distribution in favour of Anaconda (it works
 better with Julia). Now the image import does not work on my system. It think
 this is more than a platform dependent issue. We'll need to sort this out. (Jonny)
