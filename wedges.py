@@ -47,8 +47,6 @@ class wedges(object):
 
 		return ErrorMessage
 
-
-
 	def checkIfFloat(self,property,propertyName,ErrorMessage):
 		try:
 			float(property)
@@ -63,6 +61,23 @@ class wedges(object):
 		except ValueError:
 			pass
 		return ErrorMessage
+
+	def getWedgeInfo(self):
+		# create a string containing summary information for current string
+		infoString = "Wedge angular start/stop: {}/{}\n".format(str(self.angStart),str(self.angStop))
+		infoString += "Wedge exposure time: {}\n".format(str(self.exposureTime))
+		infoString += "Wedge angular resolution: {}\n".format(str(self.angRes))
+		try:
+			infoString += "Wedge start offset: {} {} {}\n".format(str(self.startOffset[0]),str(self.startOffset[1]),str(self.startOffset[2]))
+		except IndexError:
+			pass
+		try:
+			infoString += "Wedge translation per degree: {} {} {}\n".format(str(self.transPerDeg[0]),str(self.transPerDeg[1]),str(self.transPerDeg[2]))
+		except IndexError:
+			pass
+		infoString += "Wedge rotation axis beam offset: {}\n".format(str(self.rotAxBeamOffset))
+
+		return infoString
 
 
 

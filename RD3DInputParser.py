@@ -48,6 +48,11 @@ class parsedRD3Dinput(object):
 				beamBlock    = True
 				wedgeBlock   = False
 
+				# append wedge object to wedge list if this is not first beam (for input files with 
+				# multiple beams & wedges)
+				if len(self.beamList) != 0:
+					self.wedgeList.append(copy.deepcopy(wedge))
+
 			elif "Wedge" in line:
 				crystalBlock = False
 				beamBlock    = False
@@ -57,9 +62,6 @@ class parsedRD3Dinput(object):
 				beam = self.beamDict2Obj(beamInfoDict)  
 				self.beamList.append(copy.deepcopy(beam))
 				beamInfoDict = {} # create new dictionary in case another beam later in file
-
-				if wedge.angStart and wedge.angStop and wedge.exposureTime:
-					self.wedgeList.append(copy.deepcopy(wedge))
 
 			#remove comment part from line
 			commentCharIndices = []
@@ -78,12 +80,7 @@ class parsedRD3Dinput(object):
 				beamInfoDict = self.parseBeamLine(line,beamInfoDict)
 
 			elif wedgeBlock:
-				if "Wedge" in line:
-					angles = line.split()[1:]
-					wedge.angStart = angles[0]
-					wedge.angStop  = angles[1]
-				elif "ExposureTime" in line:
-					wedge.exposureTime = line.split()[1]
+				self.parseWedgeLine(line,wedge)
 
 		self.wedgeList.append(copy.deepcopy(wedge)) #append final wedge
 		raddoseInput.close()
@@ -91,6 +88,22 @@ class parsedRD3Dinput(object):
 		# convert crystal block dictionary into suitable crystal object
 		self.crystal = self.crystDict2Obj(crystalInfoDict)
 
+	def parseWedgeLine(self,line,wedge):
+		# parse RD3D input file wedge block 
+		if line.split()[0].lower() == 'wedge':
+			angles = line.split()[1:]
+			wedge.angStart = angles[0]
+			wedge.angStop  = angles[1]
+		elif line.split()[0].lower() == 'exposuretime':
+			wedge.exposureTime = line.split()[1]
+		elif line.split()[0].lower() == 'angres':
+			wedge.angRes = line.split()[1]
+		elif line.split()[0].lower() == 'startoffset':
+			wedge.startOffset = line.split()[1:]
+		elif line.split()[0].lower() == 'transperdeg':
+			wedge.transPerDeg = line.split()[1:]
+		elif line.split()[0].lower() == 'rotaxmeamoffset':
+			wedge.transperdeg = line.split()[1]
 
 	def parseCrystalLine(self,line,crystalInfoDict):
 		if line.split()[0] not in ('Crystal'):
