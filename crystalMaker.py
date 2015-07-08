@@ -98,7 +98,7 @@ class crystalMakerWindow(Frame):
 		# Crystal input 2 --> crystal dimensions
 		if crystTypeValue.get() in ('Cuboid','Spherical','Cylindrical'):
 
-			CrystalinputLabel2 = Label(self.currentStrategyCrystal,text="Crystal Dimensions (microns):",style="inputBoxes.TLabel")
+			CrystalinputLabel2 = Label(self.currentStrategyCrystal,text="Crystal Dimensions:",style="inputBoxes.TLabel")
 			CrystalinputLabel2.grid(row=0,column=2,sticky=E,pady=5,padx=6)
 			self.hoverDims = HoverInfo(CrystalinputLabel2, self.helpText.dimsText)
 
