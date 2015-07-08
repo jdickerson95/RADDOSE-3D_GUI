@@ -31,13 +31,6 @@ require floating point values. (CSB)
 
 - Add warnings as well as the current checks for crystals/beam classes (CSB)
 
--In guiRun.py, when a beam is loaded from a premade RD3D input file, it is created
-using the 'beams' class - this needs to be updated to instead use beams subclasses,
-dependent on which beam type is present (CSB)
-
-- Similarly to above, when a crystal is loaded from a premade RD3D input file, need
-to ensure correct crystal subclasses are used when creating new crystal objects (CSB)
-
 - Do the parsers handle container information correctly when reading from premade RD3D
 input files and creating crystal objects? Need to check this! (CSB)
 

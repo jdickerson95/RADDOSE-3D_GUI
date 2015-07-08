@@ -10,3 +10,43 @@ this at some point
 
 - Beam name is not given in the summary window when an experiment is run. Also
  the formatting can be improved too. 
+
+- When premade RD3D input file of form below is entered as a premade RD3D job, crystal 
+and beam objects are made, but raddose crashes.. why? Are container input names correct?
+
+Crystal
+ProteinHeavyAtoms 1
+ContainerThickness 112
+ContainerDensity 221
+Dimensions 1 1 1
+PixelsPerMicron 1
+Unitcell_a 2
+Unitcell_alpha 3
+Unitcell_c 1
+Unitcell_b 2
+ContainerType Mixture
+Type Cuboid
+NumMonomers 22
+SolventFraction 1
+AngleL 1
+MaterialMixture magnesium
+AbsCoefCalc RD3D
+NumDNA 22
+AngleP 1
+Unitcell_beta 3
+SolventHeavyConc 1
+NumResidues 22
+Unitcell_gamma 1
+NumRNA 11
+
+Beam
+FWHM 25 25
+Energy 10
+Collimation Rectangular 100 100
+Flux 10000000000
+Type Gaussian
+
+Wedge 0 180
+exposureTime 180
+
+
