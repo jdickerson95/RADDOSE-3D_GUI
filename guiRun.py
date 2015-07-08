@@ -235,12 +235,15 @@ class RADDOSEgui(Frame):
         summaryOption = StringVar()
         summaryOption.set(summaryOptions[0]) # set initial entry here
         summaryOptionMenu = OptionMenu(chooseExpFrame, summaryOption, summaryOption.get(),*summaryOptions, command= lambda x: self.updateSummary(summaryOption))
-        summaryOptionMenu.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
+        summaryOptionMenu.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to remove currently selected experiment from list of loaded experiments
         removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
         removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
 
+        # create button to plot isosurfaces for currently loaded experiments within summary window
+        expIsosurfacesButton = Button(chooseExpFrame, text="Dose Contours",command=self.clickDoseContours)
+        expIsosurfacesButton.grid(row=1, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         #create text box with scrollbar to detail the summary output for currently selected experiment
         expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
@@ -270,10 +273,6 @@ class RADDOSEgui(Frame):
         # create button to plot dose metrics for currently loaded experiments within summary window
         expBarplotterButton = Button(ExpPlotButtonsFrame, text="Plot",command=self.clickBarplotter)
         expBarplotterButton.grid(row=0, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
-
-        # create button to plot isosurfaces for currently loaded experiments within summary window
-        expIsosurfacesButton = Button(ExpPlotButtonsFrame, text="Dose Contours",command=self.clickDoseContours)
-        expIsosurfacesButton.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to display summary details to the summary text window for currently
         # loaded experiments within summary window
@@ -1671,7 +1670,7 @@ class RADDOSEgui(Frame):
 		Return parameters
 		=================
 		No explicit return parameters
-        
+
 		"""
 		self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
 		self.RD3DinputLoadBox.delete(0,END)
