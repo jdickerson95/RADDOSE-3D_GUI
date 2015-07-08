@@ -34,12 +34,6 @@ require floating point values. (CSB)
 
 - Add warnings as well as the current checks for crystals/beam classes (CSB)
 
--Some of the help text isn't formatted properly (there are hidden characters
-which don't show up in the editor but appear in the GUI). Need to get rid of
-these. - Jonny do you mean in the help summary box or the hovering boxes? I mean
-in the hovering boxes. I copy pasted some of the text from a pdf file and there
-are hidden characters showing up! (JBB)
-
 -In guiRun.py, when a beam is loaded from a premade RD3D input file, it is created
 using the 'beams' class - this needs to be updated to instead use beams subclasses,
 dependent on which beam type is present (CSB)
