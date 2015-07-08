@@ -655,7 +655,8 @@ class RADDOSEgui(Frame):
                 if expName in expTuple:
                     expIndex = expTuple.index(expName) #find the index with the corresponding experiment name
                 else:
-                    expIndex = -1
+                    expIndex = -1 # A number to signify that the experiment did not already exist in the GUI as an object
+                shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
                 self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
                 self.runStrategy() #run the strategy
             else:
@@ -696,7 +697,6 @@ class RADDOSEgui(Frame):
             else:
                 self.writeRaddose3DInputFile()
         elif self.strategyType == 'Premade':
-            shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
             oldFilename = self.RD3DinputLoad.split("/")[-1] # get the name of the file without the rest of the path
             os.rename(oldFilename, self.RADDOSEfilename) # rename the file
 
