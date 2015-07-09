@@ -1,3 +1,5 @@
+from checks import checks
+
 class wedges(object):
 	# this class is for wedge parameters for a loaded or created wedge
 	def __init__(self,angStart="",angStop="",exposTime="",angularResolution=2,
@@ -14,8 +16,8 @@ class wedges(object):
 		ErrorMessage = ""
 
 		# check that wedge angular start & stop can be converted to float format (from string format)
-		ErrorMessage = self.checkIfFloat(self.angStart,'angular start',ErrorMessage)
-		ErrorMessage = self.checkIfFloat(self.angStop,'angular stop',ErrorMessage)
+		ErrorMessage += checks(self.angStart,'wedge start',False).checkIfFloat()
+		ErrorMessage += checks(self.angStop,'wedge start',False).checkIfFloat()
 
 		# check that wedge angular start < stop
 		try:
@@ -25,41 +27,24 @@ class wedges(object):
 			pass
 
 		# check that wedge exposure time can be converted to float format (from string format), and is positive
-		ErrorMessage = self.checkIfFloat(self.exposureTime,'exposure time',ErrorMessage)
-		ErrorMessage = self.checkIfPositive(self.exposureTime,'exposure time',ErrorMessage)
+		ErrorMessage += checks(self.exposureTime,'exposure time',False).checkIfNonNegFloat()
 
 		# check that wedge angular resolution can be converted to float format (from string format), and is positive
-		ErrorMessage = self.checkIfFloat(self.angularResolution,'angular resolution',ErrorMessage)
-		ErrorMessage = self.checkIfPositive(self.angularResolution,'angular resolution',ErrorMessage)
+		ErrorMessage += checks(self.angularResolution,'angular resolution',True).checkIfNonNegFloat()
 
 		# check that start offset values can be converted to float format (from string format)
-		ErrorMessage = self.checkIfFloat(self.startOffsetList[0],'start x off set',ErrorMessage)
-		ErrorMessage = self.checkIfFloat(self.startOffsetList[1],'start y off set',ErrorMessage)
-		ErrorMessage = self.checkIfFloat(self.startOffsetList[2],'start z off set',ErrorMessage)
+		ErrorMessage += checks(self.startOffsetList[0],'start x off set',True).checkIfFloat()
+		ErrorMessage += checks(self.startOffsetList[1],'start y off set',True).checkIfFloat()
+		ErrorMessage += checks(self.startOffsetList[2],'start z off set',True).checkIfFloat()
 
 		# check that translation per degree can be converted to float format (from string format)
-		ErrorMessage = self.checkIfFloat(self.transPerDegList[0],'x translation per degree',ErrorMessage)
-		ErrorMessage = self.checkIfFloat(self.transPerDegList[1],'y translation per degree',ErrorMessage)
-		ErrorMessage = self.checkIfFloat(self.transPerDegList[2],'z translation per degree',ErrorMessage)
+		ErrorMessage += checks(self.transPerDegList[0],'x translation per degree',True).checkIfFloat()
+		ErrorMessage += checks(self.transPerDegList[1],'y translation per degree',True).checkIfFloat()
+		ErrorMessage += checks(self.transPerDegList[2],'z translation per degree',True).checkIfFloat()
 
 		# check that rotation offset can be converted to float format (from string format)
-		ErrorMessage = self.checkIfFloat(self.rotAxBeamOffset,'rotation offset',ErrorMessage)
+		ErrorMessage += checks(self.rotAxBeamOffset,'rotation offset',True).checkIfFloat()
 
-		return ErrorMessage
-
-	def checkIfFloat(self,property,propertyName,ErrorMessage):
-		try:
-			float(property)
-		except ValueError:
-			ErrorMessage += 'Wedge {} not of compatible float format.\n'.format(propertyName)
-		return ErrorMessage
-
-	def checkIfPositive(self,property,propertyName,ErrorMessage):
-		try:
-			if float(property) < 0:
-				ErrorMessage += 'Wedge {} must be non negative.\n'.format(propertyName)
-		except ValueError:
-			pass
 		return ErrorMessage
 
 	def getWedgeInfo(self):
