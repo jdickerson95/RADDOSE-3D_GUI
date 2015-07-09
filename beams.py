@@ -1,3 +1,5 @@
+from checks import checks
+
 class beams(object):
 	# this class is for beam parameters for a loaded or created beam
 	def __init__(self,beamName="",beamFlux=0,beamEnergy=0):
@@ -14,17 +16,11 @@ class beams(object):
 
 	def checkValidInputs(self):
 		ErrorMessage = ""
-		# check that beam energy can be converted to float format (from string format)
-		try:
-			float(self.energy)
-		except ValueError:
-			ErrorMessage += 'Beam energy not of compatible float format.\n'
+		# check that beam energy can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.energy,'beam energy',False).checkIfNonNegFloat()
 
 		# check that beam flux can be converted to float format (from string format)
-		try:
-			float(self.flux)
-		except ValueError:
-			ErrorMessage += 'Beam flux not of compatible float format.\n'
+		ErrorMessage += checks(self.flux,'beam flux',False).checkIfNonNegFloat()
 
 		return ErrorMessage
 
@@ -51,14 +47,11 @@ class beams_Tophat(beams):
 		ErrorMessage = ""
 
 		if len(self.collimation) != 2:
-			ErrorMessage += 'Rectangular collimation inputs of invalid format.\n'
+			ErrorMessage += 'Rectangular collimation requires two inputs (horizontal and vertical).\n'
 		else:
-			# check that beam collimation can be converted to float format (from string format)
-			try:
-				float(self.collimation[0])
-				float(self.collimation[1])
-			except ValueError:
-				ErrorMessage += 'Beam collimation not of compatible float format.\n'
+			# check that beam collimation can be converted to non-negative float format (from string format)
+			ErrorMessage += checks(self.collimation[0],'horizontal (x) collimation',False).checkIfNonNegFloat()
+			ErrorMessage += checks(self.collimation[1],'vertical (y) collimation',False).checkIfNonNegFloat()
 
 		return ErrorMessage
 
@@ -87,24 +80,18 @@ class beams_Gaussian(beams):
 		ErrorMessage = ""
 
 		if len(self.collimation) != 2:
-			ErrorMessage += 'Rectangular collimation inputs of invalid format.\n'
+			ErrorMessage += 'Rectangular collimation requires two inputs (horizontal and vertical).\n'
 		else:
-			# check that beam collimation can be converted to float format (from string format)
-			try:
-				float(self.collimation[0])
-				float(self.collimation[1])
-			except ValueError:
-				ErrorMessage += 'Beam collimation not of compatible float format.\n'
+			# check that beam collimation can be converted to non-negative float format (from string format)
+			ErrorMessage += checks(self.collimation[0],'horizontal (x) collimation',False).checkIfNonNegFloat()
+			ErrorMessage += checks(self.collimation[1],'vertical (y) collimation',False).checkIfNonNegFloat()
 
 		if len(self.fwhm) != 2:
-			ErrorMessage += 'FWHM inputs of invalid format.\n'
+			ErrorMessage += 'FWHM requires two inputs (vertical and horizontal).\n'
 		else:
-			# check that beam FWHM can be converted to float format (from string format)
-			try:
-				float(self.fwhm[0])
-				float(self.fwhm[1])
-			except ValueError:
-				ErrorMessage += 'Beam FWHM not of compatible float format.\n'
+			# check that beam FWHM can be converted to non-negative float format (from string format)
+			ErrorMessage += checks(self.fwhm[0],'vertical (X) FWHM',False).checkIfNonNegFloat()
+			ErrorMessage += checks(self.fwhm[1],'horizontal (Y) FWHM',False).checkIfNonNegFloat()
 
 		return ErrorMessage
 
@@ -132,14 +119,14 @@ class beams_Experimental(beams):
 		ErrorMessage = ""
 
 		if len(self.pixelSize) != 2:
-			ErrorMessage += 'Beam pixelSize inputs of invalid format.\n'
+			ErrorMessage += 'Pixel size requires two inputs (horizontal and vertical).\n'
 		else:
-			# check that beam pixel size can be converted to float format (from string format)
-			try:
-				float(self.pixelSize[0])
-				float(self.pixelSize[1])
-			except ValueError:
-				ErrorMessage += 'Beam pixelSize not of compatible float format.\n'
+			# check that beam pixelSize can be converted to non-negative float format (from string format)
+			ErrorMessage += checks(self.pixelSize[0],'horizontal (x) pixel size',False).checkIfNonNegFloat()
+			ErrorMessage += checks(self.pixelSize[1],'vertical (y) pixel size',False).checkIfNonNegFloat()
+
+		# check that beam file name has been entered correctly
+		ErrorMessage += checks(self.file,'Beam file',False).checkIfNonBlankString()
 
 		return ErrorMessage
 
