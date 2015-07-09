@@ -45,31 +45,100 @@ class crystals(object):
 	def checkValidInputs(self):
 		ErrorMessage = ""
 		# check valid crystal type
-		if self.type not in ('Cuboid','Spherical','Cylindrical','Polyhedron'):
+		if str(self.type).lower() not in ('cuboid','spherical','cylindrical','polyhedron'):
 			ErrorMessage += 'Crystal type {} not of compatible format.\n'.format(str(self.type))
 
 		# check that crystal dimensions can be converted to float format (from string format)
-		try:
-			float(self.crystDimX)
-			float(self.crystDimY)
-			float(self.crystDimZ)
-		except ValueError:
-			ErrorMessage += 'Crystal dimensions not of compatible float format.\n'
+		ErrorMessage += self.checkIfFloat(self.crystDimX,'x dimension')
+		ErrorMessage += self.checkIfFloat(self.crystDimY,'y dimension')
+		ErrorMessage += self.checkIfFloat(self.crystDimZ,'z dimension')
+
+		# check that crystal dimensions are non-negative
+		ErrorMessage += self.checkIfPositive(self.crystDimX,'x dimension')
+		ErrorMessage += self.checkIfPositive(self.crystDimY,'y dimension')
+		ErrorMessage += self.checkIfPositive(self.crystDimZ,'z dimension')
 
 		# check that crystal pixelsPerMicron can be converted to float format (from string format)
-		try:
-			float(self.pixelsPerMicron)
-		except ValueError:
-			ErrorMessage += 'Crystal pixelsPerMicron input not of compatible float format.\n'
+		ErrorMessage += self.checkIfFloat(self.pixelsPerMicron,'pixels per micron')
+
+		# check that crystal pixelsPerMicron value is non-negative
+		ErrorMessage += self.checkIfPositive(self.pixelsPerMicron,'pixels per micron')
 
 		# check that crystal angle P and angle L can be converted to float format (from string format)
-		try:
-			float(self.angleP)
-			float(self.angleL)
-		except ValueError:
-			ErrorMessage += 'Crystal angle L or angle P input not of compatible float format.\n'
+		ErrorMessage += self.checkIfFloat(self.angleP,'angle P')
+		ErrorMessage += self.checkIfFloat(self.angleL,'angle L')
 
+		# check that absCoefCalc value of valid form
+		if str(self.absCoefCalc).lower() not in ('average','exp','rd3d','rdv2','sequence','saxs','saxsseq'):
+			ErrorMessage += 'Crystal absorption coefficient {} not of compatible format.\n'.format(str(self.absCoefCalc))
+
+		# check container information is valid (if present)
+		try:
+			self.containerType
+			# check that container type of suitable format
+			if str(self.containerType).lower() not in ('mixture','elemental','none'):
+				ErrorMessage += 'Crystal container type {} not of compatible format.\n'.format(str(self.containerType))
+			# check that container thickness can be converted to float and is non-negative
+			ErrorMessage += self.checkIfFloat(self.containerThickness,'container thickness')
+			ErrorMessage += self.checkIfPositive(self.containerThickness,'container thickness')
+			# check that container density can be converted to float and is non-negative
+			ErrorMessage += self.checkIfFloat(self.containerDensity,'container density')
+			ErrorMessage += self.checkIfPositive(self.containerDensity,'container density')
+			# check that if 'mixture' type specified, then corresponding mixture is a non-empty string
+			if str(self.containerType).lower() == 'mixture':
+				if not isinstance(self.materialMixture, basestring):
+					ErrorMessage += 'Crystal container mixture not of compatible string format.\n'
+				elif len(self.materialMixture) == 0:
+					ErrorMessage += 'Crystal container mixture field is blank.\n'
+			# check that if 'elemental' type specified, then corresponding element composition is a non-empty string
+			if str(self.containerType).lower() == 'elemental':
+				if not isinstance(self.materialElements, basestring):
+					ErrorMessage += 'Crystal container elemental composition not of compatible string format.\n'
+				elif len(self.materialElements) == 0:
+					ErrorMessage += 'Crystal container elemental composition field is blank.\n'
+				else:
+					# check that string contains an even number terms
+					ErrorMessage += self.checkIfEvenNumTerms(self.materialElements,'material elemental composition')
+					# check that every second term can be converted to float
+					ErrorMessage += self.checkIfEverySecondTermFloat(self.materialElements,'material elemental composition')
+		except AttributeError:
+			pass 
+	
 		return ErrorMessage
+
+	def checkIfEverySecondTermFloat(self,property,propertyName):
+		ErrorMessage = ""
+		# check every second element in list
+		for value in property.split()[1::2]:
+			try:
+				float(value)
+			except ValueError:
+				ErrorMessage = 'Every second term in Crystal {} field not of compatible float format.\n'.format(propertyName)
+		return ErrorMessage
+
+	def checkIfEvenNumTerms(self,property,propertyName):
+		ErrorMessage = ""
+		if len(property.split()) % 2 != 0:
+			ErrorMessage = 'Crystal {} input requires even number of terms.\n'.format(propertyName)
+		return ErrorMessage
+
+	def checkIfFloat(self,property,propertyName):
+		ErrorMessage = ""
+		try:
+			float(property)
+		except ValueError:
+			ErrorMessage = 'Crystal {} not of compatible float format.\n'.format(propertyName)
+		return ErrorMessage
+
+	def checkIfPositive(self,property,propertyName):
+		ErrorMessage = ""
+		try:
+			if float(property) < 0:
+				ErrorMessage = 'Crystal {} must be non negative.\n'.format(propertyName)
+		except ValueError:
+			pass
+		return ErrorMessage
+
 
 	def extractCrystalInfo(self):
 		# create a string containing information of current crystal
