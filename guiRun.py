@@ -649,13 +649,15 @@ class RADDOSEgui(Frame):
                     expIndex = expTuple.index(expName) #find the index with the corresponding experiment name
                 else:
                     expIndex = -1 # A number to signify that the experiment did not already exist in the GUI as an object
-                shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
+                if self.strategyType == "Premade":
+                    shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
                 self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
                 self.runStrategy() #run the strategy
             else:
                 pass
         else:
-            shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
+            if self.strategyType == "Premade":
+                shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
             self.runStrategy()
 
     def runStrategy(self):
@@ -1527,10 +1529,17 @@ class RADDOSEgui(Frame):
         #Add a dictionary entry that puts all three crystal dimension values into a string
         crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
 
+        #Add a dictionary entry that puts the unit cell dimensions into a string
+        crystPropertyDict["Unitcell"] = '{} {} {} {} {} {}'.format(crystalObj.unitcell_a, crystalObj.unitcell_b, crystalObj.unitcell_c,
+        crystalObj.unitcell_alpha, crystalObj.unitcell_beta, crystalObj.unitcell_gamma)
+
         #loop through each entry in the dictionary, create a string of the key
         #and value from the dictionary and append that to the list created above
         for crystProp in crystPropertyDict:
-            if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and crystProp != 'crystName' and crystProp != 'containerInfoDict'):
+            if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
+            crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
+            crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
+            crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma'):
                 string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
                 crystLines.append(string)
 
