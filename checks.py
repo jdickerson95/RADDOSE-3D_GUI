@@ -32,7 +32,7 @@ class checks(object):
 			Error = self.checkIfNonNegFloat()
 			if len(Error) != 0:
 				ErrorMessage += 'Every second term in {} field not of compatible non-negative float format.\n'.format(self.propertyName)
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
@@ -41,7 +41,7 @@ class checks(object):
 		ErrorMessage = ""
 		if len(self.property.split()) % 2 != 0:
 			ErrorMessage = '{} input requires even number of terms.\n'.format(self.propertyName)
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
@@ -50,7 +50,7 @@ class checks(object):
 		# check if string can be converted to a float, and the float is non-negative
 		ErrorMessage = self.checkIfFloat()
 		ErrorMessage += self.checkIfPositive()
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
@@ -59,7 +59,7 @@ class checks(object):
 		# check if string can be converted to a integer, and the integer is non-negative
 		ErrorMessage = self.checkIfInt()
 		ErrorMessage += self.checkIfPositive()
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
@@ -68,7 +68,7 @@ class checks(object):
 		ErrorMessage = ""
 		if not isinstance( self.property, ( int, long ) ):
 			ErrorMessage = '{} not of compatible integer format.\n'.format(self.propertyName)
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
@@ -79,7 +79,7 @@ class checks(object):
 			float(self.property)
 		except ValueError:
 			ErrorMessage = '{} not of compatible float format.\n'.format(self.propertyName)
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
@@ -91,7 +91,7 @@ class checks(object):
 				ErrorMessage = '{} must be non negative.\n'.format(self.propertyName)
 		except ValueError:
 			pass
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
@@ -116,7 +116,7 @@ class checks(object):
 		ErrorMessage = ""
 		if len(self.property) == 0:
 			ErrorMessage = '{} input is blank.\n'.format(self.propertyName)
-		
+
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage

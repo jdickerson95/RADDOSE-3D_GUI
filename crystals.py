@@ -95,8 +95,8 @@ class crystals(object):
 					# check that suitable heavy atom string formatting
 					ErrorMessage += checks(self.materialElements,'material elemental composition',False).checkHeavyAtomFormat()
 		except AttributeError:
-			pass 
-	
+			pass
+
 		return ErrorMessage
 
 	def extractCrystalInfo(self):
@@ -177,7 +177,7 @@ class crystals_userDefined(crystals):
 		self.unitcell_alpha 	= unitcell_alpha
 		self.unitcell_beta 		= unitcell_beta
 		self.unitcell_gamma 	= unitcell_gamma
-		self.numMonomers 		=  numMonomers
+		self.numMonomers 		= numMonomers
 		self.numResidues 		= numResidues
 		self.numRNA 			= numRNA
 		self.numDNA 			= numDNA
