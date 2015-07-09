@@ -1622,10 +1622,15 @@ class RADDOSEgui(Frame):
 
         wedgePropertyDict = vars(wedgeObj) #create a dictionary from the wedge object properties and corresponding values
 
+        #Add a dictionary entries for the wedge object inputs that are in list format.
+        wedgePropertyDict["StartOffset"] = '{} {} {}'.format(wedgeObj.startOffsetList[0], wedgeObj.startOffsetList[1], wedgeObj.startOffsetList[2])
+        wedgePropertyDict["TranslatePerDegree"] = '{} {} {}'.format(wedgeObj.transPerDegList[0], wedgeObj.transPerDegList[1], wedgeObj.transPerDegList[2])
+
         #loop through each entry in the dictionary, create a string of the key
         #and value from the dictionary and append that to the list created above
         for wedgeProp in wedgePropertyDict:
-            if wedgeProp != 'angStart' and wedgeProp != 'angStop':
+            if (wedgeProp != 'angStart' and wedgeProp != 'angStop' and wedgeProp != 'startOffsetList'and
+            wedgeProp != 'transPerDegList'):
                 string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
                 wedgeLines.append(string)
 

@@ -176,7 +176,7 @@ class wedgeMakerWindow():
         currentWedge = wedges(self.WedgeAngRangeStart.get(),self.WedgeAngRangeStop.get(),self.WedgeExposTime.get(),
                               self.angRes.get(),[self.startOffsetX.get(),self.startOffsetY.get(),self.startOffsetZ.get()],
                               [self.transPerDegX.get(),self.transPerDegY.get(),self.transPerDegZ.get()],self.rotAxBeamOffset.get())
-        
+
         # check the wedge parameters are valid
         ErrorMessage = currentWedge.checkValidInputs()
         if ErrorMessage != "":
