@@ -47,7 +47,7 @@ class beamMakerWindow(Frame):
         self.BeamRectCollVert,self.BeamRectCollHoriz, = StringVar(),StringVar()
         self.BeamRectCollVert.set("")
         self.BeamRectCollHoriz.set("")
-        self.beamRectCollInputs(self.BeamType)
+        self.beamRectCollInputs()
 
         # Beam input --> File containing the experimental beam image.
         self.beamFile = StringVar()
@@ -110,12 +110,9 @@ class beamMakerWindow(Frame):
         BeaminputBox4.grid(row=3,column=1,sticky=W,pady=5,padx=6)
         self.BeamEnergy.set(self.BeamEnergy.get())
 
-    def beamRectCollInputs(self, beamType):
+    def beamRectCollInputs(self):
         # Beam input 5 --> Rectangular Collimation
-        if beamType.get() == 'Gaussian' or beamType.get() == 'Experimental':
-            BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
-        elif beamType.get() == 'TopHat':
-            BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
+        BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
         BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
         self.hoverColl = HoverInfo(BeaminputLabel5, self.helpText.collText)
         BeamRectCollInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
@@ -165,7 +162,7 @@ class beamMakerWindow(Frame):
         self.beamFWHMInputs(self.BeamType)
         self.beamFluxInputs()
         self.beamEnergyInputs()
-        self.beamRectCollInputs(self.BeamType)
+        self.beamRectCollInputs()
         self.beamFileInput(self.BeamType)
         self.beamPixelSizeInput(self.BeamType)
         self.beamMakeButton(MainGui)
