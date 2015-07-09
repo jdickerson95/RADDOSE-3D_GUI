@@ -21,6 +21,7 @@ import platform
 import imp
 import datetime
 import time
+import matplotlib.image as mpimg
 
 from plotMaker import barplotWindow
 from beamMaker import beamMakerWindow
@@ -137,12 +138,23 @@ class RADDOSEgui(Frame):
         FrameBody = Frame(self,style="BodyBackground.TFrame")
         FrameBody.pack(fill=BOTH,expand=1)
 
-        # add a RADDOSE-3D logo here
-        if platform.system() != 'Darwin':
-            raddoseLogoImg = ImageTk.PhotoImage(Image.open("raddoseLogo.png"))
-            raddoseLogolabel = Label(FrameHeader,image = raddoseLogoImg)
-            raddoseLogolabel.image = raddoseLogoImg # keep a reference!
-            raddoseLogolabel.pack(side = LEFT)
+        # add a RADDOSE-3D logo here.
+        #It's an ugly solution to the problem but it works. It first reads the
+        #png image and extracts the red, green and blue pixels as three separate
+        #matrices. It then creates a blank tk photo image object that is the
+        #same size as the png image, loops through all the pixels of the tk
+        #photo image and inserts the corresponding pixel values from the png
+        #image. It's not pretty but it works.
+        pngImage = "raddoseLogo.png"
+        rgbBeamImage = mpimg.imread(pngImage)
+        redPixels, greenPixels, bluePixels = rgbBeamImage[:,:,0], rgbBeamImage[:,:,1], rgbBeamImage[:,:,2]
+        photo = tk.PhotoImage(width=275, height=89)
+        for rowPos in xrange(0,len(rgbBeamImage[:,0])):
+            for colPos in xrange(0,len(rgbBeamImage[0,:])):
+                self.insertPixel(photo, (rowPos,colPos), (redPixels[rowPos,colPos]*255,greenPixels[rowPos,colPos]*255,bluePixels[rowPos,colPos]*255))
+        raddoseLogolabel = Label(FrameHeader, image=photo)
+        raddoseLogolabel.image = photo # keep a reference!
+        raddoseLogolabel.pack(side = LEFT)
 
         # make a label in the header frame
         labelHeader = Label(FrameHeader,text="Data Collection Dose Stategy GUI",style="Title.TLabel")
@@ -1672,6 +1684,12 @@ class RADDOSEgui(Frame):
         # what happens when close button clicked.
         self.quit()     # stops mainloop
         self.destroy()  # this is necessary on Windows to prevent
+
+    def insertPixel(self, image, pos, color):
+        """Place pixel at pos=(x,y) on image, with color=(r,g,b)."""
+        r,g,b = color
+        x,y = pos
+        image.put("#%02x%02x%02x" % (r,g,b), (y, x))
 
 def main():
     # when the script is run in python, do the following:
