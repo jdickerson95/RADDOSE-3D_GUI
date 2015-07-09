@@ -69,5 +69,9 @@ To do at some point
 - sort out how container info passed to crystal class - is a dictionary really
 the easiest way?
 
--Need to complete help.py class (the interactive help box). This will be best
+- Need to complete help.py class (the interactive help box). This will be best
 once all the other input sections are completed
+
+- When user types incompatible data format into a field and clicks 'make', the
+input window moves to the back of the screen. We should try to find out how to
+keep it at the front of the screen.
