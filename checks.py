@@ -31,7 +31,7 @@ class checks(object):
 		for value in self.property.split()[1::2]:
 			Error = self.checkIfNonNegFloat()
 			if len(Error) != 0:
-				ErrorMessage += 'Every second term in Crystal {} field not of compatible non-negative float format.\n'.format(self.propertyName)
+				ErrorMessage += 'Every second term in {} field not of compatible non-negative float format.\n'.format(self.propertyName)
 		
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
@@ -40,7 +40,7 @@ class checks(object):
 	def checkIfEvenNumTerms(self):
 		ErrorMessage = ""
 		if len(self.property.split()) % 2 != 0:
-			ErrorMessage = 'Crystal {} input requires even number of terms.\n'.format(self.propertyName)
+			ErrorMessage = '{} input requires even number of terms.\n'.format(self.propertyName)
 		
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
@@ -67,7 +67,7 @@ class checks(object):
 	def checkIfInt(self):
 		ErrorMessage = ""
 		if not isinstance( self.property, ( int, long ) ):
-			ErrorMessage = 'Crystal {} not of compatible integer format.\n'.format(self.propertyName)
+			ErrorMessage = '{} not of compatible integer format.\n'.format(self.propertyName)
 		
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
@@ -78,7 +78,7 @@ class checks(object):
 		try:
 			float(self.property)
 		except ValueError:
-			ErrorMessage = 'Crystal {} not of compatible float format.\n'.format(self.propertyName)
+			ErrorMessage = '{} not of compatible float format.\n'.format(self.propertyName)
 		
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
@@ -88,7 +88,7 @@ class checks(object):
 		ErrorMessage = ""
 		try:
 			if float(self.property) < 0:
-				ErrorMessage = 'Crystal {} must be non negative.\n'.format(self.propertyName)
+				ErrorMessage = '{} must be non negative.\n'.format(self.propertyName)
 		except ValueError:
 			pass
 		
@@ -103,9 +103,9 @@ class checks(object):
 		try:
 			float(self.property)
 			if (0 > float(self.property) or 1 < float(self.property)):
-				ErrorMessage += 'Crystal {} must be between 0 and 1.\n'.format(self.propertyName)
+				ErrorMessage += '{} must be between 0 and 1.\n'.format(self.propertyName)
 		except ValueError:
-			ErrorMessage += 'Crystal {} not of compatible float format.\n'.format(self.propertyName)
+			ErrorMessage += '{} not of compatible float format.\n'.format(self.propertyName)
 
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
