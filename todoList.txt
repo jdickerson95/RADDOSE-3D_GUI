@@ -45,6 +45,10 @@ with the same names are loaded twice. - want to be able to have same crystal loa
 twice, but names MUST be different & have a warning if an identical crystal has been
 loaded (JBB)
 
+- Currently experimental beam type collimation inputs from beam maker window are not 
+passed to beam objects and are lost. Should these be passed through, even though RD3D 
+does not need them?
+
 -***************************-
 To do at some point
 -***************************-
@@ -71,3 +75,5 @@ once all the other input sections are completed
 - When user types incompatible data format into a field and clicks 'make', the
 input window moves to the back of the screen. We should try to find out how to
 keep it at the front of the screen.
+
+
