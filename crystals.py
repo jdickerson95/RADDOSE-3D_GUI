@@ -1,4 +1,5 @@
 import os
+from checks import checks
 
 class crystals(object):
 	# this class is for crystal parameters for a loaded or created crystal.
@@ -48,25 +49,17 @@ class crystals(object):
 		if str(self.type).lower() not in ('cuboid','spherical','cylindrical','polyhedron'):
 			ErrorMessage += 'Crystal type {} not of compatible format.\n'.format(str(self.type))
 
-		# check that crystal dimensions can be converted to float format (from string format)
-		ErrorMessage += self.checkIfFloat(self.crystDimX,'x dimension')
-		ErrorMessage += self.checkIfFloat(self.crystDimY,'y dimension')
-		ErrorMessage += self.checkIfFloat(self.crystDimZ,'z dimension')
+		# check that crystal dimensions can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.crystDimX,'x dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.crystDimY,'y dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.crystDimZ,'z dimension',False).checkIfNonNegFloat()
 
-		# check that crystal dimensions are non-negative
-		ErrorMessage += self.checkIfPositive(self.crystDimX,'x dimension')
-		ErrorMessage += self.checkIfPositive(self.crystDimY,'y dimension')
-		ErrorMessage += self.checkIfPositive(self.crystDimZ,'z dimension')
-
-		# check that crystal pixelsPerMicron can be converted to float format (from string format)
-		ErrorMessage += self.checkIfFloat(self.pixelsPerMicron,'pixels per micron')
-
-		# check that crystal pixelsPerMicron value is non-negative
-		ErrorMessage += self.checkIfPositive(self.pixelsPerMicron,'pixels per micron')
+		# check that crystal pixelsPerMicron can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.pixelsPerMicron,'pixels per micron',False).checkIfNonNegFloat()
 
 		# check that crystal angle P and angle L can be converted to float format (from string format)
-		ErrorMessage += self.checkIfFloat(self.angleP,'angle P')
-		ErrorMessage += self.checkIfFloat(self.angleL,'angle L')
+		ErrorMessage += checks(self.angleP,'angle P',True).checkIfFloat()
+		ErrorMessage += checks(self.angleL,'angle L',True).checkIfFloat()
 
 		# check that absCoefCalc value of valid form
 		if str(self.absCoefCalc).lower() not in ('average','exp','rd3d','rdv2','sequence','saxs','saxsseq'):
@@ -78,18 +71,20 @@ class crystals(object):
 			# check that container type of suitable format
 			if str(self.containerType).lower() not in ('mixture','elemental','none'):
 				ErrorMessage += 'Crystal container type {} not of compatible format.\n'.format(str(self.containerType))
+
 			# check that container thickness can be converted to float and is non-negative
-			ErrorMessage += self.checkIfFloat(self.containerThickness,'container thickness')
-			ErrorMessage += self.checkIfPositive(self.containerThickness,'container thickness')
+			ErrorMessage += checks(self.containerThickness,'container thickness',False).checkIfNonNegFloat()
+
 			# check that container density can be converted to float and is non-negative
-			ErrorMessage += self.checkIfFloat(self.containerDensity,'container density')
-			ErrorMessage += self.checkIfPositive(self.containerDensity,'container density')
+			ErrorMessage += checks(self.containerDensity,'container density',False).checkIfNonNegFloat()
+
 			# check that if 'mixture' type specified, then corresponding mixture is a non-empty string
 			if str(self.containerType).lower() == 'mixture':
 				if not isinstance(self.materialMixture, basestring):
 					ErrorMessage += 'Crystal container mixture not of compatible string format.\n'
 				elif len(self.materialMixture) == 0:
 					ErrorMessage += 'Crystal container mixture field is blank.\n'
+
 			# check that if 'elemental' type specified, then corresponding element composition is a non-empty string
 			if str(self.containerType).lower() == 'elemental':
 				if not isinstance(self.materialElements, basestring):
@@ -97,48 +92,12 @@ class crystals(object):
 				elif len(self.materialElements) == 0:
 					ErrorMessage += 'Crystal container elemental composition field is blank.\n'
 				else:
-					# check that string contains an even number terms
-					ErrorMessage += self.checkIfEvenNumTerms(self.materialElements,'material elemental composition')
-					# check that every second term can be converted to float
-					ErrorMessage += self.checkIfEverySecondTermFloat(self.materialElements,'material elemental composition')
+					# check that suitable heavy atom string formatting
+					ErrorMessage += checks(self.materialElements,'material elemental composition',False).checkHeavyAtomFormat()
 		except AttributeError:
 			pass 
 	
 		return ErrorMessage
-
-	def checkIfEverySecondTermFloat(self,property,propertyName):
-		ErrorMessage = ""
-		# check every second element in list
-		for value in property.split()[1::2]:
-			try:
-				float(value)
-			except ValueError:
-				ErrorMessage = 'Every second term in Crystal {} field not of compatible float format.\n'.format(propertyName)
-		return ErrorMessage
-
-	def checkIfEvenNumTerms(self,property,propertyName):
-		ErrorMessage = ""
-		if len(property.split()) % 2 != 0:
-			ErrorMessage = 'Crystal {} input requires even number of terms.\n'.format(propertyName)
-		return ErrorMessage
-
-	def checkIfFloat(self,property,propertyName):
-		ErrorMessage = ""
-		try:
-			float(property)
-		except ValueError:
-			ErrorMessage = 'Crystal {} not of compatible float format.\n'.format(propertyName)
-		return ErrorMessage
-
-	def checkIfPositive(self,property,propertyName):
-		ErrorMessage = ""
-		try:
-			if float(property) < 0:
-				ErrorMessage = 'Crystal {} must be non negative.\n'.format(propertyName)
-		except ValueError:
-			pass
-		return ErrorMessage
-
 
 	def extractCrystalInfo(self):
 		# create a string containing information of current crystal
@@ -151,6 +110,10 @@ class crystals(object):
 		summaryString 	+= 	"Absorption Coeffient Calculation: {}\n".format(str(self.absCoefCalc))
 
 		# if container information was provided, include in summary
+		try:
+			self.containerType
+		except AttributeError:
+			return summaryString
 		if self.containerType in ('Mixture','Elemental'):
 			containerString  	= 	"\nContainer Information:\n"
 			containerString 	+= 	"Container Type: {}\n".format(str(self.containerType))
@@ -178,9 +141,13 @@ class crystals_pdbCode(crystals):
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
+
 		# check valid pdb code input
 		if len(self.pdb) != 4:
-			ErrorMessage = ErrorMessage +  'PDB code input {} not of compatible format.\n'.format(str(self.pdb))
+			ErrorMessage += 'PDB code input {} not of compatible format.\n'.format(str(self.pdb))
+
+		# check that crystal solventHeavyConc formatting is correct
+		ErrorMessage += checks(self.solventHeavyConc,'solvent heavy atom concentration',True).checkHeavyAtomFormat()
 
 		return ErrorMessage
 
@@ -220,41 +187,31 @@ class crystals_userDefined(crystals):
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
-		# check that unit cell dimensions can be converted to float format (from string format)
-		try:
-			float(self.unitcell_a)
-			float(self.unitcell_b)
-			float(self.unitcell_c)
-			float(self.unitcell_alpha)
-			float(self.unitcell_beta)
-			float(self.unitcell_gamma)
-		except ValueError:
-			ErrorMessage += 'Unit cell dimensions not of compatible float format.\n'
 
-		try:
-			float(self.numMonomers)
-		except ValueError:
-			ErrorMessage += 'Crystal numMonomers input not of compatible float format.\n'
+		# check that unit cell dimensions can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.unitcell_a,'unit cell a dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_b,'unit cell b dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_c,'unit cell c dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_alpha,'unit cell angle alpha',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_beta,'unit cell angle beta',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_gamma,'unit cell angle gamma',True).checkIfNonNegFloat()
 
-		try:
-			float(self.numResidues)
-		except ValueError:
-			ErrorMessage += 'Crystal numResidues input not of compatible float format.\n'
+		# check that number of monomers/residues has been filled in and can be converted to non-negative integers
+		ErrorMessage += checks(self.numMonomers,'number of monomers',False).checkIfNonNegInt()
+		ErrorMessage += checks(self.numResidues,'number of residues',False).checkIfNonNegInt()
 
-		try:
-			float(self.numRNA)
-		except ValueError:
-			ErrorMessage += 'Crystal numRNA input not of compatible float format.\n'
+		# check that number of RNA/DNA nucleotides can be converted to non-negative integers
+		ErrorMessage += checks(self.numRNA,'number of RNA nucleotides',True).checkIfNonNegInt()
+		ErrorMessage += checks(self.numDNA,'number of DNA nucleotides',True).checkIfNonNegInt()
 
-		try:
-			float(self.numDNA)
-		except ValueError:
-			ErrorMessage += 'Crystal numDNA input not of compatible float format.\n'
+		# check that crystal proteinHeavyAtoms formatting is correct
+		ErrorMessage += checks(self.proteinHeavyAtoms,'heavy atoms in protein',True).checkHeavyAtomFormat()
 
-		try:
-			float(self.solventFraction)
-		except ValueError:
-			ErrorMessage += 'Crystal solventFraction input not of compatible float format.\n'
+		# check that crystal solventHeavyConc formatting is correct
+		ErrorMessage += checks(self.solventHeavyConc,'solvent heavy atom concentration',True).checkHeavyAtomFormat()
+
+		# check that solvent fraction is float between 0 and 1
+		ErrorMessage += checks(self.solventFraction,'solvent fraction',True).checkIfFloatBetween01()
 
 		return ErrorMessage
 
@@ -301,41 +258,31 @@ class crystals_RADDOSEv2(crystals):
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
-		# check that unit cell dimensions can be converted to float format (from string format)
-		try:
-			float(self.unitcell_a)
-			float(self.unitcell_b)
-			float(self.unitcell_c)
-			float(self.unitcell_alpha)
-			float(self.unitcell_beta)
-			float(self.unitcell_gamma)
-		except ValueError:
-			ErrorMessage = ErrorMessage + 'Unit cell dimensions not of compatible float format.\n'
 
-		try:
-			float(self.numMonomers)
-		except ValueError:
-			ErrorMessage += 'Crystal numMonomers input not of compatible float format.\n'
+		# check that unit cell dimensions can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.unitcell_a,'unit cell a dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_b,'unit cell b dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_c,'unit cell c dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_alpha,'unit cell angle alpha',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_beta,'unit cell angle beta',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_gamma,'unit cell angle gamma',True).checkIfNonNegFloat()
 
-		try:
-			float(self.numResidues)
-		except ValueError:
-			ErrorMessage += 'Crystal numResidues input not of compatible float format.\n'
+		# check that number of monomers/residues has been filled in and can be converted to non-negative integers
+		ErrorMessage += checks(self.numMonomers,'number of monomers',False).checkIfNonNegInt()
+		ErrorMessage += checks(self.numResidues,'number of residues',False).checkIfNonNegInt()
 
-		try:
-			float(self.numRNA)
-		except ValueError:
-			ErrorMessage += 'Crystal numRNA input not of compatible float format.\n'
+		# check that number of RNA/DNA nucleotides can be converted to non-negative integers
+		ErrorMessage += checks(self.numRNA,'number of RNA nucleotides',True).checkIfNonNegInt()
+		ErrorMessage += checks(self.numDNA,'number of DNA nucleotides',True).checkIfNonNegInt()
 
-		try:
-			float(self.numDNA)
-		except ValueError:
-			ErrorMessage += 'Crystal numDNA input not of compatible float format.\n'
+		# check that crystal proteinHeavyAtoms formatting is correct
+		ErrorMessage += checks(self.proteinHeavyAtoms,'heavy atoms in protein',True).checkHeavyAtomFormat()
 
-		try:
-			float(self.solventFraction)
-		except ValueError:
-			ErrorMessage += 'Crystal solventFraction input not of compatible float format.\n'
+		# check that crystal solventHeavyConc formatting is correct
+		ErrorMessage += checks(self.solventHeavyConc,'solvent heavy atom concentration',True).checkHeavyAtomFormat()
+
+		# check that solvent fraction is float between 0 and 1
+		ErrorMessage += checks(self.solventFraction,'solvent fraction',True).checkIfFloatBetween01()
 
 		return ErrorMessage
 
@@ -373,32 +320,36 @@ class crystals_seqFile(crystals):
 		self.unitcell_beta 		= unitcell_beta
 		self.unitcell_gamma 	= unitcell_gamma
 		self.numMonomers 		=  numMonomers
+		self.seqFile 			= sequenceFile
 		self.proteinHeavyAtoms 	= proteinHeavyAtoms
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
-		# check that unit cell dimensions can be converted to float format (from string format)
-		try:
-			float(self.unitcell_a)
-			float(self.unitcell_b)
-			float(self.unitcell_c)
-			float(self.unitcell_alpha)
-			float(self.unitcell_beta)
-			float(self.unitcell_gamma)
-		except ValueError:
-			ErrorMessage += 'Unit cell dimensions not of compatible float format.\n'
 
-		try:
-			float(self.numMonomers)
-		except ValueError:
-			ErrorMessage += 'Crystal numMonomers input not of compatible float format.\n'
+		# check that unit cell dimensions can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.unitcell_a,'unit cell a dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_b,'unit cell b dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_c,'unit cell c dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_alpha,'unit cell angle alpha',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_beta,'unit cell angle beta',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_gamma,'unit cell angle gamma',True).checkIfNonNegFloat()
 
-		try:
-			float(self.solventFraction)
-		except ValueError:
-			ErrorMessage += 'Crystal solventFraction input not of compatible float format.\n'
+		# check that number of monomers has been filled in and can be converted to a non-negative integer
+		ErrorMessage += checks(self.numMonomers,'number of monomers',False).checkIfNonNegInt()
+
+		# check that crystal proteinHeavyAtoms formatting is correct
+		ErrorMessage += checks(self.proteinHeavyAtoms,'heavy atoms in protein',True).checkHeavyAtomFormat()
+
+		# check that crystal solventHeavyConc formatting is correct
+		ErrorMessage += checks(self.solventHeavyConc,'solvent heavy atom concentration',True).checkHeavyAtomFormat()
+
+		# check that solvent fraction is float between 0 and 1
+		ErrorMessage += checks(self.solventFraction,'solvent fraction',True).checkIfFloatBetween01()
+
+		# check that sequence file name has been entered
+		ErrorMessage += checks(self.seqFile,'sequence file',False).checkIfNonBlankString()
 
 		return ErrorMessage
 
@@ -443,36 +394,33 @@ class crystals_SAXSuserDefined(crystals):
 
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
-		# check that unit cell dimensions can be converted to float format (from string format)
-		try:
-			float(self.unitcell_a)
-			float(self.unitcell_b)
-			float(self.unitcell_c)
-			float(self.unitcell_alpha)
-			float(self.unitcell_beta)
-			float(self.unitcell_gamma)
-		except ValueError:
-			ErrorMessage += 'Unit cell dimensions not of compatible float format.\n'
 
-		try:
-			float(self.numResidues)
-		except ValueError:
-			ErrorMessage += 'Crystal numResidues input not of compatible float format.\n'
+		# check that unit cell dimensions can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.unitcell_a,'unit cell a dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_b,'unit cell b dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_c,'unit cell c dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_alpha,'unit cell angle alpha',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_beta,'unit cell angle beta',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_gamma,'unit cell angle gamma',True).checkIfNonNegFloat()
 
-		try:
-			float(self.numRNA)
-		except ValueError:
-			ErrorMessage += 'Crystal numRNA input not of compatible float format.\n'
+		# check that protein concentration can be converted to non-negative float format (from string)
+		ErrorMessage += checks(self.proteinConc,'protein concentration',False).checkIfNonNegFloat()
 
-		try:
-			float(self.numDNA)
-		except ValueError:
-			ErrorMessage += 'Crystal numDNA input not of compatible float format.\n'
+		# check that number of residues has been filled in and can be converted to a non-negative integer
+		ErrorMessage += checks(self.numResidues,'number of residues',False).checkIfNonNegInt()
 
-		try:
-			float(self.solventFraction)
-		except ValueError:
-			ErrorMessage += 'Crystal solventFraction input not of compatible float format.\n'
+		# check that number of RNA/DNA nucleotides can be converted to non-negative integers
+		ErrorMessage += checks(self.numRNA,'number of RNA nucleotides',True).checkIfNonNegInt()
+		ErrorMessage += checks(self.numDNA,'number of DNA nucleotides',True).checkIfNonNegInt()
+
+		# check that crystal proteinHeavyAtoms formatting is correct
+		ErrorMessage += checks(self.proteinHeavyAtoms,'heavy atoms in protein',True).checkHeavyAtomFormat()
+
+		# check that crystal solventHeavyConc formatting is correct
+		ErrorMessage += checks(self.solventHeavyConc,'solvent heavy atom concentration',True).checkHeavyAtomFormat()
+
+		# check that solvent fraction is float between 0 and 1
+		ErrorMessage += checks(self.solventFraction,'solvent fraction',True).checkIfFloatBetween01()
 
 		return ErrorMessage
 
@@ -515,27 +463,32 @@ class crystals_SAXSseqFile(crystals):
 		self.proteinConc 		= proteinConc
 		self.seqFile 		= sequenceFile
 
+
 	def checkValidInputs_subclass(self):
 		ErrorMessage = ""
-		# check that unit cell dimensions can be converted to float format (from string format)
-		try:
-			float(self.unitcell_a)
-			float(self.unitcell_b)
-			float(self.unitcell_c)
-			float(self.unitcell_alpha)
-			float(self.unitcell_beta)
-			float(self.unitcell_gamma)
-		except ValueError:
-			ErrorMessage += 'Unit cell dimensions not of compatible float format.\n'
 
-		try:
-			float(self.solventFraction)
-		except ValueError:
-			ErrorMessage += 'Crystal solventFraction input not of compatible float format.\n'
+		# check that unit cell dimensions can be converted to non-negative float format (from string format)
+		ErrorMessage += checks(self.unitcell_a,'unit cell a dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_b,'unit cell b dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_c,'unit cell c dimension',False).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_alpha,'unit cell angle alpha',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_beta,'unit cell angle beta',True).checkIfNonNegFloat()
+		ErrorMessage += checks(self.unitcell_gamma,'unit cell angle gamma',True).checkIfNonNegFloat()
 
-		# check sequence file input is string
-		if not isinstance(self.seqFile, basestring):
-			ErrorMessage += 'Sequence file input {} not of compatible format.\n'.format(str(self.seqFile))
+		# check that protein concentration can be converted to non-negative float format (from string)
+		ErrorMessage += checks(self.proteinConc,'protein concentration',False).checkIfNonNegFloat()
+
+		# check that crystal proteinHeavyAtoms formatting is correct
+		ErrorMessage += checks(self.proteinHeavyAtoms,'heavy atoms in protein',True).checkHeavyAtomFormat()
+
+		# check that crystal solventHeavyConc formatting is correct
+		ErrorMessage += checks(self.solventHeavyConc,'solvent heavy atom concentration',True).checkHeavyAtomFormat()
+
+		# check that solvent fraction is float between 0 and 1
+		ErrorMessage += checks(self.solventFraction,'solvent fraction',True).checkIfFloatBetween01()
+
+		# check that sequence file name has been entered
+		ErrorMessage += checks(self.seqFile,'sequence file',False).checkIfNonBlankString()
 
 		return ErrorMessage
 
