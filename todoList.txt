@@ -17,10 +17,6 @@ in use by other programs.(JBB)
 - check cross platform image functionality (pkg PIL runs into problems on anaconda
 python 2.7.9 on mac). Need to test on ubuntu also... Try dials.python and logging into DLS (JBB)
 
-- When users change option in drop down list in crystalMaker/BeamMaketr/StrategyMaker windows
-they should retain the values in the fields that they have already entered in as
-opposed to setting the values to some default (often .set("0")) (CSB)
-
 - Make sure that the default values for any inputs that are optional but left
 null are the same as those specified in the RADDOSE-3D user manual. (JBB)
 
