@@ -1694,6 +1694,11 @@ class RADDOSEgui(Frame):
 def main():
     # when the script is run in python, do the following:
     root = Tk()
+    widthScrSizeFrac = 0.9
+    heightScrSizeFrac = 0.9
+    width = root.winfo_screenwidth()
+    height = root.winfo_screenheight()
+    root.geometry(str(int(round(width*widthScrSizeFrac))) + "x" + str(int(round(height*heightScrSizeFrac))))
     app = RADDOSEgui(root)
     root.mainloop()
     return app
