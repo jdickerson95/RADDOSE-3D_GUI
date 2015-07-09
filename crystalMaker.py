@@ -589,7 +589,7 @@ class crystalMakerWindow(Frame):
 			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
 
 		#Set the input boxes to their current values
-		self.pdbcode.set(self.pdbcode.set.get())
+		self.pdbcode.set(self.pdbcode.get())
 		self.unitcell_a.set(self.unitcell_a.get())
 		self.unitcell_b.set(self.unitcell_b.get())
 		self.unitcell_c.set(self.unitcell_c.get())
