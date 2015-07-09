@@ -14,8 +14,8 @@ in use by other programs.(JBB)
 
 - Create user guide (JBB + CSB LATER)
 
-- check cross platform image functionality (pkg PIL runs into problems on anaconda
-python 2.7.9 on mac). Need to test on ubuntu also... Try dials.python and logging into DLS (JBB)
+- Check GUI works on Windows, Linux (diamond UNIX distribution mainly) and Mac.
+(JBB (Win + Linux) + CSB (Mac) LATER - once it's complete)
 
 - Make sure that the default values for any inputs that are optional but left
 null are the same as those specified in the RADDOSE-3D user manual. (JBB)
@@ -45,13 +45,16 @@ with the same names are loaded twice. - want to be able to have same crystal loa
 twice, but names MUST be different & have a warning if an identical crystal has been
 loaded (JBB)
 
-- Currently experimental beam type collimation inputs from beam maker window are not 
-passed to beam objects and are lost. Should these be passed through, even though RD3D 
-does not need them?
-
 -***************************-
 To do at some point
 -***************************-
+
+- Currently experimental beam type collimation inputs from beam maker window are not
+passed to beam objects and are lost. Should these be passed through, even though RD3D
+does not need them? Leave them for now. I need to check that RADDOSE-3D doesn't
+do anything to the experimental beam image if collimation is set. Shouldn't be a
+problem yet since at diamond the image is taken after the slits and hence the
+image should already be collimated, hence why this isn't immediate.
 
 - Add toolbar buttons at top of GUI window (e.g. File, View, Save, etc.)
 
@@ -75,5 +78,3 @@ once all the other input sections are completed
 - When user types incompatible data format into a field and clicks 'make', the
 input window moves to the back of the screen. We should try to find out how to
 keep it at the front of the screen.
-
-
