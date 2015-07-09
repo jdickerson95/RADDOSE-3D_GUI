@@ -113,7 +113,7 @@ class beamMakerWindow(Frame):
     def beamRectCollInputs(self, beamType):
         # Beam input 5 --> Rectangular Collimation
         if beamType.get() == 'Gaussian' or beamType.get() == 'Experimental':
-            BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation (optional)",style="inputBoxes.TLabel")
+            BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
         elif beamType.get() == 'TopHat':
             BeaminputLabel5 = Label(self.currentStrategyBeam,text="Rectangular Collimation",style="inputBoxes.TLabel")
         BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
