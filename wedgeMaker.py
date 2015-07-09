@@ -157,7 +157,7 @@ class wedgeMakerWindow():
         WedgeinputBox = Entry(self.currentStrategyWedge,textvariable=self.rotAxBeamOffset,width=5)
         WedgeinputBox.grid(row=6,column=1,sticky=W,pady=5,padx=6)
         # preset offset
-        self.angRes.set("0")
+        self.rotAxBeamOffset.set("0")
 
     def createVisualWedge(self):
         # make an example visual wedge here

@@ -38,44 +38,75 @@ class crystalMakerWindow(Frame):
 		self.crystalAbsCoeffTypeInputs(MainGui)
 		self.sampleContainerTypeInputs(MainGui)
 
-		# Crystal input --> default cuboid crystal dimensions
+		# Crystal input --> default cuboid crystal dimension
 		self.CrystalDimX,self.CrystalDimY,self.CrystalDimZ = StringVar(),StringVar(),StringVar()
+		self.CrystalDimX.set("")
+		self.CrystalDimY.set("")
+		self.CrystalDimZ.set("")
 
 		# Crystal input --> wireframe type and model file for a polyhedron crystal
 		self.crystalWireFrameType, self.crystalModelFile, = StringVar(),StringVar(),
+		self.crystalModelFile.set("")
+		self.crystalWireFrameType.set("obj")
 		self.crystalDimInputs(self.CrystalType)
 
 		# Crystal input --> pixels per Micron
+		self.CrystalPixPerMic = StringVar()
+		self.CrystalPixPerMic.set("0.5")
 		self.crystalPixPerMicInputs()
 
 		# Crystal input --> Angle P and Angle L - these angles define the
 		#orientation of the crystal with respect to the beam and rotation axis.
+		self.crystalAngleP = StringVar()
+		self.crystalAngleL = StringVar()
+		self.crystalAngleP.set("0")
+		self.crystalAngleL.set("0")
 		self.crystalAngleInputs()
 
 		#Crystal input --> Inputs for crystal composition. This is dependent on
 		#Absorption Coefficient (AbsCoeff) type chosen
 		self.pdbcode = StringVar()
+		self.pdbcode.set("")
 		self.unitcell_a = StringVar()
+		self.unitcell_a.set("")
 		self.unitcell_b = StringVar()
+		self.unitcell_b.set("")
 		self.unitcell_c = StringVar()
+		self.unitcell_c.set("")
 		self.unitcell_alpha = StringVar()
+		self.unitcell_alpha.set("90")
 		self.unitcell_beta = StringVar()
+		self.unitcell_beta.set("90")
 		self.unitcell_gamma = StringVar()
+		self.unitcell_gamma.set("90")
 		self.numMonomers =  StringVar()
+		self.numMonomers.set("")
 		self.numResidues = StringVar()
+		self.numResidues.set("")
 		self.numRNA = StringVar()
+		self.numRNA.set("0")
 		self.numDNA = StringVar()
+		self.numDNA.set("0")
 		self.proteinHeavyAtoms = StringVar()
+		self.proteinHeavyAtoms.set("")
 		self.solventHeavyConc = StringVar()
+		self.solventHeavyConc.set("")
 		self.solventFraction = StringVar()
+		self.solventFraction.set("")
 		self.proteinConc = StringVar()
+		self.proteinConc.set("")
 		self.sequenceFile = StringVar()
+		self.sequenceFile.set("")
 		self.crystalCompositionInputs(self.crystalAbsCoeffType)
 
 		self.materialMixture = StringVar()
+		self.materialMixture.set("")
 		self.materialElements = StringVar()
+		self.materialElements.set("")
 		self.containerThickness = StringVar()
+		self.containerThickness.set("")
 		self.containerDensity = StringVar()
+		self.containerDensity.set("")
 		self.containerTypeInputs(self.containerType)
 
 		# create a 'make' button here to add this crystal to the list of added crystals
@@ -124,8 +155,6 @@ class crystalMakerWindow(Frame):
 				CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
 				CrystalinputBox2X = Entry(self.CrystalDimsInputsFrame,textvariable=self.CrystalDimX,width=5)
 				CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
-				self.CrystalDimY.set(0)
-				self.CrystalDimZ.set(0)
 
 			elif crystTypeValue.get() == 'Cylindrical':
 				CrystalDimXLabel = Label(self.CrystalDimsInputsFrame,text="Diameter = ",style="inputBoxes.TLabel")
@@ -136,7 +165,6 @@ class crystalMakerWindow(Frame):
 				CrystalDimXLabel.pack(side=LEFT,pady=5,padx=6)
 				CrystalinputBox2X = Entry(self.CrystalDimsInputsFrame,textvariable=self.CrystalDimY,width=5)
 				CrystalinputBox2X.pack(side=LEFT,pady=5,padx=6)
-				self.CrystalDimZ.set(0)
 
 		elif crystTypeValue.get() == 'Polyhedron':
 			####################################################################
@@ -157,34 +185,36 @@ class crystalMakerWindow(Frame):
 			self.hoverModel = HoverInfo(CrystalModelFileLabel, self.helpText.modelText)
 			CrystalModelFileInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalModelFile,width=14)
 			CrystalModelFileInputBox.grid(row=0,column=3,sticky=W,pady=5,padx=6)
-			self.CrystalDimX.set(0)
-			self.CrystalDimY.set(0)
-			self.CrystalDimZ.set(0)
-			self.crystalWireFrameType.set("obj")
+
+		#Set the input boxes to their current values
+		self.CrystalDimX.set(self.CrystalDimX.get())
+		self.CrystalDimY.set(self.CrystalDimY.get())
+		self.CrystalDimZ.set(self.CrystalDimZ.get())
+		self.crystalModelFile.set(self.crystalModelFile.get())
 
 	def crystalPixPerMicInputs(self):
 		# Crystal input 3 --> pixels per Micron
 		CrystalinputLabel3 = Label(self.currentStrategyCrystal,text="Pixels per Micron",style="inputBoxes.TLabel")
 		CrystalinputLabel3.grid(row=1,column=0,sticky=E,pady=5,padx=6)
 		self.hoverPix = HoverInfo(CrystalinputLabel3, self.helpText.pixPerMicText)
-		self.CrystalPixPerMic = StringVar()
 		CrystalinputBox3 = Entry(self.currentStrategyCrystal,textvariable=self.CrystalPixPerMic,width=5)
 		CrystalinputBox3.grid(row=1,column=1,sticky=W,pady=5,padx=6)
+		self.CrystalPixPerMic.set(self.CrystalPixPerMic.get())
 
 	def crystalAngleInputs(self):
 		CrystalAnglePLabel = Label(self.currentStrategyCrystal,text="Angle P = ",style="inputBoxes.TLabel")
 		CrystalAnglePLabel.grid(row=1,column=2,sticky=E,pady=5,padx=6)
 		self.hoverAngP = HoverInfo(CrystalAnglePLabel, self.helpText.anglePText)
-		self.crystalAngleP = StringVar()
 		CrystalAnglePInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalAngleP,width=5)
 		CrystalAnglePInputBox.grid(row=1,column=3,sticky=W,pady=5,padx=6)
+		self.crystalAngleP.set(self.crystalAngleP.get())
 
 		CrystalAngleLLabel = Label(self.currentStrategyCrystal,text="Angle L = ",style="inputBoxes.TLabel")
 		CrystalAngleLLabel.grid(row=2,column=2,sticky=E,pady=5,padx=6)
 		self.hoverAngL = HoverInfo(CrystalAngleLLabel, self.helpText.angleLText)
-		self.crystalAngleL = StringVar()
 		CrystalAnglePInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalAngleL,width=5)
 		CrystalAnglePInputBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
+		self.crystalAngleL.set(self.crystalAngleL.get())
 
 	def crystalAbsCoeffTypeInputs(self, MainGui):
 		# Crystal input 4 --> absorption coefficient
@@ -558,6 +588,24 @@ class crystalMakerWindow(Frame):
 			unitCellGammaBox = Entry(self.UnitcellInputsFrame,textvariable=self.unitcell_gamma,width=5)
 			unitCellGammaBox.grid(row=2,column=3,sticky=W,pady=5,padx=6)
 
+		#Set the input boxes to their current values
+		self.pdbcode.set(self.pdbcode.set.get())
+		self.unitcell_a.set(self.unitcell_a.get())
+		self.unitcell_b.set(self.unitcell_b.get())
+		self.unitcell_c.set(self.unitcell_c.get())
+		self.unitcell_alpha.set(self.unitcell_alpha.get())
+		self.unitcell_beta.set(self.unitcell_beta.get())
+		self.unitcell_gamma.set(self.unitcell_gamma.get())
+		self.numMonomers.set(self.numMonomers.get())
+		self.numResidues.set(self.numResidues.get())
+		self.numRNA.set(self.numRNA.get())
+		self.numRNA.set(self.numDNA.get())
+		self.proteinHeavyAtoms.set(self.proteinHeavyAtoms.get())
+		self.solventHeavyConc.set(self.solventHeavyConc.get())
+		self.solventFraction.set(self.solventFraction.get())
+		self.proteinConc.set(self.proteinConc.get())
+		self.sequenceFile.set(self.sequenceFile.get())
+
 	def sampleContainerTypeInputs(self, MainGui):
 		# Crystal input  --> Sample container type
 		containerTypeInputLabel = Label(self.currentStrategyCrystal,text="Type of sample container",style="inputBoxes.TLabel")
@@ -572,93 +620,99 @@ class crystalMakerWindow(Frame):
 
 	def containerTypeInputs(self, containerTypeValue):
 
-			if 'Specify mixture' in containerTypeValue.get():
-				containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
-				containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
-				self.hoverConMix = HoverInfo(containerMixtureLabel, self.helpText.conMixText)
-				self.mixtureDict = {'A-150 Tissue-Equivalent Plastic' : "a150",
-							        'Adipose Tissue (ICRU-44)' : "adipose",
-									'Dry Air (near sea level)': "air",
-									'Alanine' : "alanine",
-									'Bakelite' : "bakelite",
-									'Blood, Whole (ICRU-44)': "blood",
-									'Bone, Cortical (ICRU-44)':"bone",
-									'B-100 Bone-Equivalent Plastic':"b100",
-									'Brain, Grey/White Matter (ICRU-44)':"brain",
-									'Breast Tissue (ICRU-44)':"breast",
-									'C-552 Air-equivalent Plastic':"c552",
-									'Cadmium Telluride':"telluride",
-									'Calcium Fluoride':"fluoride",
-									'Calcium Sulfate':"calcium",
-									'15 mmol L-1 Ceric Ammonium Sulfate Solution':'ceric',
-									'Cesium Iodide':"cesium",
-									'Ordinary Concrete':"concrete",
-									'Barite Concrete (Type BA)':"concreteba",
-									'Eye Lens (ICRU-44)':"eye",
-									'Standard Fricke Ferrous Sulfate':"fricke",
-									'Gadolinium Oxysulfide':"gadolinium",
-									'Gafchromic Sensor':"gafchromic",
-									'Gallium Arsenide':"gallium",
-									'Pyrex (Borosilicate Glass)':"pyrex",
-									'Lead Glass':"glass",
-									'Lithium Fluoride':"lithiumflu",
-									'Lithium Tetraborate':"lithium",
-									'Lung Tissue (ICRU-44)':"lung",
-									'Magnesium Tetroborate':"magnesium",
-									'Mercuric Iodide':"mercuric",
-									'Muscle, Skeletal (ICRU-44)':"muscle",
-									'Ovary (ICRU-44)':"ovary",
-									'Photographic Emulsion, Kodak Type AA':"kodak",
-									'Photographic Emulsion, Standard Nuclear':"photoemul",
-									'Plastic Scintillator, Vinyltoluene':"vinyl",
-									'Polyethylene':"polyethylene",
-									'Mylar (Polyethylene Terephthalate)':"mylar",
-									'Polymethyl Methacrylate':"pmma",
-									'Polystyrene':"polystyrene",
-									'Teflon (Polytetrafluoroethylene)':"teflon",
-									'Polyvinyl Chloride':"polyvinyl",
-									'Radiochromic Dye Film, Nylon Base':"nylonfilm",
-									'Testis (ICRU-44)':"testis",
-									'Tissue, Soft (ICRU-44)':"tissue",
-									'Tissue, Soft (ICRU Four-Component)':"tissue4",
-									'Tissue-Equivalent Gas, Methane Based':"temethane",
-									'Tissue-Equivalent Gas, Propane Based':"tepropane",
-									'Liquid Water':"water"}
+		if 'Specify mixture' in containerTypeValue.get():
+			containerMixtureLabel = Label(self.currentStrategyCrystal,text="Mixture",style="inputBoxes.TLabel")
+			containerMixtureLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+			self.hoverConMix = HoverInfo(containerMixtureLabel, self.helpText.conMixText)
+			self.mixtureDict = {'A-150 Tissue-Equivalent Plastic' : "a150",
+						        'Adipose Tissue (ICRU-44)' : "adipose",
+								'Dry Air (near sea level)': "air",
+								'Alanine' : "alanine",
+								'Bakelite' : "bakelite",
+								'Blood, Whole (ICRU-44)': "blood",
+								'Bone, Cortical (ICRU-44)':"bone",
+								'B-100 Bone-Equivalent Plastic':"b100",
+								'Brain, Grey/White Matter (ICRU-44)':"brain",
+								'Breast Tissue (ICRU-44)':"breast",
+								'C-552 Air-equivalent Plastic':"c552",
+								'Cadmium Telluride':"telluride",
+								'Calcium Fluoride':"fluoride",
+								'Calcium Sulfate':"calcium",
+								'15 mmol L-1 Ceric Ammonium Sulfate Solution':'ceric',
+								'Cesium Iodide':"cesium",
+								'Ordinary Concrete':"concrete",
+								'Barite Concrete (Type BA)':"concreteba",
+								'Eye Lens (ICRU-44)':"eye",
+								'Standard Fricke Ferrous Sulfate':"fricke",
+								'Gadolinium Oxysulfide':"gadolinium",
+								'Gafchromic Sensor':"gafchromic",
+								'Gallium Arsenide':"gallium",
+								'Pyrex (Borosilicate Glass)':"pyrex",
+								'Lead Glass':"glass",
+								'Lithium Fluoride':"lithiumflu",
+								'Lithium Tetraborate':"lithium",
+								'Lung Tissue (ICRU-44)':"lung",
+								'Magnesium Tetroborate':"magnesium",
+								'Mercuric Iodide':"mercuric",
+								'Muscle, Skeletal (ICRU-44)':"muscle",
+								'Ovary (ICRU-44)':"ovary",
+								'Photographic Emulsion, Kodak Type AA':"kodak",
+								'Photographic Emulsion, Standard Nuclear':"photoemul",
+								'Plastic Scintillator, Vinyltoluene':"vinyl",
+								'Polyethylene':"polyethylene",
+								'Mylar (Polyethylene Terephthalate)':"mylar",
+								'Polymethyl Methacrylate':"pmma",
+								'Polystyrene':"polystyrene",
+								'Teflon (Polytetrafluoroethylene)':"teflon",
+								'Polyvinyl Chloride':"polyvinyl",
+								'Radiochromic Dye Film, Nylon Base':"nylonfilm",
+								'Testis (ICRU-44)':"testis",
+								'Tissue, Soft (ICRU-44)':"tissue",
+								'Tissue, Soft (ICRU Four-Component)':"tissue4",
+								'Tissue-Equivalent Gas, Methane Based':"temethane",
+								'Tissue-Equivalent Gas, Propane Based':"tepropane",
+								'Liquid Water':"water"}
 
-				self.materialMixture.set('Dry Air (near sea level)') # set initial material here
-				containerMixtureOptionMenu = OptionMenu(self.currentStrategyCrystal,self.materialMixture, self.materialMixture.get(), *self.mixtureDict.keys())
-				containerMixtureOptionMenu.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+			self.materialMixture.set('Dry Air (near sea level)') # set initial material here
+			containerMixtureOptionMenu = OptionMenu(self.currentStrategyCrystal,self.materialMixture, self.materialMixture.get(), *self.mixtureDict.keys())
+			containerMixtureOptionMenu.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
 
-				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
-				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
-				self.hoverConThick = HoverInfo(containerThicknessLabel, self.helpText.conThick)
-				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
-				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
+			containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
+			containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+			self.hoverConThick = HoverInfo(containerThicknessLabel, self.helpText.conThick)
+			containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
+			containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
 
-				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
-				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
-				self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
-				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
-				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+			containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
+			containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+			self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
+			containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
+			containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
 
-			elif 'Specify elemental composition' in containerTypeValue.get():
-				containerElementalLabel = Label(self.currentStrategyCrystal,text="Elemental composition",style="inputBoxes.TLabel")
-				containerElementalLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
-				self.hoverConEl = HoverInfo(containerElementalLabel, self.helpText.conElText)
-				containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialElements,width=14)
-				containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
+		elif 'Specify elemental composition' in containerTypeValue.get():
+			containerElementalLabel = Label(self.currentStrategyCrystal,text="Elemental composition",style="inputBoxes.TLabel")
+			containerElementalLabel.grid(row=10,column=0,sticky=E,pady=5,padx=6)
+			self.hoverConEl = HoverInfo(containerElementalLabel, self.helpText.conElText)
+			containerMixtureInputBox = Entry(self.currentStrategyCrystal,textvariable=self.materialElements,width=14)
+			containerMixtureInputBox.grid(row=10,column=1,columnspan=2,sticky=W,pady=5,padx=6)
 
-				containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
-				containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
-				self.hoverConThick = HoverInfo(containerThicknessLabel, self.helpText.conThick)
-				containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
-				containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
+			containerThicknessLabel = Label(self.currentStrategyCrystal,text="Container thickness",style="inputBoxes.TLabel")
+			containerThicknessLabel.grid(row=11,column=0,sticky=E,pady=5,padx=6)
+			self.hoverConThick = HoverInfo(containerThicknessLabel, self.helpText.conThick)
+			containerThicknessInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerThickness,width=14)
+			containerThicknessInputBox.grid(row=11,column=1,sticky=W,pady=5,padx=6)
 
-				containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
-				containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
-				self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
-				containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
-				containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+			containerDensityLabel = Label(self.currentStrategyCrystal,text="Container density",style="inputBoxes.TLabel")
+			containerDensityLabel.grid(row=11,column=2,sticky=E,pady=5,padx=6)
+			self.hoverConDens = HoverInfo(containerDensityLabel, self.helpText.conDens)
+			containerDensityInputBox = Entry(self.currentStrategyCrystal,textvariable=self.containerDensity,width=14)
+			containerDensityInputBox.grid(row=11,column=3,sticky=W,pady=5,padx=6)
+
+		#Set input boxes to their corresponding current values
+		self.materialMixture.set(self.materialMixture.get())
+		self.materialElements.set(self.materialElements.get())
+		self.containerThickness.set(self.containerThickness.get())
+		self.containerDensity.set(self.containerDensity.get())
 
 	def update(self, crystTypeValue, absCoeffTypeValue, containerTypeValue, MainGui):
 
