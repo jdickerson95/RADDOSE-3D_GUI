@@ -1550,14 +1550,14 @@ class RADDOSEgui(Frame):
         #loop through each entry in the dictionary, create a string of the key
         #and value from the dictionary and append that to the list created above
         for crystProp in crystPropertyDict:
-            # convert protein/solvent heavy atom conc lists to correct string format
-            if crystProp in ('proteinHeavyAtoms','solventHeavyConc'):
-                string = '{}'.format(crystProp[0].upper()+crystProp[1:])
-                for value in list(crystPropertyDict[crystProp]):
-                    string += ' {}'.format(str(value))
-                crystLines.append(string)
+            # # convert protein/solvent heavy atom conc lists to correct string format
+            # if crystProp in ('proteinHeavyAtoms','solventHeavyConc'):
+            #     string = '{}'.format(crystProp[0].upper()+crystProp[1:])
+            #     for value in list(crystPropertyDict[crystProp]):
+            #         string += ' {}'.format(str(value))
+            #     crystLines.append(string)
             # create strings for other (non-dimension) crystal inputs
-            elif (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
+            if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
             crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
             crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
             crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma'):
