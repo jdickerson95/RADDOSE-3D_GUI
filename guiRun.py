@@ -1545,8 +1545,9 @@ class RADDOSEgui(Frame):
         which objects should be returned ('crystal': crystal, 'beam': beam list,
          'all': everything)
         """
-        parsedInput = parsedRD3Dinput(pathToRaddoseInput)
+        parsedInput = parsedRD3Dinput(pathToRaddoseInput,[],[],[])
         parsedInput.parseRaddoseInput()
+
         if returnType == 'crystal':
             return (parsedInput.crystal)
         elif returnType == 'beam':
