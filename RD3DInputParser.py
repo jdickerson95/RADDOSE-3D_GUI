@@ -197,10 +197,10 @@ class parsedRD3Dinput(object):
 		elif crystalInfoDict["abscoefcalc"].lower() in ('exp'):
 			crystal.pdb = crystalInfoDict["pdb"]
 
-		crystal.solventHeavyConc 	= crystalInfoDict["solventheavyconc"]
+		crystal.solventHeavyConc 	= " ".join(crystalInfoDict["solventheavyconc"])
 
 		if not crystalInfoDict["abscoefcalc"].lower() in ('exp'):
-			crystal.proteinHeavyAtoms 	= crystalInfoDict["proteinheavyatoms"]
+			crystal.proteinHeavyAtoms 	= " ".join(crystalInfoDict["proteinheavyatoms"])
 			crystal.solventFraction 	= crystalInfoDict["solventfraction"]
 
 		return crystal

@@ -1146,11 +1146,10 @@ class RADDOSEgui(Frame):
         # from premade RD3D input file
         ErrorMessage = newCrystal.checkValidInputs()
         # for the case where abscoefCalc is not 'Average', perform initial checks
-        try:
+        if str(newCrystal.absCoefCalc).lower() != 'average':
             ErrorMessage2 = newCrystal.checkValidInputs_subclass()
             ErrorMessage += ErrorMessage2
-        except AttributeError:
-            pass
+
         return ErrorMessage
 
     # functions for the manipulation of beam files and parameters
