@@ -381,8 +381,9 @@ class RADDOSEgui(Frame):
         self.crystList = [exampleCryst,exampleCryst2]
 
         self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=loadListHeight)
+
         for cryst in self.crystList:
-            self.crystListbox.insert(END, cryst.crystName)
+            self.crystListbox.insert(END, cryst.getTimeStampedName())
         self.crystListbox.update_idletasks()
         self.crystListbox.bind("<<ListboxSelect>>", self.onSelect)
         scrollbarCrystList.config(command=self.crystListbox.yview)
@@ -445,7 +446,7 @@ class RADDOSEgui(Frame):
 
         # allow user to give a name to a beam and make a beam from scratch here via button interaction
         beamMakeNameLabel = Label(beamMakeLabelFrame,text="Beam Name",style="inputBoxes.TLabel")
-        beamMakeNameLabel.grid(row=1, column=0,pady=0,padx=6,sticky=W+E)
+        beamMakeNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
         self.beamMakeName = StringVar()
         beamMakeNameBox = Entry(beamMakeLabelFrame,textvariable=self.beamMakeName)
         beamMakeNameBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
@@ -503,7 +504,7 @@ class RADDOSEgui(Frame):
 
         # make a dropdown list to choose one of added crystals
         self.crystChoice = StringVar(self)
-        self.crystChoices = [cryst.crystName for cryst in self.crystList]
+        self.crystChoices = [cryst.getTimeStampedName() for cryst in self.crystList]
         self.crystChoiceMenu = dynamicOptionMenu(chooseCrystFrame, self.crystChoice,self.crystChoices[0],*self.crystChoices)
         self.crystChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
 
@@ -851,7 +852,7 @@ class RADDOSEgui(Frame):
         self.crystChoiceMenu['menu'].delete(0, 'end')
 
         # Insert list of new options (tk._setit hooks them up to self.crystChoice)
-        new_CrystChoices = [cryst.crystName for cryst in self.crystList]
+        new_CrystChoices = [cryst.getTimeStampedName() for cryst in self.crystList]
         for choice in new_CrystChoices:
             self.crystChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.crystChoice, choice))
 
@@ -1123,7 +1124,7 @@ class RADDOSEgui(Frame):
         # add a crystal object to the list of crystals (outside of listbox)
         self.crystList.append(crystal)
         # add crystal name to loaded crystal list
-        self.crystListbox.insert(END, str(crystal.crystName))
+        self.crystListbox.insert(END, str(crystal.getTimeStampedName()))
         # refresh the option menu of added crystals to keep it up to date
         self.refreshCrystChoices()
 
@@ -1204,7 +1205,7 @@ class RADDOSEgui(Frame):
             if addQuery == 'yes':
                 # read in RADDOSE-3D style input file to get crystal properties
                 newCrystal = self.parseRaddoseInput(self.crystLoadBox.get(),'crystal')
-                newCrystal.crystName = str(self.crystLoadName.get()) + newCrystal.crystName
+                newCrystal.crystName = str(self.crystLoadName.get())
 
                 # check correct crystal properties have been read from RD3D input file
                 ErrorMessage = self.checkCrystInputs(newCrystal)
@@ -1398,7 +1399,7 @@ class RADDOSEgui(Frame):
 
         # run the current designed strategy here
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
-        self.currentCrystIndex = [cryst.crystName for cryst in self.crystList].index(self.crystChoice.get())
+        self.currentCrystIndex = [cryst.getTimeStampedName() for cryst in self.crystList].index(self.crystChoice.get())
         # get the index of the selected beam from the list of added beams (in the optionmenu list)
         self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
 
@@ -1508,7 +1509,8 @@ class RADDOSEgui(Frame):
             crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
 
             # give crystal object a name here
-            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal" + crystalObject.crystName
+            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
+
             self.addCrystalToList(crystalObject)
             self.addRD3DInputBeamsToList(beamList,experimentName)
             experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
@@ -1628,7 +1630,7 @@ class RADDOSEgui(Frame):
             if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
             crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
             crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
-            crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma'):
+            crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma' and '_crystals__' not in crystProp):
                 string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
                 crystLines.append(string)
 
@@ -1771,8 +1773,8 @@ class RADDOSEgui(Frame):
 def main():
     # when the script is run in python, do the following:
     root = Tk()
-    widthScrSizeFrac = 1
-    heightScrSizeFrac = 1
+    widthScrSizeFrac = 0.9
+    heightScrSizeFrac = 0.9
     width = root.winfo_screenwidth()
     height = root.winfo_screenheight()
     root.geometry(str(int(round(width*widthScrSizeFrac))) + "x" + str(int(round(height*heightScrSizeFrac))))

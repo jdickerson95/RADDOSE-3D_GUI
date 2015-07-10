@@ -9,7 +9,7 @@ class crystals(object):
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="", crystDimZ="",
 				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc=""):
 
-		self.crystName        = "{}     {}".format(crystName,self.getCreationTime())
+		self.crystName        = crystName
 		self.type             = crystType
 		self.crystDimX        = crystDimX
 		self.crystDimY        = crystDimY
@@ -23,6 +23,13 @@ class crystals(object):
 		self.containerInfoDict = containerInfoDict
 		if self.checkContainerInfoPresent() == True:
 			self.getContainerInfo()
+
+		self.__creationTime =  self.getCreationTime()
+
+	def getTimeStampedName(self):
+		# create a string containing name then timestamp for unique crystal identification
+		timeStampedName =  self.__creationTime + " "*10 + self.crystName 
+		return timeStampedName
 
 	def getCreationTime(self):
 		# get time of creation of current crystal object
