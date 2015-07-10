@@ -29,6 +29,15 @@ class beams(object):
 		"""
 		return self.__dict__ == other.__dict__
 
+	def __eqDiffName__(self, other) :
+		"""This method checks to see if a beam has the same properties as
+		another beam
+		"""
+		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('beamName','_beams__creationTime')} 
+		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('beamName','_beams__creationTime')} 
+
+		return compareProps_self == compareProps_other
+
 	def checkValidInputs(self):
 		ErrorMessage = ""
 		# check that beam energy can be converted to non-negative float format (from string format)
