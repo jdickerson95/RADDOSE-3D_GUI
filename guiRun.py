@@ -1541,9 +1541,12 @@ class RADDOSEgui(Frame):
         #Add a dictionary entry that puts all three crystal dimension values into a string
         crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
 
-        #Add a dictionary entry that puts the unit cell dimensions into a string
-        crystPropertyDict["Unitcell"] = '{} {} {} {} {} {}'.format(crystalObj.unitcell_a, crystalObj.unitcell_b, crystalObj.unitcell_c,
-        crystalObj.unitcell_alpha, crystalObj.unitcell_beta, crystalObj.unitcell_gamma)
+        #Add a dictionary entry that puts the unit cell dimensions into a string if present in crystal object
+        try:
+            crystPropertyDict["Unitcell"] = '{} {} {} {} {} {}'.format(crystalObj.unitcell_a, crystalObj.unitcell_b, crystalObj.unitcell_c,
+                                                                       crystalObj.unitcell_alpha, crystalObj.unitcell_beta, crystalObj.unitcell_gamma)
+        except AttributeError:
+            pass
 
         #loop through each entry in the dictionary, create a string of the key
         #and value from the dictionary and append that to the list created above
