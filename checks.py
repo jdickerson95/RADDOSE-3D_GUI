@@ -29,10 +29,17 @@ class checks(object):
 		ErrorMessage = ""
 		# check if every second element in list is non-negative float
 		for value in self.property.split()[1::2]:
-			Error = self.checkIfNonNegFloat()
-			if len(Error) != 0:
+			Error = False
+			try:
+				float(value)
+				if float(value) < 0:
+					Error = True
+			except ValueError:
+				Error = True
+			if Error == True:
 				ErrorMessage += 'Every second term in {} field not of compatible non-negative float format.\n'.format(self.propertyName)
-
+				break 
+				
 		# check whether left blank & optional
 		ErrorMessage = self.ignoreIfBlankAndOptional(ErrorMessage)
 		return ErrorMessage
