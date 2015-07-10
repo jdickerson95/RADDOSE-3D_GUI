@@ -1359,7 +1359,6 @@ class RADDOSEgui(Frame):
                     # give warning if identical beam already loaded
                     warningMessage = ""
                     for newBeam in newBeamList:
-                        print warningMessage
                         warningMessage += self.checkRepeatedBeam(newBeam)
                     if warningMessage != "":
                         tkMessageBox.showinfo("Warning",warningMessage)
@@ -1544,6 +1543,7 @@ class RADDOSEgui(Frame):
             ErrorMessage = self.checkCrystInputs(crystalObject)
             if ErrorMessage != "":
                 tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+                return
             else:
                 # add crystal to loaded crystal list
                 self.addCrystalToList(crystalObject)
@@ -1560,11 +1560,11 @@ class RADDOSEgui(Frame):
                 if ErrorMessage != "":
                     tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
                     beamError = True
+                    return
             if beamError == False:
                 # give warning if identical beam already loaded
                 warningMessage = ""
                 for beam in beamList:
-                    print warningMessage
                     warningMessage += self.checkRepeatedBeam(beam)
                 if warningMessage != "":
                     tkMessageBox.showinfo("Warning",warningMessage)
