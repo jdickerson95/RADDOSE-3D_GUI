@@ -23,8 +23,6 @@ null are the same as those specified in the RADDOSE-3D user manual. (JBB)
 - Make sure that the GUI reads integers as well as floats for fields that
 require floating point values. (CSB)
 
-- Add additional crystal/beam class checks (CSB)
-
 - Add warnings as well as the current checks for crystals/beam classes (CSB)
 
 - Do the parsers handle container information correctly when reading from premade RD3D
