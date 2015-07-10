@@ -338,7 +338,7 @@ Specifies the path to the file containing the beam image.
 Currently only portable Graymap (.pgm) files are supported.
 """
 
-        self.pixSizeText = """Pixel Size Text
+        self.pixSizeText = """Pixel Size
 
 Specifies the pixel size of the beam image in micrometers.
 x and y specify the horizontal and vertical size of the pixels in the
