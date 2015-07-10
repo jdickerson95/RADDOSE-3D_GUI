@@ -67,7 +67,7 @@ class checks(object):
 	def checkIfInt(self):
 		ErrorMessage = ""
 		try:
-			float(self.property)
+			int(self.property)
 		except ValueError:
 			ErrorMessage = '{} not of compatible integer format.\n'.format(self.propertyName)
 
