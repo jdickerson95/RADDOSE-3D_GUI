@@ -826,5 +826,10 @@ class crystalMakerWindow(Frame):
 			# add new crystal to list of loaded crystals
 			MainGui.addCrystalToList(newCryst)
 
+			# give warning if identical crystal already loaded
+			warningMessage = MainGui.checkRepeatedCryst(newCryst)
+			if warningMessage != "":
+				tkMessageBox.showinfo("Warning",warningMessage)
+
 			# once this function runs, the toplevel window should be exited
 			self.master.destroy()
