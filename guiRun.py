@@ -1528,7 +1528,7 @@ class RADDOSEgui(Frame):
         for i in xrange(0,len(beamList)):
             beam = copy.deepcopy(beamList[i])
             if i == 0:
-                beam.beamName = experimentName+"_beam_" + str(uniqueBeamCounter) + beam.beamName
+                beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
                 self.addBeamToList(beam)
             elif i > 0:
                 for j in xrange(0,i):
@@ -1536,7 +1536,7 @@ class RADDOSEgui(Frame):
                         break
                     elif j == i-1:
                         uniqueBeamCounter += 1
-                        beam.beamName = experimentName+"_beam_" + str(uniqueBeamCounter) + beam.beamName
+                        beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
                         self.addBeamToList(beam)
 
     def parseRaddoseInput(self,pathToRaddoseInput,returnType):
@@ -1627,6 +1627,7 @@ class RADDOSEgui(Frame):
         #loop through each entry in the dictionary, create a string of the key
         #and value from the dictionary and append that to the list created above
         for crystProp in crystPropertyDict:
+            # create strings for other (non-dimension) crystal inputs
             if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
             crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
             crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
