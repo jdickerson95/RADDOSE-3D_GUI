@@ -144,24 +144,33 @@ class parsedRD3Dinput(object):
 		return crystal
 
 	def getCrystalDictInfo(self,crystalInfoDict,crystal):
-		crystal.type             = crystalInfoDict["type"]
-		crystal.crystDimX        = crystalInfoDict["dimensions"][0]
-		crystal.crystDimY        = crystalInfoDict["dimensions"][1]
-		crystal.crystDimZ        = crystalInfoDict["dimensions"][2]
-		crystal.pixelsPerMicron  = crystalInfoDict["pixelspermicron"]
-		crystal.angleP 		  = crystalInfoDict["anglep"]
-		crystal.angleL 		  = crystalInfoDict["anglel"]
-		crystal.absCoefCalc 	  = crystalInfoDict["abscoefcalc"]
+		crystal.type             	= crystalInfoDict["type"]
+		crystal.crystDimX        	= crystalInfoDict["dimensions"][0]
+		crystal.crystDimY        	= crystalInfoDict["dimensions"][1]
+		crystal.crystDimZ        	= crystalInfoDict["dimensions"][2]
+		crystal.pixelsPerMicron  	= crystalInfoDict["pixelspermicron"]
+		crystal.angleP 		  		= crystalInfoDict["anglep"]
+		crystal.angleL 		  		= crystalInfoDict["anglel"]
+		crystal.absCoefCalc 	 	= crystalInfoDict["abscoefcalc"]
 		return crystal
 
 	def getUnitCellDictInfo(self,crystalInfoDict,crystal):
 		if not crystalInfoDict["abscoefcalc"].lower() in ('average','exp'):
-			crystal.unitcell_a 		= crystalInfoDict["unitcell_a"]
-			crystal.unitcell_b 		= crystalInfoDict["unitcell_b"]
-			crystal.unitcell_c 		= crystalInfoDict["unitcell_c"]
-			crystal.unitcell_alpha 	= crystalInfoDict["unitcell_alpha"]
-			crystal.unitcell_beta 		= crystalInfoDict["unitcell_beta"]
-			crystal.unitcell_gamma 	= crystalInfoDict["unitcell_gamma"]
+			crystal.unitcell_a 		= crystalInfoDict["unitcell"][0]
+			crystal.unitcell_b 		= crystalInfoDict["unitcell"][1]
+			crystal.unitcell_c 		= crystalInfoDict["unitcell"][2]
+			try:
+				crystal.unitcell_alpha 	= crystalInfoDict["unitcell"][3]
+			except IndexError:
+				pass
+			try:
+				crystal.unitcell_beta 	= crystalInfoDict["unitcell"][4]
+			except IndexError:
+				pass
+			try:
+				crystal.unitcell_gamma 	= crystalInfoDict["unitcell"][5]
+			except IndexError:
+				pass
 
 		return crystal
 
@@ -172,18 +181,18 @@ class parsedRD3Dinput(object):
 		if crystalInfoDict["abscoefcalc"].lower() in ('rd3d','rdv2'):
 			crystal.numMonomers 		=  crystalInfoDict["nummonomers"]
 			crystal.numResidues 		= crystalInfoDict["numresidues"]
-			crystal.numRNA 			= crystalInfoDict["numrna"]
-			crystal.numDNA 			= crystalInfoDict["numdna"]
+			crystal.numRNA 				= crystalInfoDict["numrna"]
+			crystal.numDNA 				= crystalInfoDict["numdna"]
 		elif crystalInfoDict["abscoefcalc"].lower() in ('sequence'):
 			crystal.numMonomers 		=  crystalInfoDict["nummonomers"]
-			crystal.seqFile			= crystalInfoDict["seqfile"]
+			crystal.seqFile				= crystalInfoDict["seqfile"]
 		elif crystalInfoDict["abscoefcalc"].lower() in ('saxs'):
 			crystal.numResidues 		= crystalInfoDict["numresidues"]
-			crystal.numRNA 			= crystalInfoDict["numrna"]
-			crystal.numDNA 			= crystalInfoDict["numdna"]
+			crystal.numRNA 				= crystalInfoDict["numrna"]
+			crystal.numDNA 				= crystalInfoDict["numdna"]
 			crystal.proteinConc 		= crystalInfoDict["proteinconc"]
 		elif crystalInfoDict["abscoefcalc"].lower() in ('saxsseq'):
-			crystal.seqFile			= crystalInfoDict["seqfile"]
+			crystal.seqFile				= crystalInfoDict["seqfile"]
 			crystal.proteinConc 		= crystalInfoDict["proteinconc"]
 		elif crystalInfoDict["abscoefcalc"].lower() in ('exp'):
 			crystal.pdb = crystalInfoDict["pdb"]
@@ -199,7 +208,7 @@ class parsedRD3Dinput(object):
 	def getCrystalContainerInfo(self,crystalInfoDict,crystal):
 		# get crystal container information if present
 		try:
-			crystal.containerType 	= crystalInfoDict["containertype"]
+			crystal.containerType 		= crystalInfoDict["containertype"]
 		except KeyError:
 			pass
 		try:
@@ -268,6 +277,6 @@ class parsedRD3Dinput(object):
 			beam.collimation  	= beamInfoDict["collimation"]
 		elif beam.type == 'Experimental':
 			beam.pixelSize 		= beamInfoDict["pixelsize"]
-			beam.file 		= beamInfoDict["file"]
+			beam.file 			= beamInfoDict["file"]
 
 		return beam
