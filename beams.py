@@ -6,12 +6,19 @@ class beams(object):
 	# this class is for beam parameters for a loaded or created beam
 	def __init__(self,beamName="",beamFlux=0,beamEnergy=0):
 
-		self.beamName     	= "{}     {}".format(beamName,self.getCreationTime())
+		self.beamName     	= beamName
 		self.flux         	= beamFlux
 		self.energy       	= beamEnergy
 
+		self.__creationTime =  self.getCreationTime()
+
+	def getTimeStampedName(self):
+		# create a string containing name then timestamp for unique beam identification
+		timeStampedName =  self.__creationTime + " "*10 + self.beamName 
+		return timeStampedName
+
 	def getCreationTime(self):
-		# get time of creation of current crystal object
+		# get time of creation of current beam object
 		ts = time.time()
 		creationTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 		return creationTime

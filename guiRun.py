@@ -471,7 +471,7 @@ class RADDOSEgui(Frame):
 
         self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=loadListHeight)
         for beam in self.beamList:
-            self.beamListbox.insert(END, beam.beamName)
+            self.beamListbox.insert(END, beam.getTimeStampedName())
         self.beamListbox.update_idletasks()
         self.beamListbox.bind("<<ListboxSelect>>", self.onSelect)
         scrollbarBeamList.config(command=self.beamListbox.yview)
@@ -516,7 +516,7 @@ class RADDOSEgui(Frame):
           # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies
         # created below
         self.beamChoice = StringVar(self)
-        self.beamChoices = [bm.beamName for bm in self.beamList]
+        self.beamChoices = [bm.getTimeStampedName() for bm in self.beamList]
         self.beamChoiceMenu = dynamicOptionMenu(chooseBeamStratFrame, self.beamChoice,self.beamChoices[0],*self.beamChoices)
         self.beamChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
 
@@ -810,7 +810,7 @@ class RADDOSEgui(Frame):
         self.treeviewIndexlist.append(Index)
 
         # get the index of the selected beam from the list of added beams (in the optionmenu list)
-        self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
+        self.currentBeamIndex = [bm.getTimeStampedName() for bm in self.beamList].index(self.beamChoice.get())
         # get the selected beam object here
         currentBeam = self.beamList[self.currentBeamIndex]
         # add the current beam to the list of beams to be run
@@ -1236,7 +1236,7 @@ class RADDOSEgui(Frame):
         self.beamChoiceMenu['menu'].delete(0, 'end')
 
         # Insert list of new options (tk._setit hooks them up to self.beamChoice)
-        new_BeamChoices = [bm.beamName for bm in self.beamList]
+        new_BeamChoices = [bm.getTimeStampedName() for bm in self.beamList]
         for choice in new_BeamChoices:
             self.beamChoiceMenu['menu'].add_command(label=choice, command=tk._setit(self.beamChoice, choice))
 
@@ -1304,7 +1304,7 @@ class RADDOSEgui(Frame):
 
     def addBeamToList(self, beam):
         # add beam name to loaded beam list
-        self.beamListbox.insert(END, beam.beamName)
+        self.beamListbox.insert(END, beam.getTimeStampedName())
         # add a beam object to the list of beams (outside of listbox)
         self.beamList.append(beam)
         # also update list of beam choices used in the right strategy window
@@ -1401,7 +1401,7 @@ class RADDOSEgui(Frame):
         # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
         self.currentCrystIndex = [cryst.getTimeStampedName() for cryst in self.crystList].index(self.crystChoice.get())
         # get the index of the selected beam from the list of added beams (in the optionmenu list)
-        self.currentBeamIndex = [bm.beamName for bm in self.beamList].index(self.beamChoice.get())
+        self.currentBeamIndex = [bm.getTimeStampedName() for bm in self.beamList].index(self.beamChoice.get())
 
         currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
         crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
@@ -1668,6 +1668,8 @@ class RADDOSEgui(Frame):
         #loop through each entry in the dictionary, create a string of the key
         #and value from the dictionary and append that to the list created above
         for beamProp in beamPropertyDict:
+            if '_beams__' in beamProp:
+                continue
             if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName'):
                 string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
                 beamLines.append(string)
@@ -1680,6 +1682,7 @@ class RADDOSEgui(Frame):
             if beamProp == 'pixelSize':
                 string = 'PixelSize {} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
                 beamLines.append(string)
+
 
         #write list entries as a single text block with each list entry joined
         #by a new line character
