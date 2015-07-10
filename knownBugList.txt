@@ -14,6 +14,9 @@ this at some point
 - If no beams or crystals have been selected from the lists and you click the
 "View" button, it doesn't return any message to the User. Need to fix this!
 
+- Allows you to try to run RADDOSE-3D even when a crystal object hasn't been
+loaded into the "Choose a crystal" frame
+
 - RADDOSE-3D runs but fails to display the summary in the summary output window.
 Something to do with the container stuff. Below is the output of the failed run.
 
