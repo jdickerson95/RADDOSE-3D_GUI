@@ -480,11 +480,11 @@ class RADDOSEgui(Frame):
 
         # this button will view the currently selected crystal in the list
         viewBeamButton = Button(FrameBodyMiddleBottom, text="View",command=self.clickBeamView)
-        viewBeamButton.grid(row=3,column=0,sticky="nsew",padx=10, pady=0)
+        viewBeamButton.grid(row=3,column=0,sticky="nsew",padx=10, pady=5)
 
         # this button deletes the currently selected crystal from the listbox strategy list above
         deleteBeamButton = Button(FrameBodyMiddleBottom, text="Delete",command=self.deleteBeam)
-        deleteBeamButton.grid(row=3,column=1,sticky="nsew",padx=10, pady=0)
+        deleteBeamButton.grid(row=3,column=1,sticky="nsew",padx=10, pady=5)
         FrameBodyMiddleBottom.grid_columnconfigure(0,weight=1)
         FrameBodyMiddleBottom.grid_columnconfigure(1,weight=1)
         FrameBodyMiddleBottom.grid_rowconfigure(0,weight=1)
@@ -499,18 +499,18 @@ class RADDOSEgui(Frame):
         # make labelframe in which a crystal can be chosen from list of added crystals
         l = Label(LabelFrameBodyRight,text="Choose a crystal",style="labelFrameTitle.TLabel")
         chooseCrystFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
-        chooseCrystFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=0)
+        chooseCrystFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=10)
 
         # make a dropdown list to choose one of added crystals
         self.crystChoice = StringVar(self)
         self.crystChoices = [cryst.crystName for cryst in self.crystList]
         self.crystChoiceMenu = dynamicOptionMenu(chooseCrystFrame, self.crystChoice,self.crystChoices[0],*self.crystChoices)
-        self.crystChoiceMenu.pack(side=TOP, padx=10, pady=10,fill=BOTH)
+        self.crystChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
 
           # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
         l = Label(LabelFrameBodyRight,text="Choose a beam",style="labelFrameTitle.TLabel")
         chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
-        chooseBeamStratFrame.grid(row=1,column=0,sticky="nsew",padx=10, pady=0)
+        chooseBeamStratFrame.grid(row=1,column=0,sticky="nsew",padx=10, pady=10)
 
           # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies
         # created below
