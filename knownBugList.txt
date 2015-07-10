@@ -36,5 +36,3 @@ Traceback (most recent call last):
   File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\crystals.py", line 85, in extractCrystalInfo
     if self.containerType in ('Mixture','Elemental'):
 AttributeError: 'crystals_userDefined' object has no attribute 'containerType'
-
-- Pixels Size hover box help text has extra 'text' in title
