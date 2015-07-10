@@ -1129,7 +1129,7 @@ class RADDOSEgui(Frame):
             if addQuery == 'yes':
                 # read in RADDOSE-3D style input file to get crystal properties
                 newCrystal = self.parseRaddoseInput(self.crystLoadBox.get(),'crystal')
-                newCrystal.crystName = str(self.crystLoadName.get())
+                newCrystal.crystName = str(self.crystLoadName.get()) + newCrystal.crystName
 
                 # check correct crystal properties have been read from RD3D input file
                 ErrorMessage = self.checkCrystInputs(newCrystal)
@@ -1433,7 +1433,7 @@ class RADDOSEgui(Frame):
             crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
 
             # give crystal object a name here
-            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
+            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal" + crystalObject.crystName
             self.addCrystalToList(crystalObject)
             self.addRD3DInputBeamsToList(beamList,experimentName)
             experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
@@ -1451,7 +1451,7 @@ class RADDOSEgui(Frame):
         for i in xrange(0,len(beamList)):
             beam = copy.deepcopy(beamList[i])
             if i == 0:
-                beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+                beam.beamName = experimentName+"_beam_" + str(uniqueBeamCounter) + beam.beamName
                 self.addBeamToList(beam)
             elif i > 0:
                 for j in xrange(0,i):
@@ -1459,7 +1459,7 @@ class RADDOSEgui(Frame):
                         break
                     elif j == i-1:
                         uniqueBeamCounter += 1
-                        beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
+                        beam.beamName = experimentName+"_beam_" + str(uniqueBeamCounter) + beam.beamName
                         self.addBeamToList(beam)
 
     def parseRaddoseInput(self,pathToRaddoseInput,returnType):

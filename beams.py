@@ -1,12 +1,20 @@
 from checks import checks
+import datetime
+import time
 
 class beams(object):
 	# this class is for beam parameters for a loaded or created beam
 	def __init__(self,beamName="",beamFlux=0,beamEnergy=0):
 
-		self.beamName     	= beamName
+		self.beamName     	= "{}     {}".format(beamName,self.getCreationTime())
 		self.flux         	= beamFlux
 		self.energy       	= beamEnergy
+
+	def getCreationTime(self):
+		# get time of creation of current crystal object
+		ts = time.time()
+		creationTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+		return creationTime
 
 	def __eq__(self, other) :
 		"""This method checks to see if a beam has the same properties as
