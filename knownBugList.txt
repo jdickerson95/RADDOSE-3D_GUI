@@ -17,25 +17,20 @@ this at some point
 - Allows you to try to run RADDOSE-3D even when a crystal object hasn't been
 loaded into the "Choose a crystal" frame
 
-- RADDOSE-3D runs but fails to display the summary in the summary output window.
-Something to do with the container stuff. Below is the output of the failed run.
+- currently if faulty premade RD3D input file run - RD3D will crash and then crystal/beam
+objects will try to be made - any suitable objects (after checks performed) will be added to
+interface, whereas the faulty objects will not be included -- not really a bug, but do we want
+this? Or should a bad RD3D run just kill the method before any objects are made?
 
-Exception in Tkinter callback
-Traceback (most recent call last):
-  File "C:\Users\jonathan\Anaconda\lib\lib-tk\Tkinter.py", line 1536, in __call__
-    return self.func(*args)
-  File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\guiRun.py", line 584, in runManualExperiment
-    self.runExperiment()
-  File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\guiRun.py", line 655, in runExperiment
-    self.runStrategy() #run the strategy
-  File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\guiRun.py", line 699, in runStrategy
-    self.runRaddose3D()
-  File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\guiRun.py", line 1434, in runRaddose3D
-    self.displaySummary(experimentName)
-  File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\guiRun.py", line 834, in displaySummary
-    crystalInfo = self.extractCrystalInfo(expObject.crystal)
-  File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\guiRun.py", line 779, in extractCrystalInfo
-    string = crystalObject.extractCrystalInfo()
-  File "C:\Users\jonathan\Documents\UniOfOxford\DPhilWork\RADDOSE-3D_GUI\crystals.py", line 85, in extractCrystalInfo
-    if self.containerType in ('Mixture','Elemental'):
-AttributeError: 'crystals_userDefined' object has no attribute 'containerType'
+- I have the command line error:
+
+InputException: Parser found 1 error in input:
+RADDOSE-3D-input.txt line 8:0 extraneous input 'SolventFraction' expecting FLOAT
+Unhandled input exception InputException: Parser found 1 errors in input:
+RADDOSE-3D-input.txt line 8:0 extraneous input 'SolventFraction' expecting FLOAT
+
+Is this a GUI error or a RD3D input file error? I can't tell..
+
+RD3D output log says: Solvent fraction determined as NaN%.
+RD3D input file has: SolventFraction 0.5
+
