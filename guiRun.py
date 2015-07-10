@@ -1525,7 +1525,21 @@ class RADDOSEgui(Frame):
             # give crystal object a name here
             crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
 
-            self.addCrystalToList(crystalObject)
+            # check correct crystal properties have been read from RD3D input file
+            ErrorMessage = self.checkCrystInputs(crystalObject)
+            if ErrorMessage != "":
+                tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+            else:
+                # add crystal to loaded crystal list
+                self.addCrystalToList(crystalObject)
+
+                # give warning if identical crystal already loaded
+                warningMessage = self.checkRepeatedCryst(crystalObject)
+                if warningMessage != "":
+                    tkMessageBox.showinfo("Warning",warningMessage)
+
+            # add beam checks here
+
             self.addRD3DInputBeamsToList(beamList,experimentName)
             experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
 
