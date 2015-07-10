@@ -193,8 +193,13 @@ class beamMakerWindow(Frame):
         if ErrorMessage != "":
                     tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
         else:
-            # add new beam to list of loaded beams
-            MainGui.addBeamToList(newBeam)
+			# give warning if identical beam already loaded
+			warningMessage = MainGui.checkRepeatedBeam(newBeam)
+			if warningMessage != "":
+				tkMessageBox.showinfo("Warning",warningMessage)
 
-            # once this function runs, the toplevel window should be exited
-            self.master.destroy()
+			# add new beam to list of loaded beams
+			MainGui.addBeamToList(newBeam)
+
+			# once this function runs, the toplevel window should be exited
+			self.master.destroy()
