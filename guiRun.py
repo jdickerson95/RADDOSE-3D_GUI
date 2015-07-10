@@ -1239,7 +1239,7 @@ class RADDOSEgui(Frame):
         warningMessage = ""
         for cryst in self.crystList[:-1]:
             if newCrystal.__eq__(cryst):
-                warningMessage = "Previous crystal {} added with exact same properties. May wish to delete.\n".format(cryst.crystName)
+                warningMessage = "Previous crystal {} added with exact same properties as crystal {}. May wish to delete.\n".format(cryst.crystName,newCrystal.crystName)
         return warningMessage
 
     # functions for the manipulation of beam files and parameters
@@ -1339,7 +1339,7 @@ class RADDOSEgui(Frame):
         if not str(self.beamLoadName.get()).strip():
             string = """No beam name has been given.\nPlease give a name to the beam that you wish to add.""" %()
             tkMessageBox.showinfo( "No Beam Name", string)
-        elif str(self.beamLoadName.get()) in [beam.beamName for beam in self.beamList]:
+        elif str(self.beamLoadName.get()) in [(beam.beamName).split('_beam_',1)[0] for beam in self.beamList]:
             tkMessageBox.showinfo( "Duplicate Beam Names",
             "Beam name %s already exists. Please choose another name." %(self.beamLoadName.get()))
         else:
@@ -1356,6 +1356,12 @@ class RADDOSEgui(Frame):
                         tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
                         beamError = True
                 if beamError == False:
+                    # give warning if identical beam already loaded
+                    warningMessage = ""
+                    for newBeam in newBeamList:
+                        warningMessage += self.checkRepeatedBeam(newBeam)
+                    if warningMessage != "":
+                        tkMessageBox.showinfo("Warning",warningMessage)
                     self.addRD3DInputBeamsToList(newBeamList,str(self.beamLoadName.get()))
             else:
                 pass
@@ -1368,6 +1374,14 @@ class RADDOSEgui(Frame):
         ErrorMessage += ErrorMessage2
 
         return ErrorMessage
+
+    def checkRepeatedBeam(self,newBeam):
+        # additional check to see whether identical beam has previously been added
+        warningMessage = ""
+        for beam in self.beamList:
+            if newBeam.__eqDiffName__(beam):
+                warningMessage = "Previous beam {} added with exact same properties as new beam {}. May wish to delete.\n".format(beam.beamName,newBeam.beamName)
+        return warningMessage
 
     def onSelect(self, val):
         # what happens when select button clicked
