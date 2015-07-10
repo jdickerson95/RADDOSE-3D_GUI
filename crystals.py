@@ -37,6 +37,15 @@ class crystals(object):
 		creationTime = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 		return creationTime
 
+	def __eq__(self, other) :
+		"""This method checks to see if a crystal has the same properties as
+		another crystal
+		"""
+		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('crystName','_crystals__creationTime')} 
+		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('crystName','_crystals__creationTime')} 
+
+		return compareProps_self == compareProps_other
+
 	def checkContainerInfoPresent(self):
 		# check whether container info has been provided for crystal
 		try:

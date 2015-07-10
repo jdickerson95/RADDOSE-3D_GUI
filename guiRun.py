@@ -1214,6 +1214,12 @@ class RADDOSEgui(Frame):
                 else:
                     # add crystal to loaded crystal list
                     self.addCrystalToList(newCrystal)
+
+                # give warning if identical crystal already loaded
+                warningMessage = self.checkRepeatedCryst(newCrystal)
+                if warningMessage != "":
+                    tkMessageBox.showinfo("Warning",warningMessage)
+
             else:
                 pass
 
@@ -1227,6 +1233,14 @@ class RADDOSEgui(Frame):
             ErrorMessage += ErrorMessage2
 
         return ErrorMessage
+
+    def checkRepeatedCryst(self,newCrystal):
+        # additional check to see whether identical crystal has previously been added
+        warningMessage = ""
+        for cryst in self.crystList[:-1]:
+            if newCrystal.__eq__(cryst):
+                warningMessage = "Previous crystal {} added with exact same properties. May wish to delete.\n".format(cryst.crystName)
+        return warningMessage
 
     # functions for the manipulation of beam files and parameters
     def refreshBeamChoices(self):
