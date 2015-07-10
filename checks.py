@@ -66,7 +66,9 @@ class checks(object):
 
 	def checkIfInt(self):
 		ErrorMessage = ""
-		if not isinstance( self.property, ( int, long ) ):
+		try:
+			int(self.property)
+		except ValueError:
 			ErrorMessage = '{} not of compatible integer format.\n'.format(self.propertyName)
 
 		# check whether left blank & optional
