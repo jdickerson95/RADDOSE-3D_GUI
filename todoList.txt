@@ -17,16 +17,7 @@ in use by other programs.(JBB)
 - Check GUI works on Windows, Linux (diamond UNIX distribution mainly) and Mac.
 (JBB (Win + Linux) + CSB (Mac) LATER - once it's complete)
 
-- Make sure that the default values for any inputs that are optional but left
-null are the same as those specified in the RADDOSE-3D user manual. (JBB)
-
-- Make sure that the GUI reads integers as well as floats for fields that
-require floating point values. (CSB)
-
 - Add warnings as well as the current checks for crystals/beam classes (CSB)
-
-- Do the parsers handle container information correctly when reading from premade RD3D
-input files and creating crystal objects? Need to check this! (CSB)
 
 - Sort out GUI so it adjusts to the correct size for the screen that it's being
 displayed on. Also work out how to scale summary text box with screen & frame sizes (JBB)
