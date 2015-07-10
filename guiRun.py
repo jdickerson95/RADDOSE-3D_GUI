@@ -1204,7 +1204,7 @@ class RADDOSEgui(Frame):
             if addQuery == 'yes':
                 # read in RADDOSE-3D style input file to get crystal properties
                 newCrystal = self.parseRaddoseInput(self.crystLoadBox.get(),'crystal')
-                newCrystal.crystName = str(self.crystLoadName.get()) + newCrystal.crystName
+                newCrystal.crystName = str(self.crystLoadName.get())
 
                 # check correct crystal properties have been read from RD3D input file
                 ErrorMessage = self.checkCrystInputs(newCrystal)
@@ -1221,10 +1221,11 @@ class RADDOSEgui(Frame):
         # from premade RD3D input file
         ErrorMessage = newCrystal.checkValidInputs()
         # for the case where abscoefCalc is not 'Average', perform initial checks
-        if str(newCrystal.absCoefCalc).lower() != 'average':
+        try:
             ErrorMessage2 = newCrystal.checkValidInputs_subclass()
             ErrorMessage += ErrorMessage2
-
+        except AttributeError:
+            pass
         return ErrorMessage
 
     # functions for the manipulation of beam files and parameters
@@ -1508,7 +1509,7 @@ class RADDOSEgui(Frame):
             crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
 
             # give crystal object a name here
-            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal" + crystalObject.crystName
+            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
             self.addCrystalToList(crystalObject)
             self.addRD3DInputBeamsToList(beamList,experimentName)
             experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
@@ -1526,7 +1527,7 @@ class RADDOSEgui(Frame):
         for i in xrange(0,len(beamList)):
             beam = copy.deepcopy(beamList[i])
             if i == 0:
-                beam.beamName = experimentName+"_beam_" + str(uniqueBeamCounter) + beam.beamName
+                beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
                 self.addBeamToList(beam)
             elif i > 0:
                 for j in xrange(0,i):
@@ -1534,7 +1535,7 @@ class RADDOSEgui(Frame):
                         break
                     elif j == i-1:
                         uniqueBeamCounter += 1
-                        beam.beamName = experimentName+"_beam_" + str(uniqueBeamCounter) + beam.beamName
+                        beam.beamName = experimentName+"_beam_"+str(uniqueBeamCounter)
                         self.addBeamToList(beam)
 
     def parseRaddoseInput(self,pathToRaddoseInput,returnType):
@@ -1625,6 +1626,12 @@ class RADDOSEgui(Frame):
         #loop through each entry in the dictionary, create a string of the key
         #and value from the dictionary and append that to the list created above
         for crystProp in crystPropertyDict:
+            # convert protein/solvent heavy atom conc lists to correct string format
+            if crystProp in ('proteinHeavyAtoms','solventHeavyConc'):
+                string = '{}'.format(crystProp[0].upper()+crystProp[1:])
+                for value in str(crystPropertyDict[crystProp]).split():
+                    string += ' {}'.format(str(value))
+            # create strings for other (non-dimension) crystal inputs
             if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
             crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
             crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
@@ -1771,8 +1778,8 @@ class RADDOSEgui(Frame):
 def main():
     # when the script is run in python, do the following:
     root = Tk()
-    widthScrSizeFrac = 1
-    heightScrSizeFrac = 1
+    widthScrSizeFrac = 0.9
+    heightScrSizeFrac = 0.9
     width = root.winfo_screenwidth()
     height = root.winfo_screenheight()
     root.geometry(str(int(round(width*widthScrSizeFrac))) + "x" + str(int(round(height*heightScrSizeFrac))))
