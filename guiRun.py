@@ -1359,6 +1359,7 @@ class RADDOSEgui(Frame):
                     # give warning if identical beam already loaded
                     warningMessage = ""
                     for newBeam in newBeamList:
+                        print warningMessage
                         warningMessage += self.checkRepeatedBeam(newBeam)
                     if warningMessage != "":
                         tkMessageBox.showinfo("Warning",warningMessage)
@@ -1552,7 +1553,21 @@ class RADDOSEgui(Frame):
                 if warningMessage != "":
                     tkMessageBox.showinfo("Warning",warningMessage)
 
-            # add beam checks here
+            # check correct beam properties have been read from RD3D input file
+            beamError = False
+            for beam in beamList:
+                ErrorMessage = self.checkBeamInputs(beam)
+                if ErrorMessage != "":
+                    tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+                    beamError = True
+            if beamError == False:
+                # give warning if identical beam already loaded
+                warningMessage = ""
+                for beam in beamList:
+                    print warningMessage
+                    warningMessage += self.checkRepeatedBeam(beam)
+                if warningMessage != "":
+                    tkMessageBox.showinfo("Warning",warningMessage)
 
             self.addRD3DInputBeamsToList(beamList,experimentName)
             experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
