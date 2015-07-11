@@ -373,22 +373,25 @@ class RADDOSEgui(Frame):
         # crystals is created here, along with a scrollbar
         crystListFrame = Frame(FrameBodyMiddleTop,style="BodyGroovy.TFrame")
         crystListFrame.grid(row=2,column=0,columnspan=2, sticky="nsew",padx=10, pady=0)
-        scrollbarCrystList = Scrollbar(crystListFrame, orient=VERTICAL)
+        scrollbarCrystListY = Scrollbar(crystListFrame, orient=VERTICAL)
+        scrollbarCrystListX = Scrollbar(crystListFrame, orient=HORIZONTAL)
 
         # want to make a list of crystal object instances (here two example crystals are defined)
         exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1,0,0,{},'Average')
         exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,0,0,{},'Average')
         self.crystList = [exampleCryst,exampleCryst2]
 
-        self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystList.set,height=loadListHeight)
+        self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystListY.set,xscrollcommand=scrollbarCrystListX.set,height=loadListHeight)
 
         for cryst in self.crystList:
             self.crystListbox.insert(END, cryst.getTimeStampedName())
         self.crystListbox.update_idletasks()
         self.crystListbox.bind("<<ListboxSelect>>", self.onSelect)
-        scrollbarCrystList.config(command=self.crystListbox.yview)
+        scrollbarCrystListY.config(command=self.crystListbox.yview)
+        scrollbarCrystListX.config(command=self.crystListbox.xview)
+        scrollbarCrystListX.pack(side=BOTTOM, fill=X,pady=0, padx=5)
         self.crystListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
-        scrollbarCrystList.pack(side=RIGHT, fill=Y,pady=5)
+        scrollbarCrystListY.pack(side=RIGHT, fill=Y,pady=5)
         self.var3 = StringVar()
 
         # this button will view the currently selected crystal in the list
@@ -462,21 +465,24 @@ class RADDOSEgui(Frame):
         # beams is created here, along with a scrollbar
         beamListFrame = Frame(FrameBodyMiddleBottom,style="BodyGroovy.TFrame")
         beamListFrame.grid(row=2,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
-        scrollbarBeamList = Scrollbar(beamListFrame, orient=VERTICAL)
-
+        scrollbarBeamListY = Scrollbar(beamListFrame, orient=VERTICAL)
+        scrollbarBeamListX = Scrollbar(beamListFrame, orient=HORIZONTAL)
         # want to make a list of beam object instances (here two example beams are defined)
         exampleBeam = beams_Gaussian('Example beam',[25,25],10000000000,10,[100,100])
         exampleBeam2 = beams_Tophat('Example beam 2',20000000000,12,[120,120])
         self.beamList = [exampleBeam,exampleBeam2]
 
-        self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamList.set,height=loadListHeight)
+        self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamListY.set, xscrollcommand=scrollbarBeamListX.set,height=loadListHeight)
         for beam in self.beamList:
             self.beamListbox.insert(END, beam.getTimeStampedName())
         self.beamListbox.update_idletasks()
         self.beamListbox.bind("<<ListboxSelect>>", self.onSelect)
-        scrollbarBeamList.config(command=self.beamListbox.yview)
-        self.beamListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
-        scrollbarBeamList.pack(side=RIGHT, fill=Y,pady=5)
+        scrollbarBeamListY.config(command=self.beamListbox.yview)
+        scrollbarBeamListX.config(command=self.beamListbox.xview)
+        scrollbarBeamListX.pack(side=BOTTOM, fill=X,pady=0, padx=5)
+        self.beamListbox.pack(side=LEFT,padx=5,pady=5,fill=BOTH,expand=True)
+        scrollbarBeamListY.pack(side=RIGHT, fill=Y,pady=5)
+
         self.var3 = StringVar()
 
         # this button will view the currently selected crystal in the list
@@ -585,7 +591,7 @@ class RADDOSEgui(Frame):
         scrollbarexpList = Scrollbar(expListFrame, orient=VERTICAL)
 
         self.emptyExpListString = "No experiments loaded"
-        self.expListbox = Listbox(expListFrame,yscrollcommand=scrollbarCrystList.set,height=1)
+        self.expListbox = Listbox(expListFrame,yscrollcommand=scrollbarCrystListY.set,height=1)
         self.expListbox.insert(END, self.emptyExpListString)
         self.expListbox.update_idletasks()
         self.expListbox.bind("<<ListboxSelect>>", self.onSelect)

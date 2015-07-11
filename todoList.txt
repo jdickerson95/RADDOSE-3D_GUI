@@ -30,10 +30,6 @@ with the same names are loaded twice. - want to be able to have same crystal loa
 twice, but names MUST be different & have a warning if an identical crystal has been
 loaded (CSB) - Mostly finished
 
-- Add horizontal scrollbar to the Crystal and Beam lists in the main window.
-
-- Test to see if checks are performed on premade input files
-
 -***************************-
 To do at some point
 -***************************-
@@ -67,3 +63,16 @@ once all the other input sections are completed
 - When user types incompatible data format into a field and clicks 'make', the
 input window moves to the back of the screen. We should try to find out how to
 keep it at the front of the screen.
+
+- input parser shouldn't crash if certain inputs aren't supplied. Currently the
+input parser throws an error if the "dimensions" line hasn't been specified when
+the crystal type is cuboid (this could be the case for other types but I haven't
+checked this). So to avoid the problem I have surrounded this call with a "try"
+statement. All this does is tell the user that something may be wrong with their
+input file if the parser doesn't work. This also means that RADDOSE-3D is not
+run if the GUI doesn't understand the input file, not RADDOSE-3D which I don't
+think is ideal. Ideally we wouldn't want the parser to throw an error if this is
+ the case, rather we would prefer the parser to tell the ser that there may be a
+problem with the input file.
+
+- Fix X and Y scrollbar positions so they don't overlap.
