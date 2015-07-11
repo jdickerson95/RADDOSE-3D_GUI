@@ -30,10 +30,24 @@ with the same names are loaded twice. - want to be able to have same crystal loa
 twice, but names MUST be different & have a warning if an identical crystal has been
 loaded (CSB) - Mostly finished
 
+- Input parser needs fixing so that it doesn't moan when a valid RADDOSE-3D input
+file is specified.
+
+
+-***************************-
+Fairly soon but not too urgently (i.e. not necessarily for first beta release)
+-***************************-
+
+- "crystals" class needs updating to allow crystal objects to be created with
+model/geometry files.
+
+- If incomplete input files should be able to be read into the GUI and the
+corresponding fields should be automatically populated.
+
+
 -***************************-
 To do at some point
 -***************************-
-
 - Currently experimental beam type collimation inputs from beam maker window are not
 passed to beam objects and are lost. Should these be passed through, even though RD3D
 does not need them? Leave them for now. I need to check that RADDOSE-3D doesn't
