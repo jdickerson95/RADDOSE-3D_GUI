@@ -1,8 +1,11 @@
 from Tkinter import *
 from ttk import *
+import tkMessageBox
 import tkFileDialog
 from HoverInfo import HoverInfo
 from InputsHelpText import PremadeInputHelp
+import os
+import shutil
 
 class PremadeInputMakerWindow():
 
@@ -22,24 +25,31 @@ class PremadeInputMakerWindow():
         self.helpText = PremadeInputHelp()
 
         self.rd3dInputFile = StringVar()
+        self.rd3dInputFile.set("")
         self.rd3dinputFileSection()
 
         self.sampleModelFile = StringVar()
+        self.sampleModelFile.set("")
         self.sampleModelFileInput()
 
         self.sequenceFile = StringVar()
+        self.sequenceFile.set("")
         self.sequenceFileInput()
 
         self.beamImageFile = StringVar()
+        self.beamImageFile.set("")
         self.beamImageFileInput()
 
         self.beamApertureXFile = StringVar()
+        self.beamApertureXFile.set("")
         self.beamApertureXFileInput()
 
         self.beamApertureYFile = StringVar()
+        self.beamApertureYFile.set("")
         self.beamApertureYFileInput()
 
         self.expNameInput = StringVar()
+        self.expNameInput.set("")
         self.expNameInputSection(MainGui)
 
         self.inputsFrame.grid_rowconfigure(0,weight=1)
@@ -146,4 +156,128 @@ class PremadeInputMakerWindow():
         inputBox.insert(0,self.inputLoad)
 
     def runExp(self, MainGui):
-        pass
+        #Get a full list of all the variables representing file names
+        fullFileVarList = [self.rd3dInputFile.get(), self.sampleModelFile.get(), self.sequenceFile.get(),
+        self.beamImageFile.get(), self.beamApertureXFile.get(), self.beamApertureYFile.get()]
+
+        #Check that an experiment name was given
+        if self.expNameInput.get():
+            #Check if the RADDOSE-3D input file has been supplied
+            if os.path.isfile(self.rd3dInputFile.get()):
+                #Determine which of the files have non empty strings and put those in a
+                #separate list
+                nonEmptyFileList = []
+                for filename in fullFileVarList:
+                    if filename:
+                        nonEmptyFileList.append(filename)
+
+                if len(nonEmptyFileList) > 1:
+                    #Parse the input file to determine the names of any other files
+                    filenames = self.getFileNamesFromRD3DInput(self.rd3dInputFile.get())
+                else:
+                    filenames = []
+
+                #Copy the specified files into the current directory and rename them
+                #according to the names specified in the input file
+                allFilesExist = self.copyFiles(nonEmptyFileList, os.getcwd(), filenames)
+
+                if allFilesExist:
+                    MainGui.runPremadeRD3DExperiment(self.rd3dInputFile.get().split("/")[-1],self.expNameInput.get(),filenames)
+                    # once this function runs, the toplevel window should be exited
+                    self.master.destroy()
+                else:
+                    string = """At least one of the files specified does not exist.
+        Please check the file names given in the input boxes and make sure they exist.
+        """ %()
+                    tkMessageBox.showinfo( "No Experiment Name", string)
+            else:
+                string = """RADDOSE-3D input file was not specified. Please give the path to the input file.
+        """ %()
+                tkMessageBox.showinfo( "RADDOSE-3D Input file not specified", string)
+        else:
+            string = """No experiment name has been given.\nPlease give a name to the experiment that you wish to run in the 'Experiment Name' field.
+            """ %()
+            tkMessageBox.showinfo( "No Experiment Name", string)
+
+    def copyFiles(self, srcFileList, dirPath, filenames):
+        """Copy Source Files
+
+        This function takes a list of files and copies them to a specified
+        directory. If the specified directory doesn't already exist then it is
+        created.
+        =================
+        Keyword arguments
+        =================
+        srcFileList:
+            a list object where is element of the list is a string that
+            corresponds to a file that is intended to be moved.
+
+        dirPath:
+            The name of the directory that the files will be moved to. This is
+            a string object input.
+
+        filenames:
+            A list containing strings which represent file names. The source
+            files are renamed with the filenames given in this list if the
+            file extensions match.
+
+        =================
+        Return parameters
+        =================
+        allFilesExist:
+            Boolean variable that indicates whether all files that were in the
+            list were present in the current directory.
+        """
+        allFilesExist = True
+        #Loop through the list of files. For each one we need to check if a file
+        #with an identical name already exists in the current working directory.
+        #If it doesn't then we'll copy it to the current wroking directory.
+        for srcFile in srcFileList:
+            if os.path.isfile(srcFile):
+                nameOfFile = srcFile.split("/")[-1]
+                inputFilePathIfInCurrentDir = "{}/{}".format(dirPath.replace("\\","/"), nameOfFile)
+                if inputFilePathIfInCurrentDir != srcFile:
+                    shutil.copy(srcFile,dirPath) # Copy file to directory
+
+                    #get extension of src file
+                    srcFileExt = nameOfFile.split(".")[1]
+                    for filename in filenames:
+                        fileFromListExt = filename.split(".")[1]
+                        if srcFileExt == fileFromListExt and not os.path.isfile(filename):
+                            os.rename(nameOfFile, filename)
+                            break
+                    #Remove the file that we copied because we now have a
+                    #renamed copy in the directory.
+                    if os.path.isfile(nameOfFile):
+                        os.remove(nameOfFile)
+            else:
+                allFilesExist = False
+        return allFilesExist
+
+    def getFileNamesFromRD3DInput(self, rd3dInputFile):
+        try:
+            rd3dFile = open(rd3dInputFile, "r")
+        except IOError:
+            string = """The RADDOSE-3D input file could not be read.
+Please make sure that it is not being used by any other processes.
+    """ %()
+            tkMessageBox.showinfo( "Cannot read file", string)
+        modelFilename = ""
+        sequenceFilename = ""
+        beamFilename = ""
+        filenameList = []
+        for line in rd3dFile:
+            if "modelfile" in line.lower():
+                modelFilename = line.split()[1]
+            elif "seqfile" in line.lower() or "sequencefile" in line.lower():
+                sequenceFilename = line.split()[1]
+            elif ".pgm" in line:
+                beamFilename = line.split()[1]
+        if modelFilename:
+            filenameList.append(modelFilename)
+        if sequenceFilename:
+            filenameList.append(sequenceFilename)
+        if beamFilename:
+            filenameList.append(beamFilename)
+        return filenameList
+

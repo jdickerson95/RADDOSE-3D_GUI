@@ -659,7 +659,7 @@ class RADDOSEgui(Frame):
         self.strategyType = 'Manual'
         self.runExperiment()
 
-    def runPremadeRD3DExperiment(self):
+    def runPremadeRD3DExperiment(self, rd3dInputFilename, experimentName, additionalFilenames=[]):
         """Run the a premade RD3D job with premade input file
 
         This function intiates the running of an experiment involving a premade RD3D
@@ -677,18 +677,19 @@ class RADDOSEgui(Frame):
         No explicit return parameters
 
         """
+        self.RD3DinputLoad = rd3dInputFilename
         #Check if the input file exists
         if os.path.isfile(self.RD3DinputLoad):
-            self.CurrentexpLoadName = self.premadeRD3DStrategyName
+            self.CurrentexpLoadName = experimentName
             self.strategyType = 'Premade'
-            self.runExperiment()
+            self.runExperiment(additionalFilenames)
         else:
             string = """The file you have specified does not exist.
 Please check the file path supplied.
 """ %()
             tkMessageBox.showinfo( "File does not exist", string)
 
-    def runExperiment(self):
+    def runExperiment(self, additionalFilenames=[]):
         """Run the experiment defined by the specified crystal, beam and wedge
 
         This function checks whether the experiment name already exists. If it
@@ -711,7 +712,10 @@ Please check the file path supplied.
         No explicit return parameters
 
         """
-        expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
+        if self.strategyType == "Premade":
+            expName = self.CurrentexpLoadName
+        else:
+            expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
 
         #First check that the experiment name hasn't been left blank. If so then
         #tell user that they need to supply an experiment name.
@@ -732,30 +736,15 @@ Please check the file path supplied.
                     expIndex = expTuple.index(expName) #find the index with the corresponding experiment name
                 else:
                     expIndex = -1 # A number to signify that the experiment did not already exist in the GUI as an object
-                if self.strategyType == "Premade": #Check if the RADDOSE-3D run is using a premade input file.
-                    #Now check if the raddose input file is already in the current
-                    #directory. If it's not already there then we need to move it
-                    #into the current directory.
-                    inputFilePathIfInCurrentDir = "{}/{}".format(os.getcwd().replace("\\","/"), self.RD3DinputLoad.split("/")[-1])
-                    if self.RD3DinputLoad != inputFilePathIfInCurrentDir:
-                        shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
                 deleteSuccessful = self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
                 if deleteSuccessful:
-                    self.runStrategy() #run the strategy
+                    self.runStrategy(additionalFilenames) #run the strategy
             else:
                 pass
         else:
-            #Check if the RADDOSE-3D run is using a premade input file.
-            if self.strategyType == "Premade":
-                #Now check if the raddose input file is already in the current
-                #directory. If it's not already there then we need to move it
-                #into the current directory.
-                inputFilePathIfInCurrentDir = "{}/{}".format(os.getcwd().replace("\\","/"), self.RD3DinputLoad.split("/")[-1])
-                if self.RD3DinputLoad != inputFilePathIfInCurrentDir:
-                    shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
-            self.runStrategy()
+            self.runStrategy(additionalFilenames)
 
-    def runStrategy(self):
+    def runStrategy(self, additionalFilenames=[]):
         """Run RADDOSE-3D given specified crystal, beam and wedge objects
 
         For a manually defined strategy, this function writes an input file
@@ -779,8 +768,8 @@ Please check the file path supplied.
         # for manual strategy need to write RD3D input file. for premade RD3D input file
         # need to copy file to new working directory for experiment and rename the file
         # to the standard input file name.
-        expName = str(self.CurrentexpLoadName.get())
         if self.strategyType == 'Manual':
+            experimentName = str(self.CurrentexpLoadName.get())
             if not self.crystList or not self.beamList2Run or not self.wedgeList2Run:
                 string = """An object required to run RADDOSE-3D has not been selected for input.\nCheck that you have selected at least one crystal, beam and wedge.
                 """ %()
@@ -788,14 +777,15 @@ Please check the file path supplied.
             else:
                 self.writeRaddose3DInputFile()
         elif self.strategyType == 'Premade':
+            experimentName = str(self.CurrentexpLoadName)
             oldFilename = self.RD3DinputLoad.split("/")[-1] # get the name of the file without the rest of the path
             os.rename(oldFilename, self.RADDOSEfilename) # rename the file
 
-        succesfulRun = self.runRaddose3D()
+        succesfulRun = self.runRaddose3D(additionalFilenames)
 
         if succesfulRun:
             #Update the experiment list in the strategy window
-            self.addToExperimentList()
+            self.addToExperimentList(experimentName)
             #Update experiments loaded to summary window
             self.refreshExperimentChoices()
 
@@ -1151,10 +1141,9 @@ Please check the file path supplied.
         # update help window
         self.updateHelp()
 
-    def addToExperimentList(self):
+    def addToExperimentList(self, experimentName):
         if self.emptyExpListString in self.expListbox.get(0):
             self.expListbox.delete(0, END)
-        experimentName = str(self.CurrentexpLoadName.get())
         self.expListbox.insert(END, experimentName)
 
     def findExperimentTodelete(self):
@@ -1507,7 +1496,7 @@ Please check that you have closed all applications that are using any of the rel
         quote = self.raddose3Dinputtxt.get()
         self.inputtxt.insert(END, quote)
 
-    def runRaddose3D(self):
+    def runRaddose3D(self, additionalFilenames=[]):
         """Run RADDOSE-3D
 
         This function runs RADDOSE-3D and puts all of the output files into the
@@ -1527,8 +1516,10 @@ Please check that you have closed all applications that are using any of the rel
             not.
         """
         successfulRun = False
-        experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
-
+        if self.strategyType == 'Manual':
+            experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
+        else:
+            experimentName = str(self.CurrentexpLoadName) #Get experiment name as string
         #If the input has come from a premade input file then we have to check
         #that the input file is suitable for RADDOSE-3D before running it.
         if self.strategyType == 'Premade':
@@ -1542,7 +1533,7 @@ http://www.raddo.se/user-guide.pdf
                 """ %()
                 tkMessageBox.showinfo("Unsuccesful parsing of input file", string)
             # give crystal object a name here
-            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
+            crystalObject.crystName = experimentName+"_crystal"
 
             # check correct crystal properties have been read from RD3D input file
             ErrorMessage = self.checkCrystInputs(crystalObject)
@@ -1608,7 +1599,8 @@ http://www.raddo.se/user-guide.pdf
         # AND BEAM OBJECTS ARE MOVED BEFORE THE CALL TO RUN RADDOSE-3D.
         ########################################################################
         ########################################################################
-
+        for additionalFile in additionalFilenames:
+            fileList.append(additionalFile)
         #Move selected files to the directory corresponding to the named
         #experiment
         allFilesMoved = self.moveFiles(fileList, experimentName)

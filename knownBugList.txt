@@ -22,6 +22,11 @@ objects will try to be made - any suitable objects (after checks performed) will
 interface, whereas the faulty objects will not be included -- not really a bug, but do we want
 this? Or should a bad RD3D run just kill the method before any objects are made?
 
+- ********************************************************************
+BIG BUG
+Input parser fails for Input files that would work when run on command
+line :-(
+
 - I have the command line error:
 
 InputException: Parser found 1 error in input:
