@@ -617,7 +617,9 @@ class RADDOSEgui(Frame):
 
         #Add button to choose the files required for RADDOSE-3D input
         choosePremadeFilesButton = Button(runPremadeRD3DStrategyFrame,text="Choose input files",command=self.chooseInputFiles)
-        choosePremadeFilesButton.grid(row=0, columnspan=4, pady=10,padx=10,sticky=W+E)
+        choosePremadeFilesButton.grid(row=0, columnspan=4, pady=10,padx=10,sticky="nsew")
+        runPremadeRD3DStrategyFrame.grid_rowconfigure(0,weight=1)
+        runPremadeRD3DStrategyFrame.grid_columnconfigure(0,weight=1)
 
         LabelFrameBodyRight.grid_columnconfigure(0,weight=1)
         LabelFrameBodyRight.grid_rowconfigure(0,weight=1)
