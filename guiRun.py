@@ -689,9 +689,16 @@ class RADDOSEgui(Frame):
         No explicit return parameters
 
         """
-        self.CurrentexpLoadName = self.premadeRD3DStrategyName
-        self.strategyType = 'Premade'
-        self.runExperiment()
+        #Check if the input file exists
+        if os.path.isfile(self.RD3DinputLoad):
+            self.CurrentexpLoadName = self.premadeRD3DStrategyName
+            self.strategyType = 'Premade'
+            self.runExperiment()
+        else:
+            string = """The file you have specified does not exist.
+Please check the file path supplied.
+""" %()
+            tkMessageBox.showinfo( "File does not exist", string)
 
     def runExperiment(self):
         """Run the experiment defined by the specified crystal, beam and wedge
@@ -737,8 +744,13 @@ class RADDOSEgui(Frame):
                     expIndex = expTuple.index(expName) #find the index with the corresponding experiment name
                 else:
                     expIndex = -1 # A number to signify that the experiment did not already exist in the GUI as an object
-                if self.strategyType == "Premade":
-                    shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
+                if self.strategyType == "Premade": #Check if the RADDOSE-3D run is using a premade input file.
+                    #Now check if the raddose input file is already in the current
+                    #directory. If it's not already there then we need to move it
+                    #into the current directory.
+                    inputFilePathIfInCurrentDir = "{}/{}".format(os.getcwd().replace("\\","/"), self.RD3DinputLoad.split("/")[-1])
+                    if self.RD3DinputLoad != inputFilePathIfInCurrentDir:
+                        shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
                 deleteSuccessful = self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
                 if deleteSuccessful:
                     self.runStrategy() #run the strategy
@@ -791,11 +803,13 @@ class RADDOSEgui(Frame):
             oldFilename = self.RD3DinputLoad.split("/")[-1] # get the name of the file without the rest of the path
             os.rename(oldFilename, self.RADDOSEfilename) # rename the file
 
-        self.runRaddose3D()
-        #Update the experiment list in the strategy window
-        self.addToExperimentList()
-        #Update experiments loaded to summary window
-        self.refreshExperimentChoices()
+        succesfulRun = self.runRaddose3D()
+
+        if succesfulRun:
+            #Update the experiment list in the strategy window
+            self.addToExperimentList()
+            #Update experiments loaded to summary window
+            self.refreshExperimentChoices()
 
     def clickAddBeamStrategy(self):
         # what happens when add beam strategy button clicked. Makes a new small window allowing
@@ -1509,9 +1523,11 @@ Please check that you have closed all applications that are using any of the rel
         =================
         Return parameters
         =================
-        No explicit return parameters
-
+        successfulRun:
+            Booleam variable to determine whether RADDOSE-3D ran successfully or
+            not.
         """
+        successfulRun = False
         experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 
         #If the input has come from a premade input file then we have to check
@@ -1619,6 +1635,11 @@ Check that you haven't got any applications open that are using files relating t
         # Print a summary of the RADDOSE-3D run.
         self.displaySummary(experimentName)
 
+        if os.path.isdir(experimentName):
+            successfulRun = True
+
+        return successfulRun
+
     def addRD3DInputBeamsToList(self,beamList,experimentName):
         # for each beam object found in RD3D input file, give beam an unique name
         # and add to list of loaded beams
@@ -1673,8 +1694,9 @@ Check that you haven't got any applications open that are using files relating t
         =================
         Return parameters
         =================
-        No explicit return parameters
-
+        allFilesExist:
+            Boolean variable that indicates whether all files that were in the
+            list were present in the current directory.
         """
         allFilesExist = True
         if not os.path.isdir(dirPath): #check to determine if directory already exists
