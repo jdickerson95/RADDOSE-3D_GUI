@@ -64,6 +64,16 @@ class beamMakerWindow(Frame):
         # create a 'make' button here to add this beam to the list of added beams
         self.beamMakeButton(MainGui)
 
+        self.currentStrategyBeam.grid_rowconfigure(0,weight=1)
+        self.currentStrategyBeam.grid_rowconfigure(1,weight=1)
+        self.currentStrategyBeam.grid_rowconfigure(2,weight=1)
+        self.currentStrategyBeam.grid_rowconfigure(3,weight=1)
+        self.currentStrategyBeam.grid_rowconfigure(4,weight=1)
+        self.currentStrategyBeam.grid_rowconfigure(5,weight=1)
+        self.currentStrategyBeam.grid_rowconfigure(6,weight=1)
+        self.currentStrategyBeam.grid_columnconfigure(0,weight=1)
+        self.currentStrategyBeam.grid_columnconfigure(1,weight=1)
+
     def beamTypeInputs(self,MainGui):
         # Beam input 1 --> Beam type
         BeaminputLabel1 = Label(self.currentStrategyBeam,text="Beam Type",style="inputBoxes.TLabel")
@@ -74,7 +84,7 @@ class beamMakerWindow(Frame):
                              'Experimental' : "Experimental"}
         beamTypeList = self.beamTypeDict.keys()
         beamTypeListOptionMenu = OptionMenu(self.currentStrategyBeam, self.BeamType,self.BeamType.get(),*beamTypeList,command= lambda x: self.update(self.BeamType,MainGui))
-        beamTypeListOptionMenu.grid(row=0,column=1,sticky=W,pady=5,padx=6)
+        beamTypeListOptionMenu.grid(row=0,column=1,sticky=W+E,pady=5,padx=6)
 
     def beamFWHMInputs(self,beamType):
         # Beam input 2 --> FWHM
@@ -83,11 +93,14 @@ class beamMakerWindow(Frame):
             BeaminputLabel2.grid(row=1,column=0,sticky=E)
             self.hoverfwhm = HoverInfo(BeaminputLabel2, self.helpText.fwhmText)
             BeamFWHMInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-            BeamFWHMInputsFrame.grid(row=1,column=1,sticky=W)
+            BeamFWHMInputsFrame.grid(row=1,column=1,sticky=W+E)
             BeamFWHMVerticalBox = Entry(BeamFWHMInputsFrame,textvariable=self.BeamFWHMVertical,width=5)
-            BeamFWHMVerticalBox.pack(side=LEFT,pady=5,padx=6)
+            BeamFWHMVerticalBox.grid(row=0,column=0,sticky=W+E,pady=5,padx=6)
             BeamFWHMHorizontalBox = Entry(BeamFWHMInputsFrame,textvariable=self.BeamFWHMHorizontal,width=5)
-            BeamFWHMHorizontalBox.pack(side=LEFT,pady=5,padx=6)
+            BeamFWHMHorizontalBox.grid(row=0,column=1,sticky=W+E,pady=5,padx=6)
+            BeamFWHMInputsFrame.grid_rowconfigure(0, weight=1)
+            BeamFWHMInputsFrame.grid_columnconfigure(0, weight=1)
+            BeamFWHMInputsFrame.grid_columnconfigure(1, weight=1)
 
         self.BeamFWHMVertical.set(self.BeamFWHMVertical.get())
         self.BeamFWHMHorizontal.set(self.BeamFWHMHorizontal.get())
@@ -98,7 +111,7 @@ class beamMakerWindow(Frame):
         BeaminputLabel3.grid(row=2,column=0,sticky=E,pady=5,padx=6)
         self.hoverFlux = HoverInfo(BeaminputLabel3, self.helpText.fluxText)
         BeaminputBox3 = Entry(self.currentStrategyBeam,textvariable=self.BeamFlux,width=5)
-        BeaminputBox3.grid(row=2,column=1,sticky=W,pady=5,padx=6)
+        BeaminputBox3.grid(row=2,column=1,sticky=W+E,pady=5,padx=6)
         self.BeamFlux.set(self.BeamFlux.get())
 
     def beamEnergyInputs(self):
@@ -107,7 +120,7 @@ class beamMakerWindow(Frame):
         BeaminputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
         self.hoverEnergy = HoverInfo(BeaminputLabel4, self.helpText.energyText)
         BeaminputBox4 = Entry(self.currentStrategyBeam,textvariable=self.BeamEnergy,width=5)
-        BeaminputBox4.grid(row=3,column=1,sticky=W,pady=5,padx=6)
+        BeaminputBox4.grid(row=3,column=1,sticky=W+E,pady=5,padx=6)
         self.BeamEnergy.set(self.BeamEnergy.get())
 
     def beamRectCollInputs(self):
@@ -116,11 +129,14 @@ class beamMakerWindow(Frame):
         BeaminputLabel5.grid(row=4,column=0,sticky=E,pady=5,padx=6)
         self.hoverColl = HoverInfo(BeaminputLabel5, self.helpText.collText)
         BeamRectCollInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-        BeamRectCollInputsFrame.grid(row=4,column=1,sticky=W)
+        BeamRectCollInputsFrame.grid(row=4,column=1,sticky=W+E)
         BeamRectCollVertBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollVert,width=5)
-        BeamRectCollVertBox.pack(side=LEFT,pady=5,padx=6)
+        BeamRectCollVertBox.grid(row=0,column=0,sticky=W+E,pady=5,padx=6)
         BeamRectCollHorizBox = Entry(BeamRectCollInputsFrame,textvariable=self.BeamRectCollHoriz,width=5)
-        BeamRectCollHorizBox.pack(side=LEFT,pady=5,padx=6)
+        BeamRectCollHorizBox.grid(row=0,column=1,sticky=W+E,pady=5,padx=6)
+        BeamRectCollInputsFrame.grid_rowconfigure(0, weight=1)
+        BeamRectCollInputsFrame.grid_columnconfigure(0, weight=1)
+        BeamRectCollInputsFrame.grid_columnconfigure(1, weight=1)
 
         self.BeamRectCollVert.set(self.BeamRectCollVert.get())
         self.BeamRectCollHoriz.set(self.BeamRectCollHoriz.get())
@@ -143,11 +159,14 @@ class beamMakerWindow(Frame):
             BeamPixelSizeInputLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
             self.hoverPixelSize = HoverInfo(BeamPixelSizeInputLabel, self.helpText.pixSizeText)
             BeamPixelSizeInputsFrame = Frame(self.currentStrategyBeam,style="inputBoxes.TFrame")
-            BeamPixelSizeInputsFrame.grid(row=6,column=1,sticky=W)
+            BeamPixelSizeInputsFrame.grid(row=6,column=1,sticky=W+E)
             BeamPixelSizeXBox = Entry(BeamPixelSizeInputsFrame,textvariable=self.beamPixSizeX,width=5)
-            BeamPixelSizeXBox.pack(side=LEFT,pady=5,padx=6)
+            BeamPixelSizeXBox.grid(row=0,column=0,sticky=W+E,pady=5,padx=6)
             BeamPixelSizeYBox = Entry(BeamPixelSizeInputsFrame,textvariable=self.beamPixSizeY,width=5)
-            BeamPixelSizeYBox.pack(side=LEFT,pady=5,padx=6)
+            BeamPixelSizeYBox.grid(row=0,column=1,sticky=W+E,pady=5,padx=6)
+            BeamPixelSizeInputsFrame.grid_rowconfigure(0, weight=1)
+            BeamPixelSizeInputsFrame.grid_columnconfigure(0, weight=1)
+            BeamPixelSizeInputsFrame.grid_columnconfigure(1, weight=1)
         else:
             self.beamPixSizeX.set(self.beamPixSizeX.get())
             self.beamPixSizeY.set(self.beamPixSizeY.get())

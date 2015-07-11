@@ -61,6 +61,18 @@ class wedgeMakerWindow():
         # create a Wedge "make" button
         self.addWedgeMakeButton(MainGui)
 
+        self.currentStrategyWedge.grid_rowconfigure(0,weight=1)
+        self.currentStrategyWedge.grid_rowconfigure(1,weight=1)
+        self.currentStrategyWedge.grid_rowconfigure(2,weight=1)
+        self.currentStrategyWedge.grid_rowconfigure(3,weight=1)
+        self.currentStrategyWedge.grid_rowconfigure(4,weight=1)
+        self.currentStrategyWedge.grid_rowconfigure(5,weight=1)
+        self.currentStrategyWedge.grid_rowconfigure(6,weight=1)
+        self.currentStrategyWedge.grid_rowconfigure(7,weight=1)
+        self.currentStrategyWedge.grid_columnconfigure(0,weight=1)
+        self.currentStrategyWedge.grid_columnconfigure(1,weight=1)
+        self.currentStrategyWedge.grid_columnconfigure(2,weight=1)
+
     def wedgeAngRangeStartInputs(self):
         # Wedge input --> Wedge angular range (start)
         WedgeinputLabel1 = Label(self.currentStrategyWedge,text="Angular Range (Start)",style="inputBoxes.TLabel")
@@ -120,6 +132,13 @@ class wedgeMakerWindow():
         startOffsetZLabel.grid(row=0,column=4,sticky=W,pady=5,padx=6)
         startOffsetZBox = Entry(startOffsetInputsFrame,textvariable=self.startOffsetZ,width=5)
         startOffsetZBox.grid(row=0,column=5,sticky=W,pady=5,padx=6)
+        startOffsetInputsFrame.grid_rowconfigure(0,weight=1)
+        startOffsetInputsFrame.grid_columnconfigure(0,weight=1)
+        startOffsetInputsFrame.grid_columnconfigure(1,weight=1)
+        startOffsetInputsFrame.grid_columnconfigure(2,weight=1)
+        startOffsetInputsFrame.grid_columnconfigure(3,weight=1)
+        startOffsetInputsFrame.grid_columnconfigure(4,weight=1)
+        startOffsetInputsFrame.grid_columnconfigure(5,weight=1)
         # preset starting offsets
         self.startOffsetX.set("0")
         self.startOffsetY.set("0")
@@ -144,6 +163,13 @@ class wedgeMakerWindow():
         transPerDegZLabel.grid(row=0,column=4,sticky=W,pady=5,padx=6)
         transPerDegZBox = Entry(transPerDegInputsFrame,textvariable=self.transPerDegZ,width=5)
         transPerDegZBox.grid(row=0,column=5,sticky=W,pady=5,padx=6)
+        transPerDegInputsFrame.grid_rowconfigure(0,weight=1)
+        transPerDegInputsFrame.grid_columnconfigure(0,weight=1)
+        transPerDegInputsFrame.grid_columnconfigure(1,weight=1)
+        transPerDegInputsFrame.grid_columnconfigure(2,weight=1)
+        transPerDegInputsFrame.grid_columnconfigure(3,weight=1)
+        transPerDegInputsFrame.grid_columnconfigure(4,weight=1)
+        transPerDegInputsFrame.grid_columnconfigure(5,weight=1)
         # preset translations per degree
         self.transPerDegX.set("0")
         self.transPerDegY.set("0")
