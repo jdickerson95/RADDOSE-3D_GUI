@@ -739,8 +739,9 @@ class RADDOSEgui(Frame):
                     expIndex = -1 # A number to signify that the experiment did not already exist in the GUI as an object
                 if self.strategyType == "Premade":
                     shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
-                self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
-                self.runStrategy() #run the strategy
+                deleteSuccessful = self.deleteExperiment(expIndex, expName) #delete the old experiment to be overwritten.
+                if deleteSuccessful:
+                    self.runStrategy() #run the strategy
             else:
                 pass
         else:
@@ -1150,20 +1151,30 @@ class RADDOSEgui(Frame):
             pass
 
     def deleteExperiment(self, expListIndex, experimentName):
-        if expListIndex != -1:
-            self.expListbox.delete(expListIndex) #remove from experiment list box
-            del self.experimentDict[experimentName] #delete from dictionary
-        shutil.rmtree(experimentName) # Delete experiment directory
-        #check if experiment was also loaded into summary window (i.e. if
-        #it's in the experiment dictionary)
-        if experimentName in self.expNameList:
-            self.expNameList.remove(experimentName) #remove from experiment list
-            self.refreshExperimentChoices() #refresh experiment list in summary window
+        dirIsDeleted = False
+        shutil.rmtree(experimentName, onerror=self.removeFileError) # Delete experiment directory
+        if not os.path.isdir(experimentName):
+            if expListIndex != -1:
+                self.expListbox.delete(expListIndex) #remove from experiment list box
+                del self.experimentDict[experimentName] #delete from dictionary
+            #check if experiment was also loaded into summary window (i.e. if
+            #it's in the experiment dictionary)
+            if experimentName in self.expNameList:
+                self.expNameList.remove(experimentName) #remove from experiment list
+                self.refreshExperimentChoices() #refresh experiment list in summary window
 
-        #If experiment dictionary is empty then print string to experiment
-        #list box to notify user that there are no existing experiments.
-        if not self.experimentDict:
-            self.expListbox.insert(0, self.emptyExpListString)
+            #If experiment dictionary is empty then print string to experiment
+            #list box to notify user that there are no existing experiments.
+            if not self.experimentDict:
+                self.expListbox.insert(0, self.emptyExpListString)
+            dirIsDeleted = True
+        return dirIsDeleted
+
+    def removeFileError(self, func, path, excinfo):
+        string = """Can't delete directory.
+This is likely to be caused by a file in the directory being used by another process.
+Please check that you have closed all applications that are using any of the related RADDOSE-3D files.""" %()
+        tkMessageBox.showinfo( "Can't delete directory", string)
 
     def clickLoadExperiment(self):
         expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
@@ -1434,8 +1445,15 @@ class RADDOSEgui(Frame):
         currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
         crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
 
+
         #Write the RADDOSE3D input file here
-        RADDOSEfile = open(self.RADDOSEfilename,'w')
+        try:
+            RADDOSEfile = open(self.RADDOSEfilename,'w')
+        except IOError:
+            string = """Can't Write RADDOSE-3D input file.
+    This is likely to be caused by a file in the directory being used by another process.
+    Please check that you have closed all applications that are using any of the related RADDOSE-3D files.""" %()
+            tkMessageBox.showinfo( "Can't Write RADDOSE-3D input file", string)
         RADDOSEfile.write(crystalBlock)
         RADDOSEfile.write("\n\n")
         RADDOSEfile.close()
@@ -1519,13 +1537,21 @@ class RADDOSEgui(Frame):
         # THE RADDOSE-3D RUN. I.E. WAS THERE A MODEL FILE, SEQUENCE FILE OR AN
         # EXPERIMENTAL BEAM FILE? IF THE ANSWER IS YES THEN WE CAN APPEND THESE
         # FILES TO THE LIST READY TO BE MOVED. THIS CAN BE DONE ONCE THE CRYSTAL
-        # AND BEAMS OBJECTS ARE MOVED BEFORE THE CALL TO RUN RADDOSE-3D.
+        # AND BEAM OBJECTS ARE MOVED BEFORE THE CALL TO RUN RADDOSE-3D.
         ########################################################################
         ########################################################################
 
         #Move selected files to the directory corresponding to the named
         #experiment
-        self.moveFiles(fileList, experimentName)
+        allFilesMoved = self.moveFiles(fileList, experimentName)
+        if not allFilesMoved:
+            string = """Not all of the possible experiment files were moved into the experiment directory.
+This is likely to be due to a file not existing in the main directory.
+Check the RADDOSE-3D log file (outputLog.txt) for more information.
+This is likely to be due to RADDOSE-3D not creating certain files since they were in use by another process.
+Check that you haven't got any applications open that are using files relating to the current experiment run.
+""" %()
+            tkMessageBox.showinfo( "Not all experiment files moved", string)
 
         #Create an experiment object and add it to the experiment dictionary
         pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
@@ -1635,9 +1661,9 @@ class RADDOSEgui(Frame):
         No explicit return parameters
 
         """
+        allFilesExist = True
         if not os.path.isdir(dirPath): #check to determine if directory already exists
             os.mkdir(dirPath) # make the directory if it doesn't exist
-
         #Loop through the list of files. For each one we need to check if a file
         #with an identical name already exists in the specified directory. If it
         #does then we need to delete it first before moving the file over.
@@ -1646,6 +1672,9 @@ class RADDOSEgui(Frame):
                 if os.path.isfile("{}/{}".format(dirPath,srcFile)):
                     os.remove("{}/{}".format(dirPath,srcFile))
                 shutil.move(srcFile,"{}/{}".format(dirPath,srcFile))
+            elif srcFile != "output-FluencePerDoseHistCSV.csv":
+                allFilesExist = False
+        return allFilesExist
 
     def writeCrystalBlock(self, crystalObj):
         """Write a text block of crystal information for RADDOSE-3D

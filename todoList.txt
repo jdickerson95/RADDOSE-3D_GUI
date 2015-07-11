@@ -9,9 +9,6 @@ To do before release (Aim for August 1st)
 
 - Checks for inputs in a pre-made RADDOSE-3D file (CSB) - Mostly finished
 
-- Need to add a check when experiments are run to see if any files are already
-in use by other programs.(JBB)
-
 - Create user guide (JBB + CSB LATER)
 
 - Check GUI works on Windows, Linux (diamond UNIX distribution mainly) and Mac.
@@ -32,6 +29,10 @@ RADDOSE-3D GUI can read these when necessary to run RADDOSE-3D. (JBB)
 with the same names are loaded twice. - want to be able to have same crystal loaded
 twice, but names MUST be different & have a warning if an identical crystal has been
 loaded (CSB) - Mostly finished
+
+- Add horizontal scrollbar to the Crystal and Beam lists in the main window.
+
+- Test to see if checks are performed on premade input files
 
 -***************************-
 To do at some point
