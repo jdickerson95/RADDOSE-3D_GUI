@@ -420,3 +420,62 @@ is sensitive to radiation damage.
 Only numerical values are accepted for this field. If the value is not
 explicitly given then it will default to 0.
 """
+
+class PremadeInputHelp():
+    def __init__(self):
+        self.inputFileText = """RADDOSE-3D input file
+
+Specifies the location of the premade RADDOSE-3D input file. Of all of the files
+required for input, this is the only compulsory file. This file contains all of
+the input parameters required to run RADDOSE-3D.
+"""
+        self.sampleGeomText = """Sample geometry file
+
+Specifies the location of the geometry file describing the 3D shape of the
+sample. This file must contain the vertices and the faces (connectivity) of the
+object. Only triangular polygon faces are supported.
+Currently only .obj (geometry definition) files can be read. The model and the
+.obj files can be generated using the free and open source 3D animation software
+BLENDER. (NOTE: if you are exporting a Wavefront (.obj) file in BLENDER, then
+select the option "Triangulate Faces" before you finalise the export. RADDOSE-3D
+only works with triangular faces for the polygons).
+"""
+        self.sequenceFileText = """Sequence file
+
+Specifies the path to the sequence file.
+This file should be a plain text file in fasta format:
+http://blast.ncbi.nlm.nih.gov/blastcgihelp.shtml.
+"""
+        self.beamImageText = """Beam image
+
+Specifies path to the beam image file. The beam image should preferably be given
+in portable graymap format (pgm files), although Portable Network Graphics (png)
+files can be read and converted to a pgm file for RADDOSE-3D to process.
+
+If this option is selected then there is no need to select files for the beam
+aperture measurements.
+
+NOTE: the conversion from png to pgm decreases the accuracy of the dose
+calculated particularly if the image is in colour.
+"""
+        self.beamApXText = """Beam aperture measurements (horizontal)
+
+Specifies location of the beam aperture measurement in the horizontal direction
+along the beam.
+
+The aperture measurements are provided in a compatible file format (dat file) on
+beamline I02 at Diamond Light Source.
+"""
+        self.beamApYText = """Beam aperture measurements (vertical)
+
+Specifies location of the beam aperture measurement in the vertical direction
+along the beam.
+
+The aperture measurements are provided in a compatible file format (dat file) on
+beamline I02 at Diamond Light Source.
+"""
+        self.expNameText = """Experiment name
+
+Specifies the unique ID name for the current RADDOSE-3D run. A unique name must
+be given.
+"""

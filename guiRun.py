@@ -27,6 +27,7 @@ from plotMaker import barplotWindow
 from beamMaker import beamMakerWindow
 from crystalMaker import crystalMakerWindow
 from wedgeMaker import wedgeMakerWindow
+from PremadeInputMaker import PremadeInputMakerWindow
 from crystals import *
 from beams import *
 from wedges import wedges
@@ -614,30 +615,9 @@ class RADDOSEgui(Frame):
         runPremadeRD3DStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
         runPremadeRD3DStrategyFrame.grid(row=5,column=0,sticky="nsew",padx=10, pady=0)
 
-        # add RD3D input file 'load' option to runPremadeRD3DStrategyFrame frame here
-        RD3DinputLoadLabel = Label(runPremadeRD3DStrategyFrame,text="RADDOSE-3D input Load",style="inputBoxes.TLabel")
-        RD3DinputLoadLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
-        self.RD3DinputLoad = StringVar()
-        self.RD3DinputLoadBox = Entry(runPremadeRD3DStrategyFrame,textvariable=self.RD3DinputLoad)
-        self.RD3DinputLoadBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
-        addRD3DinputButton = Button(runPremadeRD3DStrategyFrame,text="Find File",command=self.clickRD3DinputLoad)
-        addRD3DinputButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
-
-        # add experiment naming option to runPremadeRD3DStrategyFrame frame here. Name is what user wishes to
-        # call the current experiment for future reference
-        premadeRD3DStrategyLabel = Label(runPremadeRD3DStrategyFrame,text="Experiment Name",style="inputBoxes.TLabel")
-        premadeRD3DStrategyLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
-        self.premadeRD3DStrategyName = StringVar()
-        premadeRD3DStrategyBox = Entry(runPremadeRD3DStrategyFrame,textvariable=self.premadeRD3DStrategyName)
-        premadeRD3DStrategyBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
-        premadeRD3DRunButton = Button(runPremadeRD3DStrategyFrame,text="Run",command=self.runPremadeRD3DExperiment)
-        premadeRD3DRunButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
-        runPremadeRD3DStrategyFrame.grid_rowconfigure(0,weight=1)
-        runPremadeRD3DStrategyFrame.grid_rowconfigure(1,weight=1)
-        runPremadeRD3DStrategyFrame.grid_columnconfigure(0,weight=1)
-        runPremadeRD3DStrategyFrame.grid_columnconfigure(1,weight=1)
-        runPremadeRD3DStrategyFrame.grid_columnconfigure(2,weight=1)
-        runPremadeRD3DStrategyFrame.grid_columnconfigure(3,weight=1)
+        #Add button to choose the files required for RADDOSE-3D input
+        choosePremadeFilesButton = Button(runPremadeRD3DStrategyFrame,text="Choose input files",command=self.chooseInputFiles)
+        choosePremadeFilesButton.grid(row=0, columnspan=4, pady=10,padx=10,sticky=W+E)
 
         LabelFrameBodyRight.grid_columnconfigure(0,weight=1)
         LabelFrameBodyRight.grid_rowconfigure(0,weight=1)
@@ -1146,6 +1126,17 @@ Please check the file path supplied.
 
             # finds separate class for secondary crystal-maker window
             self.app = crystalMakerWindow(self)
+
+    def chooseInputFiles(self):
+        # Open new window with the options for loading a premade RADDOSE-3D job
+        self.top_premadeRunMaker=Toplevel()
+        self.top_premadeRunMaker.title("Premade Input files")
+
+        # give the new window a dark background colour
+        self.top_premadeRunMaker.configure(bg=self.darkcolour)
+
+        # finds separate class for secondary crystal-maker window
+        self.app = PremadeInputMakerWindow(self)
 
     def addCrystalToList(self, crystal):
         # add a crystal object to the list of crystals (outside of listbox)
@@ -1870,28 +1861,6 @@ Check that you haven't got any applications open that are using files relating t
         filelines = fileOpen.readlines()
         fileString = ' '.join(filelines)
         self.raddose3Dinputtxt.set(fileString)
-
-    def clickRD3DinputLoad(self):
-        """Load a pre-made RADDOSE-3D input file
-
-        Function to allow file search and load of a pre-made RADDOSE-3D input file to
-        be directly run within the RADDOSE-3D GUI
-
-        =================
-        Keyword arguments
-        =================
-        No explicit user defined parameters. Only the object is required for
-        implicit input.
-
-        =================
-        Return parameters
-        =================
-        No explicit return parameters
-
-        """
-        self.RD3DinputLoad = tkFileDialog.askopenfilename(parent=self,title='Load pre-made RADDOSE-3D input file')
-        self.RD3DinputLoadBox.delete(0,END)
-        self.RD3DinputLoadBox.insert(0,self.RD3DinputLoad)
 
     def _quit(self):
         # what happens when close button clicked.
