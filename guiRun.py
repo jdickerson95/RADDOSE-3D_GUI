@@ -96,7 +96,7 @@ class RADDOSEgui(Frame):
                                        background=self.lightcolour,borderwidth=5)
         styleInputBoxes = Style()
         styleInputBoxes.configure("inputBoxes.TLabel",foreground="white",
-                                  background=self.lightcolour,borderwidth=5,font=("Helvetica", 12))
+                                  background=self.lightcolour,borderwidth=5,font=("Helvetica", 11))
 
         # make a style for the added gui header title label
         styleTitle = Style()
@@ -106,7 +106,7 @@ class RADDOSEgui(Frame):
         # make a style for the gui header RD3D web address details
         styleTitle = Style()
         styleTitle.configure("RD3DheaderWebAddress.TLabel",foreground="white",
-                             background=self.headercolour,font=("Helvetica", 14))
+                             background=self.headercolour,font=("Helvetica", 16))
 
         # make an additional style for the added label titles to labelframe widgets
         styleLabelFrameTitle = Style()
@@ -271,10 +271,10 @@ class RADDOSEgui(Frame):
         # create button to plot isosurfaces for currently loaded experiments within summary window
         expIsosurfacesButton = Button(chooseExpFrame, text="Dose Contours",command=self.clickDoseContours)
         expIsosurfacesButton.grid(row=1, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
-        chooseExpFrame.columnconfigure(0, weight=1)
-        chooseExpFrame.columnconfigure(1, weight=1)
-        chooseExpFrame.rowconfigure(0, weight=1)
-        chooseExpFrame.rowconfigure(1, weight=1)
+        chooseExpFrame.grid_columnconfigure(0, weight=1)
+        chooseExpFrame.grid_columnconfigure(1, weight=1)
+        chooseExpFrame.grid_rowconfigure(0, weight=1)
+        chooseExpFrame.grid_rowconfigure(1, weight=1)
 
         #create text box with scrollbar to detail the summary output for currently selected experiment
         expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
@@ -1904,6 +1904,23 @@ Check that you haven't got any applications open that are using files relating t
         x,y = pos
         image.put("#%02x%02x%02x" % (r,g,b), (y, x))
 
+def center(win):
+    """
+    centers a tkinter window
+    :param win: the root or Toplevel window to center
+    """
+    win.update_idletasks()
+    width = win.winfo_width()
+    frm_width = win.winfo_rootx() - win.winfo_x()
+    win_width = width + 2 * frm_width
+    height = win.winfo_height()
+    titlebar_height = win.winfo_rooty() - win.winfo_y()
+    win_height = height + titlebar_height + frm_width
+    x = win.winfo_screenwidth() // 2 - win_width // 2
+    y = win.winfo_screenheight() // 2 - win_height // 2
+    win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+    win.deiconify()
+
 def main():
     # when the script is run in python, do the following:
     root = Tk()
@@ -1914,6 +1931,7 @@ def main():
     root.geometry(str(int(round(width*widthScrSizeFrac))) + "x" + str(int(round(height*heightScrSizeFrac))))
     app = RADDOSEgui(root)
     app.pack(fill=BOTH,expand=YES)
+    center(root)
     root.mainloop()
     return app
 
