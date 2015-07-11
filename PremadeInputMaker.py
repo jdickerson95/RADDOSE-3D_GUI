@@ -255,6 +255,26 @@ class PremadeInputMakerWindow():
         return allFilesExist
 
     def getFileNamesFromRD3DInput(self, rd3dInputFile):
+        """Extract additonal file names from RADDOSE-3D input file
+
+        This function takes a string containing the path to the RADDOSE-3D
+        input file. It parses the file and looks for lines that contain
+        paths to other files required for the RADDOSE-3D simulation. It
+        stores the strings corresponding to these additional files in a list
+        and returns the list.
+        =================
+        Keyword arguments
+        =================
+        rd3dInputFile:
+            String corresponding to the path of the RADDOSE-3D input file.
+
+        =================
+        Return parameters
+        =================
+        filenameList:
+            A list containing strings with the names of the additional files
+            required for the RADDOSE-3D simulation.
+        """
         try:
             rd3dFile = open(rd3dInputFile, "r")
         except IOError:
