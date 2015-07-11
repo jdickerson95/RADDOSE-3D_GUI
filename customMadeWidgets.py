@@ -2,6 +2,7 @@ from Tkinter import *
 from PIL import Image, ImageTk
 from ttk import *
 import Tkinter as tk
+import tkFont
 
 class dynamicOptionMenu(OptionMenu):
 	# this little class is for a small option menu from which a dropdown selection box of both loaded
@@ -89,3 +90,31 @@ class toggledFrame(Frame):
 		else:
 		    self.subFrame.forget()
 		    self.toggleButton.configure(text='+')
+
+class DynamicLabel(tk.Label):
+    def __init__(self, *args, **kwargs):
+        tk.Label.__init__(self, *args, **kwargs)
+
+        # clone the font, so we can dynamically change
+        # it to fit the label width
+        font = self.cget("font")
+        base_font = tkFont.nametofont(self.cget("font"))
+        self.font = tkFont.Font()
+        self.font.configure(**base_font.configure())
+        self.configure(font=self.font)
+
+        self.bind("<Configure>", self._on_configure)
+
+    def _on_configure(self, event):
+        text = self.cget("text")
+
+        # first, grow the font until the text is too big,
+        size = self.font.actual("size")
+        while size < event.width:
+            size += 1
+            self.font.configure(size=size)
+
+        # ... then shrink it until it fits
+        while size > 1 and self.font.measure(text) > event.width:
+            size -= 1
+            self.font.configure(size=size)

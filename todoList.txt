@@ -76,3 +76,7 @@ think is ideal. Ideally we wouldn't want the parser to throw an error if this is
 problem with the input file.
 
 - Fix X and Y scrollbar positions so they don't overlap.
+
+- Perhaps resize text when window is resized so the text doesn't get cut off.
+I've added a "DynamicLabel" in the customMadeWidgets file but it seems to be too
+slow at resizing the text.
