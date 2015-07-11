@@ -745,8 +745,14 @@ class RADDOSEgui(Frame):
             else:
                 pass
         else:
+            #Check if the RADDOSE-3D run is using a premade input file.
             if self.strategyType == "Premade":
-                shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
+                #Now check if the raddose input file is already in the current
+                #directory. If it's not already there then we need to move it
+                #into the current directory.
+                inputFilePathIfInCurrentDir = "{}/{}".format(os.getcwd().replace("\\","/"), self.RD3DinputLoad.split("/")[-1])
+                if self.RD3DinputLoad != inputFilePathIfInCurrentDir:
+                    shutil.copy(self.RD3DinputLoad, os.getcwd()) # copy input file to the current directory
             self.runStrategy()
 
     def runStrategy(self):
@@ -1508,6 +1514,53 @@ Please check that you have closed all applications that are using any of the rel
         """
         experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
 
+        #If the input has come from a premade input file then we have to check
+        #that the input file is suitable for RADDOSE-3D before running it.
+        if self.strategyType == 'Premade':
+            try:
+                crystalObject, beamList, wedgeList = self.parseRaddoseInput(self.RADDOSEfilename,'all')
+            except:
+                string = """The premade RADDOSE-3D input file could not be successfully parsed
+Please check your input file to make sure your inputs are correct.
+For more help with the input file format please refer to the RADDOSE-3D user guide here:
+http://www.raddo.se/user-guide.pdf
+                """ %()
+                tkMessageBox.showinfo("Unsuccesful parsing of input file", string)
+            # give crystal object a name here
+            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
+
+            # check correct crystal properties have been read from RD3D input file
+            ErrorMessage = self.checkCrystInputs(crystalObject)
+            if ErrorMessage != "":
+                tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+                return
+            else:
+                # add crystal to loaded crystal list
+                self.addCrystalToList(crystalObject)
+
+                # give warning if identical crystal already loaded
+                warningMessage = self.checkRepeatedCryst(crystalObject)
+                if warningMessage != "":
+                    tkMessageBox.showinfo("Warning",warningMessage)
+
+            # check correct beam properties have been read from RD3D input file
+            beamError = False
+            for beam in beamList:
+                ErrorMessage = self.checkBeamInputs(beam)
+                if ErrorMessage != "":
+                    tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+                    beamError = True
+                    return
+            if beamError == False:
+                # give warning if identical beam already loaded
+                warningMessage = ""
+                for beam in beamList:
+                    warningMessage += self.checkRepeatedBeam(beam)
+                if warningMessage != "":
+                    tkMessageBox.showinfo("Warning",warningMessage)
+
+            self.addRD3DInputBeamsToList(beamList,experimentName)
+
         #write terminal command to run RADDOSE-3D
         terminalCommand = "java -jar raddose3d.jar -i {} -r raddose.exe".format(self.RADDOSEfilename)
         process = subprocess.Popen(terminalCommand, stdout=subprocess.PIPE, shell=True) #Run RADDOSE-3D
@@ -1556,46 +1609,8 @@ Check that you haven't got any applications open that are using files relating t
         #Create an experiment object and add it to the experiment dictionary
         pathToLogFile = '{}/{}'.format(experimentName, outputLogFilename)
         if self.strategyType == 'Manual':
-            currentCrystal = self.crystList[self.currentCrystIndex]
             experiment = Experiments(self.crystList[self.currentCrystIndex], self.beamList2Run, self.wedgeList2Run, pathToLogFile, outputLog)
         elif self.strategyType == 'Premade':
-            pathToRADDOSEInput = '{}/{}'.format(experimentName, self.RADDOSEfilename)
-            crystalObject, beamList, wedgeList = self.parseRaddoseInput(pathToRADDOSEInput,'all')
-
-            # give crystal object a name here
-            crystalObject.crystName = str(self.CurrentexpLoadName.get())+"_crystal"
-
-            # check correct crystal properties have been read from RD3D input file
-            ErrorMessage = self.checkCrystInputs(crystalObject)
-            if ErrorMessage != "":
-                tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
-                return
-            else:
-                # add crystal to loaded crystal list
-                self.addCrystalToList(crystalObject)
-
-                # give warning if identical crystal already loaded
-                warningMessage = self.checkRepeatedCryst(crystalObject)
-                if warningMessage != "":
-                    tkMessageBox.showinfo("Warning",warningMessage)
-
-            # check correct beam properties have been read from RD3D input file
-            beamError = False
-            for beam in beamList:
-                ErrorMessage = self.checkBeamInputs(beam)
-                if ErrorMessage != "":
-                    tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
-                    beamError = True
-                    return
-            if beamError == False:
-                # give warning if identical beam already loaded
-                warningMessage = ""
-                for beam in beamList:
-                    warningMessage += self.checkRepeatedBeam(beam)
-                if warningMessage != "":
-                    tkMessageBox.showinfo("Warning",warningMessage)
-
-            self.addRD3DInputBeamsToList(beamList,experimentName)
             experiment = Experiments(crystalObject, beamList, wedgeList, pathToLogFile, outputLog)
 
         self.experimentDict[experimentName] = copy.deepcopy(experiment)
