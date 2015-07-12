@@ -230,11 +230,11 @@ Currently there are three options:
 1) None - The sample is not contained in anything. This is the default option
 and is the case for any standard crystallography experiment.
 
-2) Mixture - Defines a container encasing the irradiated sample which is a
+2) Mixture - Defines a container encasing the irradiated sample which is a
 mixture of elements, determined by the name of the mixture. There are specific
 mixtures available in a drop down list for this option.
 
-3) Elemental - Defines a container encasing the irradiated sample in terms of
+3) Elemental - Defines a container encasing the irradiated sample in terms of
 its component elements. If this option is selected then the user must specify
 the list of the material's component elements.
 
@@ -332,10 +332,27 @@ Note that the vertical fwhm is the X (first) input and the horizontal fwhm is
 the Y (second) input.
 """
 
-        self.fileText = """Experimental Beam File
+        self.fileText = """Beam Image File
 
 Specifies the path to the file containing the beam image.
 Currently only portable Graymap (.pgm) files are supported.
+"""
+
+        self.beamApXText = """Beam aperture measurements (horizontal)
+
+Specifies location of the beam aperture measurement in the horizontal direction
+along the beam.
+
+The aperture measurements are provided in a compatible file format (dat file) on
+beamline I02 at Diamond Light Source.
+"""
+        self.beamApYText = """Beam aperture measurements (vertical)
+
+Specifies location of the beam aperture measurement in the vertical direction
+along the beam.
+
+The aperture measurements are provided in a compatible file format (dat file) on
+beamline I02 at Diamond Light Source.
 """
 
         self.pixSizeText = """Pixel Size

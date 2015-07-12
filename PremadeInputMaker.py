@@ -156,14 +156,14 @@ class PremadeInputMakerWindow():
         inputBox.insert(0,self.inputLoad)
 
     def runExp(self, MainGui):
-        #Get a full list of all the variables representing file names
-        fullFileVarList = [self.rd3dInputFile.get(), self.sampleModelFile.get(), self.sequenceFile.get(),
-        self.beamImageFile.get(), self.beamApertureXFile.get(), self.beamApertureYFile.get()]
-
         #Check that an experiment name was given
         if self.expNameInput.get():
             #Check if the RADDOSE-3D input file has been supplied
             if os.path.isfile(self.rd3dInputFile.get()):
+                #Get a full list of all the variables representing file names
+                fullFileVarList = [self.rd3dInputFile.get(), self.sampleModelFile.get(), self.sequenceFile.get(),
+                self.beamImageFile.get(), self.beamApertureXFile.get(), self.beamApertureYFile.get()]
+
                 #Determine which of the files have non empty strings and put those in a
                 #separate list
                 nonEmptyFileList = []
@@ -245,11 +245,11 @@ class PremadeInputMakerWindow():
                         fileFromListExt = filename.split(".")[1]
                         if srcFileExt == fileFromListExt and not os.path.isfile(filename):
                             os.rename(nameOfFile, filename)
+                            #Remove the file that we copied because we now have a
+                            #renamed copy in the directory.
+                            if os.path.isfile(nameOfFile):
+                                os.remove(nameOfFile)
                             break
-                    #Remove the file that we copied because we now have a
-                    #renamed copy in the directory.
-                    if os.path.isfile(nameOfFile):
-                        os.remove(nameOfFile)
             else:
                 allFilesExist = False
         return allFilesExist

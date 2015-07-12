@@ -18,13 +18,6 @@ To do before release (Aim for August 1st)
 
 - Add experimental beam image file converter code (JBB)
 
-- Currently user can only load in input file if they want to run an experiment.
-However they may also have other files that need to be loaded (e.g. model
-geometry file or experimental beam file). We need to work out a way that the
-RADDOSE-3D GUI can read these when necessary to run RADDOSE-3D. (JBB)
-
-- Add file finders for inputs that require paths to files (JBB)
-
 - If the same pre-made input file is loaded twice then the crystals and beams
 with the same names are loaded twice. - want to be able to have same crystal loaded
 twice, but names MUST be different & have a warning if an identical crystal has been
@@ -32,6 +25,10 @@ loaded (CSB) - Mostly finished
 
 - Input parser needs fixing so that it doesn't moan when a valid RADDOSE-3D input
 file is specified.
+
+- Display Summary/View window should show all populated object attributes. An
+example where this fails is when I create a crystal and specify a sequence file.
+When I click "View" it doesn't show the sequence file that I selected.
 
 
 -***************************-
@@ -43,6 +40,10 @@ model/geometry files.
 
 - If incomplete input files should be able to be read into the GUI and the
 corresponding fields should be automatically populated.
+
+- If premade input files require more than one experimental beam as input
+RADDOSE-3D GUI will not read read them. This should be sorted at some point
+(JBB).
 
 
 -***************************-

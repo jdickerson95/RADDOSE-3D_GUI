@@ -653,11 +653,54 @@ class RADDOSEgui(Frame):
         Return parameters
         =================
         No explicit return parameters
-
         """
-        self.CurrentexpLoadName = self.expLoadName
-        self.strategyType = 'Manual'
-        self.runExperiment()
+        #########################################################################
+        #Handling of additional files that may be required for RADDOSE-3D input
+        fullFileVarList = []
+
+        ##### Append files to the fullFileVarList
+        # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
+        self.currentCrystIndex = [cryst.getTimeStampedName() for cryst in self.crystList].index(self.crystChoice.get())
+        currentCrystal = self.crystList[self.currentCrystIndex]
+        if hasattr(currentCrystal, 'seqFile'):
+            fullFileVarList.append(currentCrystal.seqFile)
+        #**********THIS ATTRIBUTE NEEDS TO BE ADDED TO THE CRYSTALS CLASS********
+        if hasattr(currentCrystal, 'modelFile'):
+            fullFileVarList.append(currentCrystal.modelFile)
+        for currentBeam in self.beamList2Run:
+            if hasattr(currentBeam,'file'):
+                fullFileVarList.append(currentBeam.file)
+
+        ##### Determine which of the files have non empty strings and put those in a
+        #separate list
+        nonEmptyFileList = []
+        for filename in fullFileVarList:
+            if filename:
+                nonEmptyFileList.append(filename)
+
+        print nonEmptyFileList
+        #Copy the specified files into the current directory
+        allFilesExist = self.copyFiles(nonEmptyFileList, os.getcwd())
+
+        #Now get the file names that should correspond to the paths for the files
+        #that have been copied to the current directory
+        additionalFilenames = []
+        for filename in nonEmptyFileList:
+            additionalFilenames.append(filename.split("/")[-1])
+
+        #########################################################################
+        if allFilesExist:
+            self.CurrentexpLoadName = self.expLoadName.get()
+            self.strategyType = 'Manual'
+            self.runExperiment(additionalFilenames)
+        else:
+            #This message box should never come up since these files should be checked
+            #for existence when the corresponding objects are made and you can never be
+            #too safe :-P
+            string = """At least one of the files specified does not exist.
+        Please check the file names given in the input boxes and make sure they exist.
+        """ %()
+            tkMessageBox.showinfo( "No Experiment Name", string)
 
     def runPremadeRD3DExperiment(self, rd3dInputFilename, experimentName, additionalFilenames=[]):
         """Run the a premade RD3D job with premade input file
@@ -712,10 +755,7 @@ Please check the file path supplied.
         No explicit return parameters
 
         """
-        if self.strategyType == "Premade":
-            expName = self.CurrentexpLoadName
-        else:
-            expName = str(self.CurrentexpLoadName.get()) #get experiment name as a string
+        expName = self.CurrentexpLoadName
 
         #First check that the experiment name hasn't been left blank. If so then
         #tell user that they need to supply an experiment name.
@@ -769,7 +809,6 @@ Please check the file path supplied.
         # need to copy file to new working directory for experiment and rename the file
         # to the standard input file name.
         if self.strategyType == 'Manual':
-            experimentName = str(self.CurrentexpLoadName.get())
             if not self.crystList or not self.beamList2Run or not self.wedgeList2Run:
                 string = """An object required to run RADDOSE-3D has not been selected for input.\nCheck that you have selected at least one crystal, beam and wedge.
                 """ %()
@@ -777,7 +816,7 @@ Please check the file path supplied.
             else:
                 self.writeRaddose3DInputFile()
         elif self.strategyType == 'Premade':
-            experimentName = str(self.CurrentexpLoadName)
+
             oldFilename = self.RD3DinputLoad.split("/")[-1] # get the name of the file without the rest of the path
             os.rename(oldFilename, self.RADDOSEfilename) # rename the file
 
@@ -785,7 +824,7 @@ Please check the file path supplied.
 
         if succesfulRun:
             #Update the experiment list in the strategy window
-            self.addToExperimentList(experimentName)
+            self.addToExperimentList()
             #Update experiments loaded to summary window
             self.refreshExperimentChoices()
 
@@ -1141,10 +1180,10 @@ Please check the file path supplied.
         # update help window
         self.updateHelp()
 
-    def addToExperimentList(self, experimentName):
+    def addToExperimentList(self):
         if self.emptyExpListString in self.expListbox.get(0):
             self.expListbox.delete(0, END)
-        self.expListbox.insert(END, experimentName)
+        self.expListbox.insert(END, self.CurrentexpLoadName)
 
     def findExperimentTodelete(self):
         expListIndex = self.expListbox.index(ACTIVE) #get the index where experiment appears in list
@@ -1252,6 +1291,61 @@ Please check that you have closed all applications that are using any of the rel
             ErrorMessage += ErrorMessage2
 
         return ErrorMessage
+
+    def copyFiles(self, srcFileList, dirPath, filenames=[]):
+        """Copy Source Files
+
+        This function takes a list of files and copies them to a specified
+        directory. If the specified directory doesn't already exist then it is
+        created.
+        =================
+        Keyword arguments
+        =================
+        srcFileList:
+            a list object where is element of the list is a string that
+            corresponds to a file that is intended to be moved.
+
+        dirPath:
+            The name of the directory that the files will be moved to. This is
+            a string object input.
+
+        filenames:
+            A list containing strings which represent file names. The source
+            files are renamed with the filenames given in this list if the
+            file extensions match.
+
+        =================
+        Return parameters
+        =================
+        allFilesExist:
+            Boolean variable that indicates whether all files that were in the
+            list were present in the current directory.
+        """
+        allFilesExist = True
+        #Loop through the list of files. For each one we need to check if a file
+        #with an identical name already exists in the current working directory.
+        #If it doesn't then we'll copy it to the current wroking directory.
+        for srcFile in srcFileList:
+            if os.path.isfile(srcFile):
+                nameOfFile = srcFile.split("/")[-1]
+                inputFilePathIfInCurrentDir = "{}/{}".format(dirPath.replace("\\","/"), nameOfFile)
+                if inputFilePathIfInCurrentDir != srcFile:
+                    shutil.copy(srcFile,dirPath) # Copy file to directory
+
+                    #get extension of src file
+                    srcFileExt = nameOfFile.split(".")[1]
+                    for filename in filenames:
+                        fileFromListExt = filename.split(".")[1]
+                        if srcFileExt == fileFromListExt and not os.path.isfile(filename):
+                            os.rename(nameOfFile, filename)
+                            #Remove the file that we copied because we now have a
+                            #renamed copy in the directory.
+                            if os.path.isfile(nameOfFile):
+                                os.remove(nameOfFile)
+                            break
+            else:
+                allFilesExist = False
+        return allFilesExist
 
     def checkRepeatedCryst(self,newCrystal):
         # additional check to see whether identical crystal has previously been added
@@ -1445,8 +1539,6 @@ Please check that you have closed all applications that are using any of the rel
         """
 
         # run the current designed strategy here
-        # get the index of the selected crystal from the list of added crystals (in the optionmenu list)
-        self.currentCrystIndex = [cryst.getTimeStampedName() for cryst in self.crystList].index(self.crystChoice.get())
         # get the index of the selected beam from the list of added beams (in the optionmenu list)
         self.currentBeamIndex = [bm.getTimeStampedName() for bm in self.beamList].index(self.beamChoice.get())
 
@@ -1516,10 +1608,7 @@ Please check that you have closed all applications that are using any of the rel
             not.
         """
         successfulRun = False
-        if self.strategyType == 'Manual':
-            experimentName = str(self.CurrentexpLoadName.get()) #Get experiment name as string
-        else:
-            experimentName = str(self.CurrentexpLoadName) #Get experiment name as string
+        experimentName = self.CurrentexpLoadName #Get experiment name as string
         #If the input has come from a premade input file then we have to check
         #that the input file is suitable for RADDOSE-3D before running it.
         if self.strategyType == 'Premade':
@@ -1590,17 +1679,11 @@ http://www.raddo.se/user-guide.pdf
         "output-Summary.txt", "output-Summary.csv", "outputLog.txt",
         "output-FluencePerDoseHistCSV.csv"]
 
-        ########################################################################
-        ########################################################################
-        # HERE WE CAN CHECK IF THERE WERE OTHER FILES THAT WERE NECESSARY FOR
-        # THE RADDOSE-3D RUN. I.E. WAS THERE A MODEL FILE, SEQUENCE FILE OR AN
-        # EXPERIMENTAL BEAM FILE? IF THE ANSWER IS YES THEN WE CAN APPEND THESE
-        # FILES TO THE LIST READY TO BE MOVED. THIS CAN BE DONE ONCE THE CRYSTAL
-        # AND BEAM OBJECTS ARE MOVED BEFORE THE CALL TO RUN RADDOSE-3D.
-        ########################################################################
-        ########################################################################
+        #Go through other files that are potentially required for the RADDOSE-3D
+        #run
         for additionalFile in additionalFilenames:
             fileList.append(additionalFile)
+
         #Move selected files to the directory corresponding to the named
         #experiment
         allFilesMoved = self.moveFiles(fileList, experimentName)
@@ -1746,9 +1829,14 @@ Check that you haven't got any applications open that are using files relating t
             if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
             crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
             crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
-            crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma' and '_crystals__' not in crystProp):
-                string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
-                crystLines.append(string)
+            crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma' and '_crystals__' not in crystProp and
+            crystPropertyDict[crystProp]):
+                if crystProp.lower() == "seqfile" or "modelfile":
+                    string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]).split("/")[-1])
+                    crystLines.append(string)
+                else:
+                    string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
+                    crystLines.append(string)
 
         #write list entries as a single text block with each list entry joined
         #by a new line character
@@ -1785,7 +1873,7 @@ Check that you haven't got any applications open that are using files relating t
         for beamProp in beamPropertyDict:
             if '_beams__' in beamProp:
                 continue
-            if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName'):
+            if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'file'):
                 string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
                 beamLines.append(string)
             if beamProp == 'fwhm':
@@ -1796,6 +1884,9 @@ Check that you haven't got any applications open that are using files relating t
                 beamLines.append(string)
             if beamProp == 'pixelSize':
                 string = 'PixelSize {} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
+                beamLines.append(string)
+            if beamProp == 'file':
+                string = 'File {}'.format(beamObj.file.split("/")[-1])
                 beamLines.append(string)
 
 
@@ -1840,7 +1931,7 @@ Check that you haven't got any applications open that are using files relating t
         #and value from the dictionary and append that to the list created above
         for wedgeProp in wedgePropertyDict:
             if (wedgeProp != 'angStart' and wedgeProp != 'angStop' and wedgeProp != 'startOffsetList'and
-            wedgeProp != 'transPerDegList'):
+            wedgeProp != 'transPerDegList' and wedgePropertyDict[wedgeProp]):
                 string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
                 wedgeLines.append(string)
 

@@ -2,6 +2,7 @@ from Tkinter import *
 from ttk import *
 from crystals import *
 import tkMessageBox
+import tkFileDialog
 from HoverInfo import HoverInfo
 from InputsHelpText import CrystalInputHelp
 
@@ -215,8 +216,16 @@ class crystalMakerWindow(Frame):
             CrystalModelFileLabel = Label(self.currentStrategyCrystal,text="Model File (.obj) = ",style="inputBoxes.TLabel")
             CrystalModelFileLabel.grid(row=0,column=2,sticky=E,pady=5,padx=6)
             self.hoverModel = HoverInfo(CrystalModelFileLabel, self.helpText.modelText)
-            CrystalModelFileInputBox = Entry(self.currentStrategyCrystal,textvariable=self.crystalModelFile,width=14)
-            CrystalModelFileInputBox.grid(row=0,column=3,sticky=W,pady=5,padx=6)
+            inputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
+            inputsFrame.grid(row=0,column=3,sticky=W,pady=5,padx=6)
+            inputLoadBox = Entry(inputsFrame,textvariable=self.crystalModelFile)
+            inputLoadBox.grid(row=0, column=0,columnspan=2,pady=5,sticky=W+E)
+            addInputButton = Button(inputsFrame,text="Find File",command= lambda: self.clickInputLoad(inputLoadBox))
+            addInputButton.grid(row=0, column=2,pady=5,padx=6,sticky=W+E)
+            inputsFrame.grid_rowconfigure(0,weight=1)
+            inputsFrame.grid_columnconfigure(0,weight=1)
+            inputsFrame.grid_columnconfigure(1,weight=1)
+            inputsFrame.grid_columnconfigure(2,weight=1)
 
         #Set the input boxes to their current values
         self.CrystalDimX.set(self.CrystalDimX.get())
@@ -451,8 +460,16 @@ class crystalMakerWindow(Frame):
             CrystalSeqResLabel = Label(self.currentStrategyCrystal,text="Sequence file",style="inputBoxes.TLabel")
             CrystalSeqResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
             self.hoverSeqRes = HoverInfo(CrystalSeqResLabel, self.helpText.seqFileText)
-            CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.sequenceFile,width=14)
-            CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
+            inputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
+            inputsFrame.grid(row=4,column=3,sticky=W,pady=5,padx=6)
+            inputLoadBox = Entry(inputsFrame,textvariable=self.sequenceFile)
+            inputLoadBox.grid(row=0, column=0,columnspan=2,pady=5,sticky=W+E)
+            addInputButton = Button(inputsFrame,text="Find File",command= lambda: self.clickInputLoad(inputLoadBox))
+            addInputButton.grid(row=0, column=2,pady=5,padx=6,sticky=W+E)
+            inputsFrame.grid_rowconfigure(0,weight=1)
+            inputsFrame.grid_columnconfigure(0,weight=1)
+            inputsFrame.grid_columnconfigure(1,weight=1)
+            inputsFrame.grid_columnconfigure(2,weight=1)
 
             CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
             CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
@@ -601,8 +618,16 @@ class crystalMakerWindow(Frame):
             CrystalSeqResLabel = Label(self.currentStrategyCrystal,text="Sequence file",style="inputBoxes.TLabel")
             CrystalSeqResLabel.grid(row=4,column=2,sticky=E,pady=5,padx=6)
             self.hoverSeqRes = HoverInfo(CrystalSeqResLabel, self.helpText.seqFileText)
-            CrystalNumResInputBox = Entry(self.currentStrategyCrystal,textvariable=self.sequenceFile,width=14)
-            CrystalNumResInputBox.grid(row=4,column=3,sticky=W,pady=5,padx=6)
+            inputsFrame = Frame(self.currentStrategyCrystal,style="inputBoxes.TFrame")
+            inputsFrame.grid(row=4,column=3,sticky=W,pady=5,padx=6)
+            inputLoadBox = Entry(inputsFrame,textvariable=self.sequenceFile)
+            inputLoadBox.grid(row=0, column=0,columnspan=2,pady=5,sticky=W+E)
+            addInputButton = Button(inputsFrame,text="Find File",command= lambda: self.clickInputLoad(inputLoadBox))
+            addInputButton.grid(row=0, column=2,pady=5,padx=6,sticky=W+E)
+            inputsFrame.grid_rowconfigure(0,weight=1)
+            inputsFrame.grid_columnconfigure(0,weight=1)
+            inputsFrame.grid_columnconfigure(1,weight=1)
+            inputsFrame.grid_columnconfigure(2,weight=1)
 
             CrystalHeavyProtLabel = Label(self.currentStrategyCrystal,text="Heavy atoms in protein (optional)",style="inputBoxes.TLabel")
             CrystalHeavyProtLabel.grid(row=6,column=0,sticky=E,pady=5,padx=6)
@@ -808,6 +833,28 @@ class crystalMakerWindow(Frame):
         crystMakeButton = Button(self.currentStrategyCrystal,text="Make",command= lambda: self.addMadeCryst(MainGui))
         crystMakeButton.grid(row=12,columnspan=3,pady=5)
 
+    def clickInputLoad(self,inputBox):
+        """Load a pre-made file
+
+        Function to allow file search and load of a pre-made input file
+
+        =================
+        Keyword arguments
+        =================
+        inputBox:
+            The input text box that should be populated with the file path once
+            a file is selected.
+
+        =================
+        Return parameters
+        =================
+        No explicit return parameters
+
+        """
+        self.inputLoad = tkFileDialog.askopenfilename(parent=self.master,title='Load input file')
+        inputBox.delete(0,END)
+        inputBox.insert(0,self.inputLoad)
+
     def addMadeCryst(self,MainGui):
         # make a new crystal object from above entered parameters and add to both listbox crystal list and
         # also list of crystal objects
@@ -825,6 +872,16 @@ class crystalMakerWindow(Frame):
             self.containerInfoDict["Elements"] = self.materialElements.get()
             self.containerInfoDict["Thickness"] = self.containerThickness.get()
             self.containerInfoDict["Density"] = self.containerDensity.get()
+
+        ########################################################################################
+        #Check if files exist before adding them
+        allFilesExist = True
+        possibleFiles = [self.crystalModelFile.get(), self.sequenceFile.get()]
+        for eachFile in possibleFiles:
+            if eachFile:
+                if not os.path.isfile(eachFile):
+                    allFilesExist = False
+        ########################################################################################
 
         # make a new crystal object with class determined by absCoefCalc input type
         if 'Average protein composition' in self.crystalAbsCoeffType.get():
@@ -895,6 +952,11 @@ class crystalMakerWindow(Frame):
         ErrorMessage = MainGui.checkCrystInputs(newCryst)
         if ErrorMessage != "":
                     tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+        elif not allFilesExist:
+            string = """At least one of the files specified does not exist.
+        Please check the file names given in the input boxes and make sure they exist.
+        """ %()
+            tkMessageBox.showinfo( "No Experiment Name", string)
         else:
             # add new crystal to list of loaded crystals
             MainGui.addCrystalToList(newCryst)

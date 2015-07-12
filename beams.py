@@ -14,7 +14,7 @@ class beams(object):
 
 	def getTimeStampedName(self):
 		# create a string containing name then timestamp for unique beam identification
-		timeStampedName =  self.__creationTime + " "*10 + self.beamName 
+		timeStampedName =  self.__creationTime + " "*10 + self.beamName
 		return timeStampedName
 
 	def getCreationTime(self):
@@ -33,8 +33,8 @@ class beams(object):
 		"""This method checks to see if a beam has the same properties as
 		another beam
 		"""
-		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('beamName','_beams__creationTime')} 
-		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('beamName','_beams__creationTime')} 
+		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('beamName','_beams__creationTime')}
+		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('beamName','_beams__creationTime')}
 
 		return compareProps_self == compareProps_other
 
@@ -125,9 +125,9 @@ class beams_Experimental(beams):
 
 		super(beams_Experimental, self).__init__(beamName,beamFlux,beamEnergy)
 
-		self.type         	= 'Experimental'
+		self.type         	= 'ExperimentalPGM'
 		self.pixelSize		= beamPixelSize
-		self.file  		= fileName
+		self.file  		    = fileName
 
 	def extractBeamInfo(self):
 		# create a string containing information of current beam
