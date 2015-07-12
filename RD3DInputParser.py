@@ -31,7 +31,7 @@ class parsedRD3Dinput(object):
 		wedge = wedges() #create default wedge
 
 		for line in raddoseInput:
-
+			print line
 			# if empty line, skip over
 			try:
 				line.split()[0]
@@ -72,6 +72,12 @@ class parsedRD3Dinput(object):
 			if sorted(commentCharIndices)[-1] > -1: # check for positive indices
 				minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
 				line = line[0:minIndex] #remove comment part from line
+
+			# if empty line after comments removed, skip over
+			try:
+				line.split()[0]
+			except IndexError:
+				continue
 
 			if crystalBlock:
 				crystalInfoDict = self.parseCrystalLine(line,crystalInfoDict)
