@@ -1297,6 +1297,14 @@ Please check that you have closed all applications that are using any of the rel
         This function takes a list of files and copies them to a specified
         directory. If the specified directory doesn't already exist then it is
         created.
+        ######################################################################
+        ######################################################################
+        # WARNING!!! IF TWO INPUT FILES WITH THE SAME EXTENSION ARE SPECIFIED
+        # THEN THE RENAMING WILL NOT WORK. THE ONLY EXCEPTION IS FOR THE INPUT
+        # FILE. FOR NOW THIS METHOD SHOULD BE FINE BUT IF MORE INPUTS TYPES ARE
+        # IMPLEMENTED FOR RADDOSE-3D THEN THIS METHOD MAY NEED TO CHANGE.
+        ######################################################################
+        ######################################################################
         =================
         Keyword arguments
         =================
@@ -1324,6 +1332,7 @@ Please check that you have closed all applications that are using any of the rel
         #Loop through the list of files. For each one we need to check if a file
         #with an identical name already exists in the current working directory.
         #If it doesn't then we'll copy it to the current wroking directory.
+        counter = 0
         for srcFile in srcFileList:
             if os.path.isfile(srcFile):
                 nameOfFile = srcFile.split("/")[-1]
@@ -1331,8 +1340,9 @@ Please check that you have closed all applications that are using any of the rel
                 if inputFilePathIfInCurrentDir != srcFile and len(srcFile.split("/")) > 1:
                     shutil.copy(srcFile,dirPath) # Copy file to directory
 
-                    #get extension of src file
-                    srcFileExt = nameOfFile.split(".")[1]
+                #get extension of src file
+                srcFileExt = nameOfFile.split(".")[1]
+                if counter > 0:
                     for filename in filenames:
                         fileFromListExt = filename.split(".")[1]
                         if srcFileExt == fileFromListExt and not os.path.isfile(filename):
@@ -1344,6 +1354,7 @@ Please check that you have closed all applications that are using any of the rel
                             break
             else:
                 allFilesExist = False
+            counter += 1
         return allFilesExist
 
     def checkRepeatedCryst(self,newCrystal):
