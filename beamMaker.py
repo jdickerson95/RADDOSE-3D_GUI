@@ -292,58 +292,10 @@ class beamMakerWindow(Frame):
         # Check to see if there are experimental beam inputs that need to be
         # converted to compatible beam image files (pgm files) before being
         # entered into RADDOSE-3D.
-        apertureDiameter = 10 #in microns. This is the diameter of the aperture
-        #used to do the measurements
-        apertureStep = 2 #in microns. This is the distance from one measurement
-        #to the next in the aperture scan.
 
         beamFileInputIsFine = True
         if self.beamTypeDict[self.BeamType.get()] == 'ExperimentalPGM':
-            if os.path.isfile(self.beamFile.get()) and ".pgm" in self.beamFile.get():
-                self.beamFile = self.beamFile.get()
-            elif ((".pgm" in self.beamFile.get() and len(self.beamFile.get().split("/")) == 1 and
-            not os.path.isfile(self.beamFile.get())) or not self.beamFile.get()):
-                if (os.path.isfile(self.beamApertureXFile.get()) and os.path.isfile(self.beamApertureYFile.get()) and
-                ".dat" in self.beamApertureXFile.get() and ".dat" in self.beamApertureYFile.get()):
-                    if not self.beamFile.get():
-                        self.beamFile = "beamInput.pgm"
-                    else:
-                        self.beamFile = self.beamFile.get()
-                    BeamModule.Beam.initialiseBeamFromApMeas(self.beamApertureXFile.get(),self.beamApertureYFile.get(),
-                                                                "threshold", apertureDiameter, apertureStep,
-                                                                            self.beamFile,"gaussfitconv",True,"smoothgauss")
-                elif os.path.isfile(self.beamFile.get()):
-                    beamFileInputIsFine = False
-                    beamFileWarningMessage = """The aperture measurement files either don't exist or they are not in a compatible format (.dat).
-        """
-                    tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
-                else:
-                    beamFileInputIsFine = False
-                    beamFileWarningMessage = """Not all the necessary files required to process a beam image were given.
-Please see the documentation for more information."""
-                    tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
-            elif ".png" in self.beamFile.get() and os.path.isfile(self.beamFile.get()):
-                filenameWithExt = self.beamFile.get().split("/")[-1]
-                filenameWOExt = filenameWithExt.split(".")[0]
-                pgmFilename = "{}.pgm".format(filenameWOExt)
-                BeamModule.Beam.initialiseBeamFromPNG(self.beamFile.get(),0.45, 0.45, 0.1, pgmFilename,
-                [float(self.BeamRectCollHoriz.get()), float(self.BeamRectCollVert.get())],
-                [float(self.beamPixSizeX.get()), float(self.beamPixSizeY.get())])
-                self.beamFile = pgmFilename
-
-            elif len(self.beamFile.get().split("/")) > 1 and not os.path.isfile(self.beamFile.get()):
-                beamFileInputIsFine = False
-                beamFileWarningMessage = """The filename that you have supplied has not been found.
-    Please check the file path to ensure the file exists.
-    """
-                tkMessageBox.showinfo("beam image file has not been found",beamFileWarningMessage)
-            else:
-                beamFileInputIsFine = False
-                beamFileWarningMessage = """The file type you have supplied is incompatible with this program.
-    Only aperture measurements in ".dat" format or image files in ".pgm" or "png" format are compatible.
-    """
-                tkMessageBox.showinfo("Incompatible file type",beamFileWarningMessage)
-
+            beamFileInputIsFine = self.processExperimentalBeam()
         ########################################################################
 
         if beamFileInputIsFine:
@@ -365,15 +317,78 @@ Please see the documentation for more information."""
             # check the beams parameters are valid
             ErrorMessage = MainGui.checkBeamInputs(newBeam)
             if ErrorMessage != "":
-                        tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
+                tkMessageBox.showinfo("Invalid Input File",ErrorMessage)
             else:
-    			# give warning if identical beam already loaded
-    			warningMessage = MainGui.checkRepeatedBeam(newBeam)
-    			if warningMessage != "":
-    				tkMessageBox.showinfo("Warning",warningMessage)
+                # give warning if identical beam already loaded
+                warningMessage = MainGui.checkRepeatedBeam(newBeam)
+                if warningMessage != "":
+                    tkMessageBox.showinfo("Warning",warningMessage)
 
-    			# add new beam to list of loaded beams
-    			MainGui.addBeamToList(newBeam)
+                # add new beam to list of loaded beams
+                MainGui.addBeamToList(newBeam)
 
-    			# once this function runs, the toplevel window should be exited
-    			self.master.destroy()
+                # once this function runs, the toplevel window should be exited
+                self.master.destroy()
+
+    def processExperimentalBeam(self):
+        # To be honest I did the if statements as I went along without actually
+        # thinking about how to structure them. So some of the conditions may be
+        #redundant. Or worse, I may not catch some errors (I think the former is
+        # more likley though).
+        beamFileInputIsFine = True
+        apertureDiameter = 10 #in microns. This is the diameter of the aperture
+        #used to do the measurements
+        apertureStep = 2 #in microns. This is the distance from one measurement
+        #to the next in the aperture scan.
+
+        #The relative weighting of red, green and blue in colour beam images
+        #when performing the grayscale conversion.
+        red = 0.45
+        green = 0.45
+        blue = 0.1
+
+        if os.path.isfile(self.beamFile.get()) and ".pgm" in self.beamFile.get():
+            self.beamFile = self.beamFile.get()
+        elif ((".pgm" in self.beamFile.get() and len(self.beamFile.get().split("/")) == 1 and
+        not os.path.isfile(self.beamFile.get())) or not self.beamFile.get()):
+            if (os.path.isfile(self.beamApertureXFile.get()) and os.path.isfile(self.beamApertureYFile.get()) and
+            ".dat" in self.beamApertureXFile.get() and ".dat" in self.beamApertureYFile.get()):
+                if not self.beamFile.get():
+                    self.beamFile = "beamInput.pgm"
+                else:
+                    self.beamFile = self.beamFile.get()
+                BeamModule.Beam.initialiseBeamFromApMeas(self.beamApertureXFile.get(),self.beamApertureYFile.get(),
+                                                            "threshold", apertureDiameter, apertureStep,
+                                                                        self.beamFile,"gaussfitconv",True,"smoothgauss")
+            elif os.path.isfile(self.beamFile.get()):
+                beamFileInputIsFine = False
+                beamFileWarningMessage = """The aperture measurement files either don't exist or they are not in a compatible format (.dat).
+    """
+                tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
+            else:
+                beamFileInputIsFine = False
+                beamFileWarningMessage = """Not all the necessary files required to process a beam image were given.
+Please see the documentation for more information."""
+                tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
+        elif ".png" in self.beamFile.get() and os.path.isfile(self.beamFile.get()):
+            filenameWithExt = self.beamFile.get().split("/")[-1]
+            filenameWOExt = filenameWithExt.split(".")[0]
+            pgmFilename = "{}.pgm".format(filenameWOExt)
+            BeamModule.Beam.initialiseBeamFromPNG(self.beamFile.get(),red, green, blue, pgmFilename,
+            [float(self.BeamRectCollHoriz.get()), float(self.BeamRectCollVert.get())],
+            [float(self.beamPixSizeX.get()), float(self.beamPixSizeY.get())])
+            self.beamFile = pgmFilename
+
+        elif len(self.beamFile.get().split("/")) > 1 and not os.path.isfile(self.beamFile.get()):
+            beamFileInputIsFine = False
+            beamFileWarningMessage = """The filename that you have supplied has not been found.
+Please check the file path to ensure the file exists.
+"""
+            tkMessageBox.showinfo("beam image file has not been found",beamFileWarningMessage)
+        else:
+            beamFileInputIsFine = False
+            beamFileWarningMessage = """The file type you have supplied is incompatible with this program.
+Only aperture measurements in ".dat" format or image files in ".pgm" or "png" format are compatible.
+"""
+            tkMessageBox.showinfo("Incompatible file type",beamFileWarningMessage)
+        return beamFileInputIsFine

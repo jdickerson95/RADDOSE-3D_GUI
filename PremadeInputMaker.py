@@ -6,6 +6,7 @@ from HoverInfo import HoverInfo
 from InputsHelpText import PremadeInputHelp
 import os
 import shutil
+import BeamModule
 
 class PremadeInputMakerWindow():
 
@@ -160,36 +161,46 @@ class PremadeInputMakerWindow():
         if self.expNameInput.get():
             #Check if the RADDOSE-3D input file has been supplied
             if os.path.isfile(self.rd3dInputFile.get()):
-                #Get a full list of all the variables representing file names
-                fullFileVarList = [self.rd3dInputFile.get(), self.sampleModelFile.get(), self.sequenceFile.get(),
-                self.beamImageFile.get(), self.beamApertureXFile.get(), self.beamApertureYFile.get()]
+                #Return collimation and pixel size beam parameters from Input
+                #file
+                beamParams = self.getBeamParamsFromInput(self.rd3dInputFile.get())
+                #Make sure horizontal collimation parameter is inpt first
+                collimation = [beamParams[1], beamParams[0]]
+                pixelSize = [beamParams[2], beamParams[3]]
 
-                #Determine which of the files have non empty strings and put those in a
-                #separate list
-                nonEmptyFileList = []
-                for filename in fullFileVarList:
-                    if filename:
-                        nonEmptyFileList.append(filename)
+                beamFileInputIsFine = self.processExperimentalBeam(collimation, pixelSize)
 
-                if len(nonEmptyFileList) > 1:
-                    #Parse the input file to determine the names of any other files
-                    filenames = self.getFileNamesFromRD3DInput(self.rd3dInputFile.get())
-                else:
-                    filenames = []
+                if beamFileInputIsFine:
+                    #Get a full list of all the variables representing file names
+                    fullFileVarList = [self.rd3dInputFile.get(), self.sampleModelFile.get(), self.sequenceFile.get(),
+                    self.beamImageFile, self.beamApertureXFile.get(), self.beamApertureYFile.get()]
 
-                #Copy the specified files into the current directory and rename them
-                #according to the names specified in the input file
-                allFilesExist = self.copyFiles(nonEmptyFileList, os.getcwd(), filenames)
+                    #Determine which of the files have non empty strings and put those in a
+                    #separate list
+                    nonEmptyFileList = []
+                    for filename in fullFileVarList:
+                        if filename:
+                            nonEmptyFileList.append(filename)
 
-                if allFilesExist:
-                    MainGui.runPremadeRD3DExperiment(self.rd3dInputFile.get().split("/")[-1],self.expNameInput.get(),filenames)
-                    # once this function runs, the toplevel window should be exited
-                    self.master.destroy()
-                else:
-                    string = """At least one of the files specified does not exist.
-        Please check the file names given in the input boxes and make sure they exist.
-        """ %()
-                    tkMessageBox.showinfo( "No Experiment Name", string)
+                    if len(nonEmptyFileList) > 1:
+                        #Parse the input file to determine the names of any other files
+                        filenames = self.getFileNamesFromRD3DInput(self.rd3dInputFile.get())
+                    else:
+                        filenames = []
+
+                    #Copy the specified files into the current directory and rename them
+                    #according to the names specified in the input file
+                    allFilesExist = self.copyFiles(nonEmptyFileList, os.getcwd(), filenames)
+
+                    if allFilesExist:
+                        MainGui.runPremadeRD3DExperiment(self.rd3dInputFile.get().split("/")[-1],self.expNameInput.get(),filenames)
+                        # once this function runs, the toplevel window should be exited
+                        self.master.destroy()
+                    else:
+                        string = """At least one of the files specified does not exist.
+            Please check the file names given in the input boxes and make sure they exist.
+            """ %()
+                        tkMessageBox.showinfo( "No Experiment Name", string)
             else:
                 string = """RADDOSE-3D input file was not specified. Please give the path to the input file.
         """ %()
@@ -301,3 +312,116 @@ Please make sure that it is not being used by any other processes.
             filenameList.append(beamFilename)
         return filenameList
 
+    def getBeamParamsFromInput(self, rd3dInputFile):
+        """Extract beam parameters from RADDOSE-3D input file
+
+        This function takes a string containing the path to the RADDOSE-3D
+        input file. It parses the file and looks for lines that contain the
+        pixel size values and the collimation values and returns those
+        parameters
+        =================
+        Keyword arguments
+        =================
+        rd3dInputFile:
+            String corresponding to the path of the RADDOSE-3D input file.
+
+        =================
+        Return parameters
+        =================
+        beamParams:
+            A list containing strings with the pixel size and collimation
+            parameters for RADDOSE-3D input.
+        """
+        try:
+            rd3dFile = open(rd3dInputFile, "r")
+        except IOError:
+            string = """The RADDOSE-3D input file could not be read.
+Please make sure that it is not being used by any other processes.
+    """ %()
+            tkMessageBox.showinfo( "Cannot read file", string)
+        collimationVert = ""
+        collimationHorz = ""
+        pixelX          = ""
+        pixelY          = ""
+        beamParams = []
+        for line in rd3dFile:
+            if "collimation" in line.lower():
+                collimationVert = line.split()[2]
+                collimationHorz = line.split()[3]
+            elif "pixelsize" in line.lower() or "sequencefile" in line.lower():
+                pixelX          = line.split()[1]
+                pixelY          = line.split()[2]
+        beamParams = [collimationVert, collimationHorz, pixelX, pixelY]
+        return beamParams
+
+    def processExperimentalBeam(self, collimation, pixelSize):
+        # To be honest I did the if statements as I went along without actually
+        # thinking about how to structure them. So some of the conditions may be
+        #redundant. Or worse, I may not catch some errors (I think the former is
+        # more likley though).
+        beamFileInputIsFine = True
+        apertureDiameter = 10 #in microns. This is the diameter of the aperture
+        #used to do the measurements
+        apertureStep = 2 #in microns. This is the distance from one measurement
+        #to the next in the aperture scan.
+
+        #The relative weighting of red, green and blue in colour beam images
+        #when performing the grayscale conversion.
+        red = 0.45
+        green = 0.45
+        blue = 0.1
+
+        if os.path.isfile(self.beamImageFile.get()) and ".pgm" in self.beamImageFile.get():
+            self.beamImageFile = self.beamImageFile.get()
+        elif ((".pgm" in self.beamImageFile.get() and len(self.beamImageFile.get().split("/")) == 1 and
+        not os.path.isfile(self.beamImageFile.get())) or not self.beamImageFile.get()):
+            if (os.path.isfile(self.beamApertureXFile.get()) and os.path.isfile(self.beamApertureYFile.get()) and
+            ".dat" in self.beamApertureXFile.get() and ".dat" in self.beamApertureYFile.get()):
+                if not self.beamImageFile.get():
+                    self.beamImageFile = "beamInput.pgm"
+                else:
+                    self.beamImageFile = self.beamImageFile.get()
+                BeamModule.Beam.initialiseBeamFromApMeas(self.beamApertureXFile.get(),self.beamApertureYFile.get(),
+                                                            "threshold", apertureDiameter, apertureStep,
+                                                                        self.beamImageFile,"gaussfitconv",True,"smoothgauss")
+            elif os.path.isfile(self.beamImageFile.get()):
+                beamFileInputIsFine = False
+                beamFileWarningMessage = """The aperture measurement files either don't exist or they are not in a compatible format (.dat).
+    """
+                tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
+            else:
+                beamFileInputIsFine = False
+                beamFileWarningMessage = """Not all the necessary files required to process a beam image were given.
+Please see the documentation for more information."""
+                tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
+        elif ".png" in self.beamImageFile.get() and os.path.isfile(self.beamImageFile.get()):
+            if collimation[0] and collimation[1] and pixelSize[0] and pixelSize[1]:
+                filenameWithExt = self.beamImageFile.get().split("/")[-1]
+                filenameWOExt = filenameWithExt.split(".")[0]
+                pgmFilename = "{}.pgm".format(filenameWOExt)
+                BeamModule.Beam.initialiseBeamFromPNG(self.beamImageFile.get(),red, green, blue, pgmFilename,
+                [float(collimation[0]), float(collimation[1])],
+                [float(pixelSize[0]), float(pixelSize[1])])
+                self.beamImageFile = pgmFilename
+            else:
+                beamFileInputIsFine = False
+                beamFileWarningMessage = """There is incomplete information about the pixel size and the
+collimation. If you would like to use a png file of the experimental beam then these parameters
+must be specified in the input so that the conversion process can estimate a suitable background
+correction for the image.
+"""
+                tkMessageBox.showinfo("Pixel Size and/or Collimation not Specified",beamFileWarningMessage)
+
+        elif len(self.beamImageFile.get().split("/")) > 1 and not os.path.isfile(self.beamImageFile.get()):
+            beamFileInputIsFine = False
+            beamFileWarningMessage = """The filename that you have supplied has not been found.
+Please check the file path to ensure the file exists.
+"""
+            tkMessageBox.showinfo("beam image file has not been found",beamFileWarningMessage)
+        else:
+            beamFileInputIsFine = False
+            beamFileWarningMessage = """The file type you have supplied is incompatible with this program.
+Only aperture measurements in ".dat" format or image files in ".pgm" or "png" format are compatible.
+"""
+            tkMessageBox.showinfo("Incompatible file type",beamFileWarningMessage)
+        return beamFileInputIsFine
