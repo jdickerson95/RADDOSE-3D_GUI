@@ -31,7 +31,6 @@ class parsedRD3Dinput(object):
 		wedge = wedges() #create default wedge
 
 		for line in raddoseInput:
-			print line
 			# if empty line, skip over
 			try:
 				line.split()[0]
