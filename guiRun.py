@@ -1197,6 +1197,7 @@ Please check the file path supplied.
             pass
 
     def deleteExperiment(self, expListIndex, experimentName):
+        originalDictLength = len(self.experimentDict)
         dirIsDeleted = False
         shutil.rmtree(experimentName, onerror=self.removeFileError) # Delete experiment directory
         if not os.path.isdir(experimentName):
@@ -1211,7 +1212,7 @@ Please check the file path supplied.
 
             #If experiment dictionary is empty then print string to experiment
             #list box to notify user that there are no existing experiments.
-            if not self.experimentDict:
+            if not self.experimentDict and originalDictLength > 0:
                 self.expListbox.insert(0, self.emptyExpListString)
             dirIsDeleted = True
         return dirIsDeleted
