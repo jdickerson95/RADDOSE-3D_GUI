@@ -25,7 +25,11 @@ this? Or should a bad RD3D run just kill the method before any objects are made?
 - ********************************************************************
 BIG BUG
 Input parser fails for Input files that would work when run on command
-line :-(
+line :-( - I have this too, it is to do with several things I have noticed:
+a) if a full line is commented, it removes this comment and then the line is blank, which crashes
+b) if crystal type is polyhedron with obj file and no dimensions, currently can't handle since
+there is no crystal obj file property and crystal dimensions are always assumed to be present :-(
+Do you see any trends between RD3D input files failing and inputs Jonny?
 
 - I have the command line error:
 
