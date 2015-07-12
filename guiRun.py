@@ -678,7 +678,6 @@ class RADDOSEgui(Frame):
             if filename:
                 nonEmptyFileList.append(filename)
 
-        print nonEmptyFileList
         #Copy the specified files into the current directory
         allFilesExist = self.copyFiles(nonEmptyFileList, os.getcwd())
 
@@ -698,9 +697,9 @@ class RADDOSEgui(Frame):
             #for existence when the corresponding objects are made and you can never be
             #too safe :-P
             string = """At least one of the files specified does not exist.
-        Please check the file names given in the input boxes and make sure they exist.
-        """ %()
-            tkMessageBox.showinfo( "No Experiment Name", string)
+Please check the file names given in the input boxes and make sure they exist.
+""" %()
+            tkMessageBox.showinfo( "Missing files", string)
 
     def runPremadeRD3DExperiment(self, rd3dInputFilename, experimentName, additionalFilenames=[]):
         """Run the a premade RD3D job with premade input file
@@ -1329,7 +1328,7 @@ Please check that you have closed all applications that are using any of the rel
             if os.path.isfile(srcFile):
                 nameOfFile = srcFile.split("/")[-1]
                 inputFilePathIfInCurrentDir = "{}/{}".format(dirPath.replace("\\","/"), nameOfFile)
-                if inputFilePathIfInCurrentDir != srcFile:
+                if inputFilePathIfInCurrentDir != srcFile and len(srcFile.split("/")) > 1:
                     shutil.copy(srcFile,dirPath) # Copy file to directory
 
                     #get extension of src file

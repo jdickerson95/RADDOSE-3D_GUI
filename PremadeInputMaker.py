@@ -236,7 +236,7 @@ class PremadeInputMakerWindow():
             if os.path.isfile(srcFile):
                 nameOfFile = srcFile.split("/")[-1]
                 inputFilePathIfInCurrentDir = "{}/{}".format(dirPath.replace("\\","/"), nameOfFile)
-                if inputFilePathIfInCurrentDir != srcFile:
+                if inputFilePathIfInCurrentDir != srcFile and len(srcFile.split("/")) > 1:
                     shutil.copy(srcFile,dirPath) # Copy file to directory
 
                     #get extension of src file

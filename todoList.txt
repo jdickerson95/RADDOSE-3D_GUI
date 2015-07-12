@@ -45,6 +45,9 @@ corresponding fields should be automatically populated.
 RADDOSE-3D GUI will not read read them. This should be sorted at some point
 (JBB).
 
+- When you switch between experiments in the summary window the display
+summary should automatically update.
+
 
 -***************************-
 To do at some point
@@ -95,3 +98,15 @@ problem with the input file.
 - Perhaps resize text when window is resized so the text doesn't get cut off.
 I've added a "DynamicLabel" in the customMadeWidgets file but it seems to be too
 slow at resizing the text.
+
+- Allow more input options in the beam Maker window so that users can choose how
+they would like their beam image/aperture measurment to be processed into a
+RADDOSE-3D compatible format.
+
+- On of the blocks of code in the guiRun.py file reads:
+"if len(self.beamList2Run) != len(self.wedgeList2Run):
+    print 'Inconsistent numbers of beam and wedges to be written to RADDOSE-3D input file'
+    print '---> terminating script'
+    sys.exit()"
+We should probably think of a way to warn the user that something is wrong
+without closing the entire application.
