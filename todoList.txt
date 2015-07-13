@@ -7,31 +7,20 @@
 To do before release (Aim for August 1st)
 -***************************-
 
-- Checks for inputs in a pre-made RADDOSE-3D file (CSB) - Mostly finished
-
-- Create user guide (JBB + CSB LATER)
-
 - Check GUI works on Windows, Linux (diamond UNIX distribution mainly) and Mac.
 (JBB (Win + Linux) + CSB (Mac) LATER - once it's complete)
 
-- Add warnings as well as the current checks for crystals/beam classes (CSB)
-
-- If the same pre-made input file is loaded twice then the crystals and beams
-with the same names are loaded twice. - want to be able to have same crystal loaded
-twice, but names MUST be different & have a warning if an identical crystal has been
-loaded (CSB) - Mostly finished
-
 - Input parser needs fixing so that it doesn't moan when a valid RADDOSE-3D input
 file is specified.
-
-- Display Summary/View window should show all populated object attributes. An
-example where this fails is when I create a crystal and specify a sequence file.
-When I click "View" it doesn't show the sequence file that I selected.
 
 
 -***************************-
 Fairly soon but not too urgently (i.e. not necessarily for first beta release)
 -***************************-
+
+- Create user guide (JBB + CSB LATER)
+
+- Add warnings as well as the current checks for crystals/beam classes (CSB)
 
 - "crystals" class needs updating to allow crystal objects to be created with
 model/geometry files.
@@ -49,6 +38,8 @@ summary should automatically update.
 - Perform checks on files/inputs required for experimental beam manipulation.
 This is necessary because the experimental beam manipulation is done before the
 beam object is created
+
+- Checks for inputs in a pre-made RADDOSE-3D file (CSB) - Mostly finished
 
 
 -***************************-

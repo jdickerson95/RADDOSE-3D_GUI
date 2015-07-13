@@ -28,7 +28,7 @@ class crystals(object):
 
 	def getTimeStampedName(self):
 		# create a string containing name then timestamp for unique crystal identification
-		timeStampedName =  self.__creationTime + " "*10 + self.crystName 
+		timeStampedName =  self.__creationTime + " "*10 + self.crystName
 		return timeStampedName
 
 	def getCreationTime(self):
@@ -41,8 +41,8 @@ class crystals(object):
 		"""This method checks to see if a crystal has the same properties as
 		another crystal
 		"""
-		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('crystName','_crystals__creationTime')} 
-		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('crystName','_crystals__creationTime')} 
+		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('crystName','_crystals__creationTime')}
+		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('crystName','_crystals__creationTime')}
 
 		return compareProps_self == compareProps_other
 
@@ -386,6 +386,7 @@ class crystals_seqFile(crystals):
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
 		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
+		compositionString   +=  "Sequence File: {}\n".format(str(self.seqFile))
 
 		return compositionString
 
