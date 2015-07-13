@@ -168,8 +168,10 @@ class PremadeInputMakerWindow():
                 collimation = [beamParams[1], beamParams[0]]
                 pixelSize = [beamParams[2], beamParams[3]]
 
-                if self.beamImageFile.get() or self.beamApertureXFile or self.beamApertureYFile :
+                if self.beamImageFile.get() or self.beamApertureXFile or self.beamApertureYFile:
                     beamFileInputIsFine = self.processExperimentalBeam(collimation, pixelSize)
+                else:
+                    beamFileInputIsFine = True
 
                 if beamFileInputIsFine:
                     #Get a full list of all the variables representing file names
