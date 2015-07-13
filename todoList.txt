@@ -46,6 +46,10 @@ RADDOSE-3D GUI will not read read them. This should be sorted at some point
 - When you switch between experiments in the summary window the display
 summary should automatically update.
 
+- Perform checks on files/inputs required for experimental beam manipulation.
+This is necessary because the experimental beam manipulation is done before the
+beam object is created
+
 
 -***************************-
 To do at some point
