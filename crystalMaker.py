@@ -949,6 +949,9 @@ class crystalMakerWindow(Frame):
                                             self.proteinHeavyAtoms.get(),self.solventHeavyConc.get(),
                                             self.solventFraction.get(),self.proteinConc.get(),self.sequenceFile.get())
 
+        # update dimensions of crystal depending on crystal type specified
+        newCryst.setDimsByCrystType()
+
         # check the crystal parameters are valid
         ErrorMessage = MainGui.checkCrystInputs(newCryst)
         if ErrorMessage != "":

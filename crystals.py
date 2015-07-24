@@ -47,6 +47,27 @@ class crystals(object):
 
 		return compareProps_self == compareProps_other
 
+	def setDimsByCrystType(self):
+		# depending of the crystal type specified, update the dimensions 
+		# of the crystal to the fixed format below
+		crystalType = str(self.type).lower()
+		if crystalType != 'polyhedron':
+			self.modelFile = ""
+			self.wireFrameType = ""
+		else:
+			self.wireFrameType = 'OBJ'
+			
+		if crystalType == 'spherical':
+			self.crystDimY = ""
+			self.crystDimZ = ""
+		elif crystalType == 'cylindrical':
+			self.crystDimZ = ""
+		elif crystalType == 'polyhedron':
+			self.crystDimX = ""
+			self.crystDimY = ""
+			self.crystDimZ = ""
+
+
 	def checkContainerInfoPresent(self):
 		# check whether container info has been provided for crystal
 		try:
@@ -71,13 +92,22 @@ class crystals(object):
 	def checkValidInputs(self):
 		ErrorMessage = ""
 		# check valid crystal type
-		if str(self.type).lower() not in ('cuboid','spherical','cylindrical','polyhedron'):
+		crystalType = str(self.type).lower()
+		if crystalType not in ('cuboid','spherical','cylindrical','polyhedron'):
 			ErrorMessage += 'Crystal type {} not of compatible format.\n'.format(str(self.type))
 
-		# check that crystal dimensions can be converted to non-negative float format (from string format)
-		ErrorMessage += checks(self.crystDimX,'x dimension',False).checkIfNonNegFloat()
-		ErrorMessage += checks(self.crystDimY,'y dimension',False).checkIfNonNegFloat()
-		ErrorMessage += checks(self.crystDimZ,'z dimension',False).checkIfNonNegFloat()
+		# check that relevant crystal dimensions (dependent of crystal type) can be converted to 
+		# non-negative float format (from string format)
+		if crystalType in ('cuboid','spherical','cylindrical'):
+			ErrorMessage += checks(self.crystDimX,'x dimension',False).checkIfNonNegFloat()
+		if crystalType in ('cuboid','cylindrical'):
+			ErrorMessage += checks(self.crystDimY,'y dimension',False).checkIfNonNegFloat()
+		if crystalType in ('cuboid'):
+			ErrorMessage += checks(self.crystDimZ,'z dimension',False).checkIfNonNegFloat()
+		if crystalType in ('polyhedron'):
+			ErrorMessage += checks(self.modelFile,'model file',False).checkIfNonBlankString()
+			if str(self.wireFrameType).lower() != 'obj':
+				ErrorMessage += 'Wire frame type not of compatible .obj format\n'
 
 		# check that crystal pixelsPerMicron can be converted to non-negative float format (from string format)
 		ErrorMessage += checks(self.pixelsPerMicron,'pixels per micron',False).checkIfNonNegFloat()
