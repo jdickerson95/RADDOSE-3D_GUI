@@ -46,4 +46,9 @@ correct input types for each crystal type.. a separate input file checker could 
 first check whether the correct input names are provided for each crystal type, but this seems 
 overkill at this point..
 
+- if multiple experiments are loaded into the dropdown selection list in the left hand summary
+window, then the summary box will not automatically update when a new strategy is selected from
+the dropdown list (due to the implementation of the custom made dynamic option menu). Suggestions:
+either modify the dynamic option menu widget code (not sure how to do this correctly), or add a
+'refresh' button - less stylish, but would get the job done!
 
