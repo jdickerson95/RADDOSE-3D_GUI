@@ -11,7 +11,8 @@ To do before release (Aim for August 1st)
 (JBB (Win + Linux) + CSB (Mac) LATER - once it's complete)
 
 - Input parser needs fixing so that it doesn't moan when a valid RADDOSE-3D input
-file is specified.
+file is specified. - CSB: believe this is sorted (but there are an infinite number 
+of input files possible...)
 
 
 -***************************-
@@ -21,9 +22,6 @@ Fairly soon but not too urgently (i.e. not necessarily for first beta release)
 - Create user guide (JBB + CSB LATER)
 
 - Add warnings as well as the current checks for crystals/beam classes (CSB)
-
-- "crystals" class needs updating to allow crystal objects to be created with
-model/geometry files.
 
 - If incomplete input files should be able to be read into the GUI and the
 corresponding fields should be automatically populated.
