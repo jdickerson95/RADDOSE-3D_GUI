@@ -1582,10 +1582,10 @@ Please check that you have closed all applications that are using any of the rel
         for currentBeam in self.beamList2Run:
             counter += 1
             currentWedge = self.wedgeList2Run[counter]
-            beamBlock = self.writeBeamBlock(currentBeam)
+            beamBlock = currentBeam.writeRD3DBeamBlock()
             RADDOSEfile.write(beamBlock)
             RADDOSEfile.write("\n\n")
-            Wedgeblock = self.writeWedgeBlock(currentWedge)
+            Wedgeblock = currentWedge.writeRD3DWedgeBlock()
             RADDOSEfile.write(Wedgeblock)
             RADDOSEfile.write("\n\n")
         RADDOSEfile.close()
@@ -1796,103 +1796,6 @@ Check that you haven't got any applications open that are using files relating t
             elif srcFile != "output-FluencePerDoseHistCSV.csv":
                 allFilesExist = False
         return allFilesExist
-
-    def writeBeamBlock(self, beamObj):
-        """Write a text block of beam information for RADDOSE-3D
-
-        Function to write a text block of the beam properties for a
-        RADDOSE-3D input file.
-
-        =================
-        Keyword arguments
-        =================
-        beamObj:
-        a 'beams' object whose properties contain the required properties
-        for RADDOSE-3D input.
-
-        =================
-        Return parameters
-        =================
-        beamBlock:
-        a string block that contains the beam information in the form
-        required for input into RADDOSE-3D
-
-        """
-        beamLines = [] #Inialise empty list
-        beamLines.append("Beam") # Append the string - "Beam" - to the list
-        beamPropertyDict = vars(beamObj) #create a dictionary from the beam object properties and corresponding values
-
-        #loop through each entry in the dictionary, create a string of the key
-        #and value from the dictionary and append that to the list created above
-        for beamProp in beamPropertyDict:
-            if '_beams__' in beamProp:
-                continue
-            if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'file'):
-                string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
-                beamLines.append(string)
-            if beamProp == 'fwhm':
-                string = 'FWHM {} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
-                beamLines.append(string)
-            if beamProp == 'collimation':
-                string = 'Collimation Rectangular {} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
-                beamLines.append(string)
-            if beamProp == 'pixelSize':
-                string = 'PixelSize {} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
-                beamLines.append(string)
-            if beamProp == 'file':
-                string = 'File {}'.format(beamObj.file.split("/")[-1])
-                beamLines.append(string)
-
-
-        #write list entries as a single text block with each list entry joined
-        #by a new line character
-        beamBlock = "\n".join(beamLines)
-        return beamBlock #return the beam block
-
-    def writeWedgeBlock(self, wedgeObj):
-        """Write a text block of wedge information for RADDOSE-3D
-
-        Function to write a text block of the wedge properties for a
-        RADDOSE-3D input file.
-
-        =================
-        Keyword arguments
-        =================
-        wedgeObj:
-            a 'wedges' object whose properties contain the required properties
-            for RADDOSE-3D input.
-
-        =================
-        Return parameters
-        =================
-        wedgeBlock:
-            a string block that contains the wedge information in the form
-            required for input into RADDOSE-3D
-
-        """
-        wedgeLines = [] #Inialise empty list
-        #Ensure the Wedge line is written first into the RADDOSE-3D input file.
-        wedgeString = "Wedge {} {}".format(wedgeObj.angStart, wedgeObj.angStop)
-        wedgeLines.append(wedgeString)
-
-        wedgePropertyDict = vars(wedgeObj) #create a dictionary from the wedge object properties and corresponding values
-
-        #Add a dictionary entries for the wedge object inputs that are in list format.
-        wedgePropertyDict["StartOffset"] = '{} {} {}'.format(wedgeObj.startOffsetList[0], wedgeObj.startOffsetList[1], wedgeObj.startOffsetList[2])
-        wedgePropertyDict["TranslatePerDegree"] = '{} {} {}'.format(wedgeObj.transPerDegList[0], wedgeObj.transPerDegList[1], wedgeObj.transPerDegList[2])
-
-        #loop through each entry in the dictionary, create a string of the key
-        #and value from the dictionary and append that to the list created above
-        for wedgeProp in wedgePropertyDict:
-            if (wedgeProp != 'angStart' and wedgeProp != 'angStop' and wedgeProp != 'startOffsetList'and
-            wedgeProp != 'transPerDegList' and wedgePropertyDict[wedgeProp]):
-                string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
-                wedgeLines.append(string)
-
-        #write list entries as a single text block with each list entry joined
-        #by a new line character
-        wedgeBlock = "\n".join(wedgeLines)
-        return wedgeBlock
 
     def readRADDOSEInputFile(self,filename):
         # read in a RADDOSE-3D input txt file
