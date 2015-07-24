@@ -159,10 +159,20 @@ class parsedRD3Dinput(object):
 		return crystal
 
 	def getCrystalDictInfo(self,crystalInfoDict,crystal):
+		# retrieve crystal type/dimension/pixPerMic etc properties from 
+		# RD3D input file 
 		crystal.type             	= crystalInfoDict["type"]
-		crystal.crystDimX        	= crystalInfoDict["dimensions"][0]
-		crystal.crystDimY        	= crystalInfoDict["dimensions"][1]
-		crystal.crystDimZ        	= crystalInfoDict["dimensions"][2]
+
+		if str(crystal.type).lower() in ('cuboid','spherical','cylindrical'):
+			crystal.crystDimX       = crystalInfoDict["dimensions"][0]
+		if str(crystal.type).lower() in ('cuboid','cylindrical'):
+			crystal.crystDimY       = crystalInfoDict["dimensions"][1]
+		if str(crystal.type).lower() in ('cuboid'):
+			crystal.crystDimZ       = crystalInfoDict["dimensions"][2]
+		if str(crystal.type).lower() in ('polyhedron'):
+			crystal.modelFile		= crystalInfoDict["modelfile"]
+			crystal.wireFrameType	= crystalInfoDict["wireframetype"]
+
 		crystal.pixelsPerMicron  	= crystalInfoDict["pixelspermicron"]
 		crystal.angleP 		  		= crystalInfoDict["anglep"]
 		crystal.angleL 		  		= crystalInfoDict["anglel"]
