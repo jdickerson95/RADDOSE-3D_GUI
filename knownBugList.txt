@@ -39,9 +39,5 @@ Is this a GUI error or a RD3D input file error? I can't tell..
 RD3D output log says: Solvent fraction determined as NaN%.
 RD3D input file has: SolventFraction 0.5
 
-- BIG BUG: If user manually makes a crystal, and types in x,y,z values for cuboid, but then
-switches crystal type to spherical, then x (now radius) can be updated, but y,z will stay 
-at their possibly non-zero values. Subsequently spherical type crystal can have dimensions
-x y z (not just radius r)
 
 
