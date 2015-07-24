@@ -1554,10 +1554,9 @@ Please check that you have closed all applications that are using any of the rel
         self.currentBeamIndex = [bm.getTimeStampedName() for bm in self.beamList].index(self.beamChoice.get())
 
         currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
-        crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
+        crystalBlock = currentCrystal.writeRD3DCrystalBlock() # write the crystal block for RADDOSE-3D input
 
-
-        #Write the RADDOSE3D input file here
+        # Write the RADDOSE3D input file here
         try:
             RADDOSEfile = open(self.RADDOSEfilename,'w')
         except IOError:
@@ -1797,62 +1796,6 @@ Check that you haven't got any applications open that are using files relating t
             elif srcFile != "output-FluencePerDoseHistCSV.csv":
                 allFilesExist = False
         return allFilesExist
-
-    def writeCrystalBlock(self, crystalObj):
-        """Write a text block of crystal information for RADDOSE-3D
-
-        Function to write a text block of the crystal properties for a
-        RADDOSE-3D input file.
-
-        =================
-        Keyword arguments
-        =================
-        crystalObj:
-            a 'crystals' object whose properties contain the required properties
-            for RADDOSE-3D input.
-
-        =================
-        Return parameters
-        =================
-        crystBlock:
-            a string block that contains the crystal information in the form
-            required for input into RADDOSE-3D
-
-        """
-        crystLines = [] #Inialise empty list
-        crystLines.append("Crystal") # Append the string - "Crystal" - to the list
-        crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and corresponding values
-
-        #Add a dictionary entry that puts all three crystal dimension values into a string
-        crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
-
-        #Add a dictionary entry that puts the unit cell dimensions into a string if present in crystal object
-        try:
-            crystPropertyDict["Unitcell"] = '{} {} {} {} {} {}'.format(crystalObj.unitcell_a, crystalObj.unitcell_b, crystalObj.unitcell_c,
-                                                                       crystalObj.unitcell_alpha, crystalObj.unitcell_beta, crystalObj.unitcell_gamma)
-        except AttributeError:
-            pass
-
-        #loop through each entry in the dictionary, create a string of the key
-        #and value from the dictionary and append that to the list created above
-        for crystProp in crystPropertyDict:
-            # create strings for other (non-dimension) crystal inputs
-            if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
-            crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
-            crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
-            crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma' and '_crystals__' not in crystProp and
-            crystPropertyDict[crystProp]):
-                if crystProp.lower() == "seqfile" or "modelfile":
-                    string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]).split("/")[-1])
-                    crystLines.append(string)
-                else:
-                    string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
-                    crystLines.append(string)
-
-        #write list entries as a single text block with each list entry joined
-        #by a new line character
-        crystBlock = "\n".join(crystLines)
-        return crystBlock #return the crystal block
 
     def writeBeamBlock(self, beamObj):
         """Write a text block of beam information for RADDOSE-3D

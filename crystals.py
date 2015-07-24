@@ -189,6 +189,51 @@ class crystals(object):
 
 		return summaryString
 
+
+	def writeRD3DCrystalBlock(self):
+		"""Write a text block of crystal information for RADDOSE-3D
+
+		Function to write a text block of the crystal properties for a
+		RADDOSE-3D input file.
+
+		"""
+		crystLines = [] #Inialise empty list
+		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
+		crystPropertyDict = vars(self) #create a dictionary from the crystal object properties and corresponding values
+
+		# Add a dictionary entry that puts all relevant crystal dimension values into a string (dependent on crystal type)
+		if str(self.type).lower() in ('cuboid','spherical','cylindrical'):
+			crystPropertyDict["Dimensions"] = '{} {} {}'.format(self.crystDimX, self.crystDimY, self.crystDimZ)
+
+		# Add a dictionary entry that puts the unit cell dimensions into a string (only if present in crystal object)
+		try:
+			crystPropertyDict["Unitcell"] = '{} {} {} {} {} {}'.format(self.unitcell_a, self.unitcell_b, self.unitcell_c,
+																	   self.unitcell_alpha, self.unitcell_beta, self.unitcell_gamma)
+		except AttributeError:
+			pass
+
+		# loop through each entry in the dictionary, create a string of the key
+		# and value from the dictionary and append that to the list created above
+		for crystProp in crystPropertyDict:
+			# create strings for other (non-dimension) crystal inputs
+			if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
+				crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
+				crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
+				crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma' and '_crystals__' not in crystProp and
+				crystPropertyDict[crystProp]):
+				if crystProp.lower() == "seqfile" or "modelfile":
+					string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]).split("/")[-1])
+					crystLines.append(string)
+				else:
+					string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
+					crystLines.append(string)
+
+		# write list entries as a single text block with each list entry joined
+		# by a new line character
+		crystBlock = "\n".join(crystLines)
+		return crystBlock #return the crystal block
+
+
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="",crystDimZ="",
