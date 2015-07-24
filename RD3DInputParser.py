@@ -38,30 +38,27 @@ class parsedRD3Dinput(object):
 			# ignore empty line once comment removed
 			if  self.emptyLine(line) == True:
 				continue
-			print line
 
 			if "Crystal" in line:
 				crystalBlock = True
 				beamBlock    = False
 				wedgeBlock   = False
-				print 'Crystal block starts here'
 
 			elif "Beam" in line:
 				crystalBlock = False
 				beamBlock    = True
 				wedgeBlock   = False
-				print 'Beam block starts here'
 
 				# append wedge object to wedge list if this is not first beam (for input files with 
 				# multiple beams & wedges)
 				if len(self.beamList) != 0:
 					self.wedgeList.append(copy.deepcopy(wedge))
+					wedge = wedges() # make a new wedge object
 
 			elif "Wedge" in line:
 				crystalBlock = False
 				beamBlock    = False
 				wedgeBlock   = True
-				print 'Wedge block starts here'
 
 				# convert beam block dictionary into suitable beam object
 				beam = self.beamDict2Obj(beamInfoDict)  
@@ -75,7 +72,7 @@ class parsedRD3Dinput(object):
 				beamInfoDict = self.parseBeamLine(line,beamInfoDict)
 
 			elif wedgeBlock:
-				self.parseWedgeLine(line,wedge)
+				wedge = self.parseWedgeLine(line,wedge)
 
 		self.wedgeList.append(copy.deepcopy(wedge)) #append final wedge
 		raddoseInput.close()
@@ -121,6 +118,7 @@ class parsedRD3Dinput(object):
 			wedge.transPerDeg = line.split()[1:]
 		elif line.split()[0].lower() == 'rotaxmeamoffset':
 			wedge.transperdeg = line.split()[1]
+		return wedge
 
 	def parseCrystalLine(self,line,crystalInfoDict):
 		if line.split()[0] not in ('Crystal'):
