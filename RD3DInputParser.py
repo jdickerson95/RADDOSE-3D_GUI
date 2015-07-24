@@ -233,23 +233,23 @@ class parsedRD3Dinput(object):
 	def getCrystalContainerInfo(self,crystalInfoDict,crystal):
 		# get crystal container information if present
 		try:
-			crystal.containerType 		= crystalInfoDict["containertype"]
+			crystal.containerMaterialType 	= crystalInfoDict["containermaterialtype"]
 		except KeyError:
 			pass
 		try:
-			crystal.materialElements 	= crystalInfoDict["materialelements"]
+			crystal.materialElements 		= crystalInfoDict["materialelements"]
 		except KeyError:
 			pass
 		try:
-			crystal.materialMixture 	= crystalInfoDict["materialmixture"]
+			crystal.materialMixture 		= crystalInfoDict["materialmixture"]
 		except KeyError:
 			pass
 		try:
-			crystal.containerThickness 	= crystalInfoDict["containerthickness"]
+			crystal.containerThickness 		= crystalInfoDict["containerthickness"]
 		except KeyError:
 			pass
 		try:
-			crystal.containerDensity 	= crystalInfoDict["containerdensity"]
+			crystal.containerDensity 		= crystalInfoDict["containerdensity"]
 		except KeyError:
 			pass
 
