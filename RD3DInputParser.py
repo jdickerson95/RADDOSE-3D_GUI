@@ -18,7 +18,6 @@ class parsedRD3Dinput(object):
 		which objects should be returned ('crystal': crystal, 'beam': beam list,
 		 'all': everything)
 		"""
-		commentChars = ['#','!']
 
 		raddoseInput = open(self.RD3DInputPath,'r')
 
@@ -31,21 +30,27 @@ class parsedRD3Dinput(object):
 		wedge = wedges() #create default wedge
 
 		for line in raddoseInput:
+
 			# if empty line, skip over
-			try:
-				line.split()[0]
-			except IndexError:
+			if  self.emptyLine(line) == True:
 				continue
+			line = self.curateLine(line) # remove comment part of line
+			# ignore empty line once comment removed
+			if  self.emptyLine(line) == True:
+				continue
+			print line
 
 			if "Crystal" in line:
 				crystalBlock = True
 				beamBlock    = False
 				wedgeBlock   = False
+				print 'Crystal block starts here'
 
 			elif "Beam" in line:
 				crystalBlock = False
 				beamBlock    = True
 				wedgeBlock   = False
+				print 'Beam block starts here'
 
 				# append wedge object to wedge list if this is not first beam (for input files with 
 				# multiple beams & wedges)
@@ -56,27 +61,12 @@ class parsedRD3Dinput(object):
 				crystalBlock = False
 				beamBlock    = False
 				wedgeBlock   = True
+				print 'Wedge block starts here'
 
 				# convert beam block dictionary into suitable beam object
 				beam = self.beamDict2Obj(beamInfoDict)  
 				self.beamList.append(copy.deepcopy(beam))
 				beamInfoDict = {} # create new dictionary in case another beam later in file
-
-			#remove comment part from line
-			commentCharIndices = []
-			for commentChar in commentChars: #look for comment characters and store the index in list
-				index = line.find(commentChar)
-				commentCharIndices.append(index)
-
-			if sorted(commentCharIndices)[-1] > -1: # check for positive indices
-				minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
-				line = line[0:minIndex] #remove comment part from line
-
-			# if empty line after comments removed, skip over
-			try:
-				line.split()[0]
-			except IndexError:
-				continue
 
 			if crystalBlock:
 				crystalInfoDict = self.parseCrystalLine(line,crystalInfoDict)
@@ -92,6 +82,28 @@ class parsedRD3Dinput(object):
 
 		# convert crystal block dictionary into suitable crystal object
 		self.crystal = self.crystDict2Obj(crystalInfoDict)
+
+	def curateLine(self,line):
+		#removes comment part from line
+		commentChars = ['#','!']
+		commentCharIndices = []
+		for commentChar in commentChars: #look for comment characters and store the index in list
+			index = line.find(commentChar)
+			commentCharIndices.append(index)
+
+		if sorted(commentCharIndices)[-1] > -1: # check for positive indices
+			minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
+			line = line[0:minIndex] #remove comment part from line
+
+		return line # return the comment-less line
+
+	def emptyLine(self,line):
+		# if empty line, flag
+		try:
+			line.split()[0]
+			return False
+		except IndexError:
+			return True
 
 	def parseWedgeLine(self,line,wedge):
 		# parse RD3D input file wedge block 
