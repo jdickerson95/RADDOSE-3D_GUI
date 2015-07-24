@@ -176,12 +176,12 @@ class crystals(object):
 			self.containerMaterialType
 		except AttributeError:
 			return summaryString
-		if self.containerMaterialType in ('Mixture','Elemental'):
+		if str(self.containerMaterialType).lower() in ('mixture','elemental'):
 			containerString  	= 	"\nContainer Information:\n"
 			containerString 	+= 	"Container Type: {}\n".format(str(self.containerMaterialType))
-			if self.containerMaterialType == 'Mixture':
+			if str(self.containerMaterialType).lower() == 'mixture':
 				containerString 	+= 	"Material Mixture: {}\n".format(str(self.materialMixture))
-			elif self.containerMaterialType == 'Elemental':
+			elif str(self.containerMaterialType).lower() == 'elemental':
 				containerString 	+= 	"Material Elements: {}\n".format(str(self.materialElements))
 			containerString 	+= 	"Container Thickness: {}\n".format(str(self.containerThickness))
 			containerString 	+= 	"Container Density: {}\n".format(str(self.containerDensity))
