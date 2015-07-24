@@ -56,7 +56,7 @@ class crystals(object):
 			self.wireFrameType = ""
 		else:
 			self.wireFrameType = 'OBJ'
-			
+
 		if crystalType == 'spherical':
 			self.crystDimY = ""
 			self.crystDimZ = ""
@@ -66,7 +66,6 @@ class crystals(object):
 			self.crystDimX = ""
 			self.crystDimY = ""
 			self.crystDimZ = ""
-
 
 	def checkContainerInfoPresent(self):
 		# check whether container info has been provided for crystal
@@ -155,10 +154,18 @@ class crystals(object):
 		return ErrorMessage
 
 	def extractCrystalInfo(self):
-		# create a string containing information of current crystal
+		# create a string containing basic information of current crystal
 		summaryString 	= 	"Crystal Name: {}\n".format(str(self.crystName))
 		summaryString 	+= 	"Type: {}\n".format(str(self.type))
-		summaryString 	+= 	"Dimensions: {} {} {} (microns in x,y,z)\n".format(str(self.crystDimX),str(self.crystDimY),str(self.crystDimZ))
+		if str(self.type).lower() in ('cuboid'):
+			summaryString 	+= 	"Dimensions: {} {} {} (microns in x,y,z)\n".format(str(self.crystDimX),str(self.crystDimY),str(self.crystDimZ))
+		elif str(self.type).lower() in ('spherical'):
+			summaryString 	+= 	"Diameter: {} microns\n".format(str(self.crystDimX))
+		elif str(self.type).lower() in ('cylindrical'):
+			summaryString 	+= 	"Diameter: {} (microns), Height: {} (microns)\n".format(str(self.crystDimX),str(self.crystDimY))
+		elif str(self.type).lower() in ('polyhedron'):
+			summaryString 	+= 	"Model file: {}\n".format(str(self.modelFile))
+
 		summaryString 	+= 	"Pixels per Micron: {}\n".format(str(self.pixelsPerMicron))
 		summaryString 	+= 	"Angle P: {}\n".format(str(self.angleP))
 		summaryString 	+= 	"Angle L: {}\n".format(str(self.angleL))
