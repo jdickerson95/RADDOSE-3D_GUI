@@ -39,5 +39,11 @@ Is this a GUI error or a RD3D input file error? I can't tell..
 RD3D output log says: Solvent fraction determined as NaN%.
 RD3D input file has: SolventFraction 0.5
 
+- Not sure if this is a true bug or not: if a user loads a crysta from a RD3D input file
+with type = polyhedron but dimensions entered instead of modelfile input, then the crystal
+checks will not pick this up and the RD3D input parser will crash. Hopefully users will enter
+correct input types for each crystal type.. a separate input file checker could be written to 
+first check whether the correct input names are provided for each crystal type, but this seems 
+overkill at this point..
 
 
