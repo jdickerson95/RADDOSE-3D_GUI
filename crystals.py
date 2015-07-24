@@ -80,12 +80,12 @@ class crystals(object):
 
 	def getContainerInfo(self):
 		# get info regarding crystal container
-		self.containerType       	= self.containerInfoDict["Type"]
+		self.containerMaterialType       	= self.containerInfoDict["Type"]
 		self.containerThickness 	= self.containerInfoDict["Thickness"]
 		self.containerDensity 		= self.containerInfoDict["Density"]
-		if self.containerType == 'Mixture':
+		if self.containerMaterialType == 'Mixture':
 			self.materialMixture	= self.containerInfoDict["Mixture"]
-		elif self.containerType == 'Elemental':
+		elif self.containerMaterialType == 'Elemental':
 			self.materialElements 	= self.containerInfoDict["Elements"]
 
 	def checkValidInputs(self):
@@ -121,10 +121,10 @@ class crystals(object):
 
 		# check container information is valid (if present)
 		try:
-			self.containerType
+			self.containerMaterialType
 			# check that container type of suitable format
-			if str(self.containerType).lower() not in ('mixture','elemental','none'):
-				ErrorMessage += 'Crystal container type {} not of compatible format.\n'.format(str(self.containerType))
+			if str(self.containerMaterialType).lower() not in ('mixture','elemental','none'):
+				ErrorMessage += 'Crystal container type {} not of compatible format.\n'.format(str(self.containerMaterialType))
 
 			# check that container thickness can be converted to float and is non-negative
 			ErrorMessage += checks(self.containerThickness,'container thickness',False).checkIfNonNegFloat()
@@ -133,14 +133,14 @@ class crystals(object):
 			ErrorMessage += checks(self.containerDensity,'container density',False).checkIfNonNegFloat()
 
 			# check that if 'mixture' type specified, then corresponding mixture is a non-empty string
-			if str(self.containerType).lower() == 'mixture':
+			if str(self.containerMaterialType).lower() == 'mixture':
 				if not isinstance(self.materialMixture, basestring):
 					ErrorMessage += 'Crystal container mixture not of compatible string format.\n'
 				elif len(self.materialMixture) == 0:
 					ErrorMessage += 'Crystal container mixture field is blank.\n'
 
 			# check that if 'elemental' type specified, then corresponding element composition is a non-empty string
-			if str(self.containerType).lower() == 'elemental':
+			if str(self.containerMaterialType).lower() == 'elemental':
 				if not isinstance(self.materialElements, basestring):
 					ErrorMessage += 'Crystal container elemental composition not of compatible string format.\n'
 				elif len(self.materialElements) == 0:
@@ -173,22 +173,21 @@ class crystals(object):
 
 		# if container information was provided, include in summary
 		try:
-			self.containerType
+			self.containerMaterialType
 		except AttributeError:
 			return summaryString
-		if self.containerType in ('Mixture','Elemental'):
+		if self.containerMaterialType in ('Mixture','Elemental'):
 			containerString  	= 	"\nContainer Information:\n"
-			containerString 	+= 	"Container Type: {}\n".format(str(self.containerType))
-			if self.containerType == 'Mixture':
+			containerString 	+= 	"Container Type: {}\n".format(str(self.containerMaterialType))
+			if self.containerMaterialType == 'Mixture':
 				containerString 	+= 	"Material Mixture: {}\n".format(str(self.materialMixture))
-			elif self.containerType == 'Elemental':
+			elif self.containerMaterialType == 'Elemental':
 				containerString 	+= 	"Material Elements: {}\n".format(str(self.materialElements))
 			containerString 	+= 	"Container Thickness: {}\n".format(str(self.containerThickness))
 			containerString 	+= 	"Container Density: {}\n".format(str(self.containerDensity))
 			summaryString += containerString
 
 		return summaryString
-
 
 	def writeRD3DCrystalBlock(self):
 		"""Write a text block of crystal information for RADDOSE-3D
