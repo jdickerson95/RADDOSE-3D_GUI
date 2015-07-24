@@ -52,3 +52,7 @@ the dropdown list (due to the implementation of the custom made dynamic option m
 either modify the dynamic option menu widget code (not sure how to do this correctly), or add a
 'refresh' button - less stylish, but would get the job done!
 
+- bad RD3D input entries such as angleP 0 1 (where wrong number of inputs specified) will break the 
+current crystal parser when loading in new crystal objects. Need to either update parser to only look for
+first n entries of a line (on a line by line basis), or hope user doesn't enter silly values 
+
