@@ -129,26 +129,26 @@ class RADDOSEgui(Frame):
 
         #####################################################################################################
         # geometry management for the gui
-        self.pack(fill=BOTH, expand=1)
+        self.pack()#fill=BOTH, expand=1)
 
         # the header frame here
         FrameHeader = Frame(self,style="Header.TFrame")
-        FrameHeader.grid(row=0,column=0, sticky="nsew")
+        FrameHeader.grid(row=0,column=0)#, sticky="nsew")
 
         # the body frame here
         FrameBody = Frame(self,style="BodyBackground.TFrame")
-        FrameBody.grid(row=1,column=0, sticky="nsew")
+        FrameBody.grid(row=1,column=0)#, sticky="nsew")
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
         # add a RADDOSE-3D logo here.
-        #It's an ugly solution to the problem but it works. It first reads the
-        #png image and extracts the red, green and blue pixels as three separate
-        #matrices. It then creates a blank tk photo image object that is the
-        #same size as the png image, loops through all the pixels of the tk
-        #photo image and inserts the corresponding pixel values from the png
-        #image. It's not pretty but it works.
+        # It's an ugly solution to the problem but it works. It first reads the
+        # png image and extracts the red, green and blue pixels as three separate
+        # matrices. It then creates a blank tk photo image object that is the
+        # same size as the png image, loops through all the pixels of the tk
+        # photo image and inserts the corresponding pixel values from the png
+        # image. It's not pretty but it works.
         pngImage = "raddoseLogo.png"
         rgbBeamImage = mpimg.imread(pngImage)
         redPixels, greenPixels, bluePixels = rgbBeamImage[:,:,0], rgbBeamImage[:,:,1], rgbBeamImage[:,:,2]
@@ -161,68 +161,79 @@ class RADDOSEgui(Frame):
         raddoseLogolabel.grid(row=0,column=0, sticky="nsew",padx=5, pady=0)
 
         # make a label in the header frame
-        labelHeader = Label(FrameHeader,text="Data Collection Dose Stategy GUI",style="Title.TLabel")
+        # labelHeader = Label(FrameHeader,text="Data Collection Dose Stategy GUI",style="Title.TLabel")
+        # labelHeader.grid(row=1,column=0, sticky="nsew",padx=5, pady=0)
+        labelHeader = Label(FrameHeader,text="GUI",style="Title.TLabel")
         labelHeader.grid(row=0,column=1, sticky="nsew",padx=5, pady=0)
 
         # make a text box with RD3D web address details
         RD3DWebAdress = Label(FrameHeader,text = "http://www.raddo.se/",style="RD3DheaderWebAddress.TLabel")
-        RD3DWebAdress.grid(row=0,column=2, sticky="nsew",padx=5, pady=0)
-        FrameHeader.grid_rowconfigure(0,weight=1)
-        FrameHeader.grid_columnconfigure(0,weight=1)
-        FrameHeader.grid_columnconfigure(1,weight=1)
-        FrameHeader.grid_columnconfigure(2,weight=1)
+        RD3DWebAdress.grid(row=2,column=0, sticky="nsew",padx=5, pady=0)
+
+        # in header frame make a help/suggestion box
+        l = Label(FrameBody,text="Help/Suggestion Dialogue",style="labelFrameTitle.TLabel")
+        FrameBody_Help = LabelFrame(FrameBody,labelwidget=l,style="BodyGroovy.TFrame")
+        # FrameBody_Help.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        FrameBody_Help.pack(expand='yes')
+        FrameBody_Help.grid(row=0,column=0, sticky="nsew",padx=5, pady=0)
+
+        # make a series of tabs for each main body section below
+        tabs = Notebook(FrameBody)
+        # tabs.pack(expand='yes')
+        tabs.grid(row=1,column=0, sticky="nsew",padx=5, pady=0)
 
         # in body frame make a left, middle and right side
-        FrameBodyLeft = Frame(FrameBody,style="BodyBackground.TFrame")
-        FrameBodyLeft.grid(row=0,column=0, sticky="nsew")
-        FrameBodyMiddle = Frame(FrameBody,style="BodyBackground.TFrame")
-        FrameBodyMiddle.grid(row=0,column=1, sticky="nsew")
-        FrameBodyRight = Frame(FrameBody,style="BodyBackground.TFrame")
-        FrameBodyRight.grid(row=0,column=2, sticky="nsew")
-        FrameBody.grid_columnconfigure(0, weight=1)
-        FrameBody.grid_columnconfigure(1, weight=1)
-        FrameBody.grid_columnconfigure(2, weight=1)
-        FrameBody.grid_rowconfigure(0, weight=1)
-
-        # in left body frame make a top and bottom
-        l = Label(FrameBodyLeft,text="Help/Suggestion Dialogue",style="labelFrameTitle.TLabel")
-        FrameBodyLeftTop = LabelFrame(FrameBodyLeft,labelwidget=l,style="BodyGroovy.TFrame")
-        FrameBodyLeftTop.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
-
-        l = Label(FrameBodyLeft,text="Summary/Output Window",style="labelFrameTitle.TLabel")
-        FrameBodyLeftBottom = LabelFrame(FrameBodyLeft,labelwidget=l,style="BodyGroovy.TFrame")
-        FrameBodyLeftBottom.grid(row=1,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
-        FrameBodyLeft.grid_columnconfigure(0, weight=1)
-        FrameBodyLeft.grid_rowconfigure(0, weight=1)
-        FrameBodyLeft.grid_rowconfigure(1, weight=1)
+        FrameBody_Crystal = Frame(tabs,style="BodyBackground.TFrame")
+        FrameBody_Beam = Frame(tabs,style="BodyBackground.TFrame")
+        FrameBody_Strategy = Frame(tabs,style="BodyBackground.TFrame")
+        FrameBody_Run = Frame(tabs,style="BodyBackground.TFrame")
+        FrameBody_Summary = Frame(tabs,style="BodyBackground.TFrame")
 
         # in middle body frame make a top and bottom
-        l = Label(FrameBodyMiddle,text="Make-a-crystal",style="labelFrameTitle.TLabel")
-        FrameBodyMiddleTop = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-        FrameBodyMiddleTop.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        l = Label(FrameBody_Crystal,text="Make-a-crystal",style="labelFrameTitle.TLabel")
+        LabelFrame_Crystal = LabelFrame(FrameBody_Crystal,labelwidget=l,style="BodyGroovy.TFrame")
+        LabelFrame_Crystal.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        FrameBody_Crystal.grid_columnconfigure(0, weight=1)
 
-        l = Label(FrameBodyMiddle,text="Make-a-beam",style="labelFrameTitle.TLabel")
-        FrameBodyMiddleBottom = LabelFrame(FrameBodyMiddle,labelwidget=l,style="BodyGroovy.TFrame")
-        FrameBodyMiddleBottom.grid(row=1,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
-        FrameBodyMiddle.grid_columnconfigure(0, weight=1)
-        FrameBodyMiddle.grid_rowconfigure(0, weight=1)
-        FrameBodyMiddle.grid_rowconfigure(1, weight=1)
+        l = Label(FrameBody_Beam,text="Make-a-beam",style="labelFrameTitle.TLabel")
+        LabelFrame_Beam = LabelFrame(FrameBody_Beam,labelwidget=l,style="BodyGroovy.TFrame")
+        LabelFrame_Beam.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        FrameBody_Beam.grid_columnconfigure(0, weight=1)
 
         # in right body frame make a LabelFrame in which a strategy can be created and run
-        l = Label(FrameBodyRight,text="Design-a-strategy",style="labelFrameTitle.TLabel")
-        LabelFrameBodyRight = LabelFrame(FrameBodyRight,labelwidget=l,style="BodyGroovy.TFrame")
-        LabelFrameBodyRight.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
-        FrameBodyRight.grid_columnconfigure(0, weight=1)
-        FrameBodyRight.grid_rowconfigure(0, weight=1)
+        l = Label(FrameBody_Strategy,text="Design-a-strategy",style="labelFrameTitle.TLabel")
+        LabelFrame_Strategy = LabelFrame(FrameBody_Strategy,labelwidget=l,style="BodyGroovy.TFrame")
+        LabelFrame_Strategy.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        FrameBody_Strategy.grid_columnconfigure(0, weight=1)
+        FrameBody_Strategy.grid_rowconfigure(0, weight=1)
 
+        l = Label(FrameBody_Run,text="Run",style="labelFrameTitle.TLabel")
+        LabelFrame_Run = LabelFrame(FrameBody_Run,labelwidget=l,style="BodyGroovy.TFrame")
+        LabelFrame_Run.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        FrameBody_Run.grid_columnconfigure(0, weight=1)
+        FrameBody_Run.grid_rowconfigure(0, weight=1)
+
+        l = Label(FrameBody_Summary,text="Summary/Output Window",style="labelFrameTitle.TLabel")
+        LabelFrame_Summary = LabelFrame(FrameBody_Summary,labelwidget=l,style="BodyGroovy.TFrame")
+        LabelFrame_Summary.grid(row=1,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        FrameBody_Summary.grid_columnconfigure(0, weight=1)
+        FrameBody_Summary.grid_rowconfigure(0, weight=1)
+        FrameBody_Summary.grid_rowconfigure(1, weight=1)
+
+        # add the left, middle & right body frames as tabs
+        tabs.add(FrameBody_Crystal, text='crystal')
+        tabs.add(FrameBody_Beam, text='beam')
+        tabs.add(FrameBody_Strategy, text='strategy')
+        tabs.add(FrameBody_Run, text='run')
+        tabs.add(FrameBody_Summary, text='summary')
 
         #####################################################################################################
         # for top left body --> help/suggestion dialogue box
         self.varHelpBox = StringVar()
         self.helpObj = help() # create help object to be updated as inputs are loaded
 
-        scrollbarStrategyList = Scrollbar(FrameBodyLeftTop, orient=VERTICAL)
-        self.helpBox = Text(FrameBodyLeftTop, height=8, width=60,wrap=WORD)
+        scrollbarStrategyList = Scrollbar(FrameBody_Help, orient=VERTICAL)
+        self.helpBox = Text(FrameBody_Help, height=8, width=50,wrap=WORD)
         scrollbarStrategyList.pack(side=LEFT,fill=Y,pady=5, padx=3)
         self.helpBox.pack(fill=BOTH,expand=True)
         scrollbarStrategyList.config(command=self.helpBox.yview)
@@ -236,23 +247,23 @@ class RADDOSEgui(Frame):
         self.expNameList = []
 
         # make labelframe in which an experiment can be chosen from list of added experiments
-        l = Label(FrameBodyLeftBottom,text="Choose an experiment",style="labelFrameTitle.TLabel")
-        chooseExpFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Summary,text="Choose an experiment",style="labelFrameTitle.TLabel")
+        chooseExpFrame = LabelFrame(LabelFrame_Summary,labelwidget=l,style="MakeABeam.TFrame")
         chooseExpFrame.pack(side=TOP,padx=10, pady=0,fill=BOTH)
         # add equal weighting to 2 columns to stretch + fill frame
         for i in range(2):
             chooseExpFrame.columnconfigure(i, weight=1)
 
         self.expChoice = StringVar(self)
-        #Check if there any experiments loaded. If so then choose the first key
-        #in the experiment dictionary as an option. Otherwise let the user know
-        #that there are no loaded experiments
+        # Check if there any experiments loaded. If so then choose the first key
+        # in the experiment dictionary as an option. Otherwise let the user know
+        # that there are no loaded experiments
         if self.expNameList:
             self.expChoice.set(self.expNameList[0])
         else:
             self.expChoice.set('No existing experiments')
 
-        #Create the option menu of experiments
+        # Create the option menu of experiments
         self.expChoiceMenu = dynamicOptionMenu(chooseExpFrame, self.expChoice, *self.expNameList)
         self.expChoiceMenu.grid(row=0, column=0, columnspan=1,pady=5, padx=3, sticky=W+E)
 
@@ -266,7 +277,7 @@ class RADDOSEgui(Frame):
         summaryOptionMenu.grid(row=0, column=1, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to remove currently selected experiment from list of loaded experiments
-        removeExpButton = Button(chooseExpFrame, text="Remove experiment from summary analysis",command=self.removeExperimentFromList)
+        removeExpButton = Button(chooseExpFrame, text="Remove experiment",command=self.removeExperimentFromList)
         removeExpButton.grid(row=1, column=0, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         # create button to plot isosurfaces for currently loaded experiments within summary window
@@ -277,11 +288,11 @@ class RADDOSEgui(Frame):
         chooseExpFrame.grid_rowconfigure(0, weight=1)
         chooseExpFrame.grid_rowconfigure(1, weight=1)
 
-        #create text box with scrollbar to detail the summary output for currently selected experiment
-        expSummaryTextFrame = Frame(FrameBodyLeftBottom,style="MakeABeam.TFrame")
+        # create text box with scrollbar to detail the summary output for currently selected experiment
+        expSummaryTextFrame = Frame(LabelFrame_Summary,style="MakeABeam.TFrame")
 
         self.raddose3Dinputtxt = StringVar()
-        self.inputtxt = Text(expSummaryTextFrame, height=20,width=60,wrap=NONE)
+        self.inputtxt = Text(expSummaryTextFrame, height=10,width=50,wrap=NONE)
         yscrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=VERTICAL, command=self.inputtxt.yview)
         xscrollbarRaddoseInputFile = Scrollbar(expSummaryTextFrame, orient=HORIZONTAL, command=self.inputtxt.xview)
         yscrollbarRaddoseInputFile.pack(side=LEFT,fill=Y,pady=3, padx=3)
@@ -297,8 +308,8 @@ class RADDOSEgui(Frame):
         self.inputtxt.insert(END, quote*2)
 
         # make labelframe for the plotting buttons for the currently selected experiments
-        l = Label(FrameBodyLeftBottom,text="Compare Experiments",style="labelFrameTitle.TLabel")
-        ExpPlotButtonsFrame = LabelFrame(FrameBodyLeftBottom,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Summary,text="Compare Experiments",style="labelFrameTitle.TLabel")
+        ExpPlotButtonsFrame = LabelFrame(LabelFrame_Summary,labelwidget=l,style="MakeABeam.TFrame")
         ExpPlotButtonsFrame.pack(side=BOTTOM,padx=10, pady=0,fill=BOTH)
         # add equal weighting to 3 buttons to stretch + fill frame
         for i in range(3):
@@ -322,8 +333,8 @@ class RADDOSEgui(Frame):
         # for top middle body --> make-a-crystal window
 
         # make labelframe in which a crystal can be loaded and saved
-        l = Label(FrameBodyMiddleTop,text="Load a crystal",style="labelFrameTitle.TLabel")
-        crystLoadLabelFrame = LabelFrame(FrameBodyMiddleTop,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Crystal,text="Load a crystal",style="labelFrameTitle.TLabel")
+        crystLoadLabelFrame = LabelFrame(LabelFrame_Crystal,labelwidget=l,style="MakeABeam.TFrame")
         crystLoadLabelFrame.grid(row=0,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
 
         # add crystal 'load' option to crystLoadLabelFrame frame here
@@ -352,8 +363,8 @@ class RADDOSEgui(Frame):
         crystLoadLabelFrame.grid_columnconfigure(3,weight=1)
 
         # make a labelframe in which a crystal can be made from scratch and saved
-        l = Label(FrameBodyMiddleTop,text="Make a crystal",style="labelFrameTitle.TLabel")
-        crystMakeLabelFrame = LabelFrame(FrameBodyMiddleTop,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Crystal,text="Make a crystal",style="labelFrameTitle.TLabel")
+        crystMakeLabelFrame = LabelFrame(LabelFrame_Crystal,labelwidget=l,style="MakeABeam.TFrame")
         crystMakeLabelFrame.grid(row=1,column=0,columnspan=2 ,sticky="nsew",padx=10, pady=0)
 
         # allow user to give a name to a crystal and make a crystal from scratch here via button interaction
@@ -372,7 +383,7 @@ class RADDOSEgui(Frame):
 
         # make a listbox frame in options frame to show added crystals. The listbox of added
         # crystals is created here, along with a scrollbar
-        crystListFrame = Frame(FrameBodyMiddleTop,style="BodyGroovy.TFrame")
+        crystListFrame = Frame(LabelFrame_Crystal,style="BodyGroovy.TFrame")
         crystListFrame.grid(row=2,column=0,columnspan=2, sticky="nsew",padx=10, pady=0)
         scrollbarCrystListY = Scrollbar(crystListFrame, orient=VERTICAL)
         scrollbarCrystListX = Scrollbar(crystListFrame, orient=HORIZONTAL)
@@ -396,26 +407,26 @@ class RADDOSEgui(Frame):
         self.var3 = StringVar()
 
         # this button will view the currently selected crystal in the list
-        viewCrystButton = Button(FrameBodyMiddleTop, text="View",command=self.clickCrystView)
+        viewCrystButton = Button(LabelFrame_Crystal, text="View",command=self.clickCrystView)
         viewCrystButton.grid(row=3,column=0, sticky="nsew",padx=10, pady=5)
 
         # this button deletes the currently selected crystal from the listbox strategy list above
-        deleteCrystButton = Button(FrameBodyMiddleTop, text="Delete",command=self.deleteCryst)
+        deleteCrystButton = Button(LabelFrame_Crystal, text="Delete",command=self.deleteCryst)
         deleteCrystButton.grid(row=3,column=1, sticky="nsew",padx=10, pady=5)
-        FrameBodyMiddleTop.grid_columnconfigure(0,weight=1)
-        FrameBodyMiddleTop.grid_columnconfigure(1,weight=1)
-        FrameBodyMiddleTop.grid_rowconfigure(0,weight=1)
-        FrameBodyMiddleTop.grid_rowconfigure(1,weight=1)
-        FrameBodyMiddleTop.grid_rowconfigure(2,weight=1)
-        FrameBodyMiddleTop.grid_rowconfigure(3,weight=1)
+        LabelFrame_Crystal.grid_columnconfigure(0,weight=1)
+        LabelFrame_Crystal.grid_columnconfigure(1,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(0,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(1,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(2,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(3,weight=1)
 
 
         #####################################################################################################
         # for bottom middle body --> make-a-beam window
 
         # make labelframe in which a beam can be loaded and saved
-        l = Label(FrameBodyMiddleBottom,text="Load a beam",style="labelFrameTitle.TLabel")
-        beamLoadLabelFrame = LabelFrame(FrameBodyMiddleBottom,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Beam,text="Load a beam",style="labelFrameTitle.TLabel")
+        beamLoadLabelFrame = LabelFrame(LabelFrame_Beam,labelwidget=l,style="MakeABeam.TFrame")
         beamLoadLabelFrame.grid(row=0,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
 
         # add beam 'load' option to beamLoadLabelFrame frame here
@@ -444,8 +455,8 @@ class RADDOSEgui(Frame):
         beamLoadLabelFrame.grid_columnconfigure(3,weight=1)
 
         # make a labelframe in which a beam can be made from scratch and saved
-        l = Label(FrameBodyMiddleBottom,text="Make a beam",style="labelFrameTitle.TLabel")
-        beamMakeLabelFrame = LabelFrame(FrameBodyMiddleBottom,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Beam,text="Make a beam",style="labelFrameTitle.TLabel")
+        beamMakeLabelFrame = LabelFrame(LabelFrame_Beam,labelwidget=l,style="MakeABeam.TFrame")
         beamMakeLabelFrame.grid(row=1,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
 
         # allow user to give a name to a beam and make a beam from scratch here via button interaction
@@ -464,7 +475,7 @@ class RADDOSEgui(Frame):
 
         # make a listbox frame in options frame to show added beams. The listbox of added
         # beams is created here, along with a scrollbar
-        beamListFrame = Frame(FrameBodyMiddleBottom,style="BodyGroovy.TFrame")
+        beamListFrame = Frame(LabelFrame_Beam,style="BodyGroovy.TFrame")
         beamListFrame.grid(row=2,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
         scrollbarBeamListY = Scrollbar(beamListFrame, orient=VERTICAL)
         scrollbarBeamListX = Scrollbar(beamListFrame, orient=HORIZONTAL)
@@ -487,26 +498,26 @@ class RADDOSEgui(Frame):
         self.var3 = StringVar()
 
         # this button will view the currently selected crystal in the list
-        viewBeamButton = Button(FrameBodyMiddleBottom, text="View",command=self.clickBeamView)
+        viewBeamButton = Button(LabelFrame_Beam, text="View",command=self.clickBeamView)
         viewBeamButton.grid(row=3,column=0,sticky="nsew",padx=10, pady=5)
 
         # this button deletes the currently selected crystal from the listbox strategy list above
-        deleteBeamButton = Button(FrameBodyMiddleBottom, text="Delete",command=self.deleteBeam)
+        deleteBeamButton = Button(LabelFrame_Beam, text="Delete",command=self.deleteBeam)
         deleteBeamButton.grid(row=3,column=1,sticky="nsew",padx=10, pady=5)
-        FrameBodyMiddleBottom.grid_columnconfigure(0,weight=1)
-        FrameBodyMiddleBottom.grid_columnconfigure(1,weight=1)
-        FrameBodyMiddleBottom.grid_rowconfigure(0,weight=1)
-        FrameBodyMiddleBottom.grid_rowconfigure(1,weight=1)
-        FrameBodyMiddleBottom.grid_rowconfigure(2,weight=1)
-        FrameBodyMiddleBottom.grid_rowconfigure(3,weight=1)
+        LabelFrame_Beam.grid_columnconfigure(0,weight=1)
+        LabelFrame_Beam.grid_columnconfigure(1,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(0,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(1,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(2,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(3,weight=1)
 
 
         #####################################################################################################
         # for right body --> design-a-strategy window
 
         # make labelframe in which a crystal can be chosen from list of added crystals
-        l = Label(LabelFrameBodyRight,text="Choose a crystal",style="labelFrameTitle.TLabel")
-        chooseCrystFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Strategy,text="Choose a crystal",style="labelFrameTitle.TLabel")
+        chooseCrystFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
         chooseCrystFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=10)
 
         # make a dropdown list to choose one of added crystals
@@ -516,8 +527,8 @@ class RADDOSEgui(Frame):
         self.crystChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
 
           # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
-        l = Label(LabelFrameBodyRight,text="Choose a beam",style="labelFrameTitle.TLabel")
-        chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Strategy,text="Choose a beam",style="labelFrameTitle.TLabel")
+        chooseBeamStratFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
         chooseBeamStratFrame.grid(row=1,column=0,sticky="nsew",padx=10, pady=10)
 
           # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies
@@ -528,8 +539,8 @@ class RADDOSEgui(Frame):
         self.beamChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
 
         # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
-        l = Label(LabelFrameBodyRight,text="Choose exposure strategy",style="labelFrameTitle.TLabel")
-        chooseBeamStratFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Strategy,text="Choose exposure strategy",style="labelFrameTitle.TLabel")
+        chooseBeamStratFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
         chooseBeamStratFrame.grid(row=2,column=0,sticky="nsew",padx=10, pady=0)
 
         # make a button to incorporate the currently selected beam (in beam dropdown list above) to the treeview of beam
@@ -564,9 +575,9 @@ class RADDOSEgui(Frame):
 
         # make a labelframe. This label frame is for Running the experiment once
         # the crystal, beam and wedge has been defined.
-        l = Label(LabelFrameBodyRight,text="Run Strategy",style="labelFrameTitle.TLabel")
-        runStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
-        runStrategyFrame.grid(row=3,column=0,sticky="nsew",padx=10, pady=0)
+        l = Label(LabelFrame_Run,text="Run Strategy",style="labelFrameTitle.TLabel")
+        runStrategyFrame = LabelFrame(LabelFrame_Run,labelwidget=l,style="MakeABeam.TFrame")
+        runStrategyFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=0)
         runStrategyFrame.columnconfigure(1, weight=1)
 
         # make a box that allows user to uniquely name the experiment (i.e. the
@@ -587,7 +598,7 @@ class RADDOSEgui(Frame):
 
         # make a listbox frame in options frame to show added experiments. The
         # listbox of added experiments is created here, along with a scrollbar.
-        expListFrame = Frame(LabelFrameBodyRight,style="BodyGroovy.TFrame")
+        expListFrame = Frame(LabelFrame_Run,style="BodyGroovy.TFrame")
         expListFrame.grid(row=4,column=0,sticky="nsew",padx=10, pady=0)
         scrollbarexpList = Scrollbar(expListFrame, orient=VERTICAL)
 
@@ -611,8 +622,8 @@ class RADDOSEgui(Frame):
 
         # Pre-made RADDOSE-3D run box starts here:
         # make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
-        l = Label(LabelFrameBodyRight,text="Run pre-made job",style="labelFrameTitle.TLabel")
-        runPremadeRD3DStrategyFrame = LabelFrame(LabelFrameBodyRight,labelwidget=l,style="MakeABeam.TFrame")
+        l = Label(LabelFrame_Run,text="Run pre-made job",style="labelFrameTitle.TLabel")
+        runPremadeRD3DStrategyFrame = LabelFrame(LabelFrame_Run,labelwidget=l,style="MakeABeam.TFrame")
         runPremadeRD3DStrategyFrame.grid(row=5,column=0,sticky="nsew",padx=10, pady=0)
 
         #Add button to choose the files required for RADDOSE-3D input
@@ -621,13 +632,13 @@ class RADDOSEgui(Frame):
         runPremadeRD3DStrategyFrame.grid_rowconfigure(0,weight=1)
         runPremadeRD3DStrategyFrame.grid_columnconfigure(0,weight=1)
 
-        LabelFrameBodyRight.grid_columnconfigure(0,weight=1)
-        LabelFrameBodyRight.grid_rowconfigure(0,weight=1)
-        LabelFrameBodyRight.grid_rowconfigure(1,weight=1)
-        LabelFrameBodyRight.grid_rowconfigure(2,weight=1)
-        LabelFrameBodyRight.grid_rowconfigure(3,weight=1)
-        LabelFrameBodyRight.grid_rowconfigure(4,weight=1)
-        LabelFrameBodyRight.grid_rowconfigure(5,weight=1)
+        LabelFrame_Run.grid_columnconfigure(0,weight=1)
+        LabelFrame_Run.grid_rowconfigure(0,weight=1)
+        LabelFrame_Run.grid_rowconfigure(1,weight=1)
+        LabelFrame_Run.grid_rowconfigure(2,weight=1)
+        LabelFrame_Run.grid_rowconfigure(3,weight=1)
+        LabelFrame_Run.grid_rowconfigure(4,weight=1)
+        LabelFrame_Run.grid_rowconfigure(5,weight=1)
 
         ts = time.time()
         dirTimestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
@@ -1989,11 +2000,11 @@ def center(win):
 def main():
     # when the script is run in python, do the following:
     root = Tk()
-    widthScrSizeFrac = 0.9
-    heightScrSizeFrac = 0.9
-    width = root.winfo_screenwidth()
-    height = root.winfo_screenheight()
-    root.geometry(str(int(round(width*widthScrSizeFrac))) + "x" + str(int(round(height*heightScrSizeFrac))))
+    # widthScrSizeFrac = 0.9
+    # heightScrSizeFrac = 0.9
+    # width = root.winfo_screenwidth()
+    # height = root.winfo_screenheight()
+    # root.geometry(str(int(round(width*widthScrSizeFrac))) + "x" + str(int(round(height*heightScrSizeFrac))))
     app = RADDOSEgui(root)
     app.pack(fill=BOTH,expand=YES)
     center(root)
