@@ -58,11 +58,11 @@ class RADDOSEgui(Frame):
 
         ####################################################
         # set heights for list boxes here
-        loadListHeight = 7
+        self.loadListHeight = 7
         # specify padding between frames within GUI window
-        xWidth = 5
-        yWidth = 5
-        treeViewHeight = 5
+        self.xWidth = 5
+        self.yWidth = 5
+        self.treeViewHeight = 5
         ####################################################
 
         # define the colourscheme here
@@ -173,7 +173,6 @@ class RADDOSEgui(Frame):
         # in header frame make a help/suggestion box
         l = Label(FrameBody,text="Help/Suggestion Dialogue",style="labelFrameTitle.TLabel")
         FrameBody_Help = LabelFrame(FrameBody,labelwidget=l,style="BodyGroovy.TFrame")
-        # FrameBody_Help.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
         FrameBody_Help.pack(expand='yes')
         FrameBody_Help.grid(row=0,column=0, sticky="nsew",padx=5, pady=0)
 
@@ -192,33 +191,33 @@ class RADDOSEgui(Frame):
         # in the crystal frame, make corrsponding labelFrame
         l = Label(FrameBody_Crystal,text="Make-a-crystal",style="labelFrameTitle.TLabel")
         LabelFrame_Crystal = LabelFrame(FrameBody_Crystal,labelwidget=l,style="BodyGroovy.TFrame")
-        LabelFrame_Crystal.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        LabelFrame_Crystal.grid(row=0,column=0, sticky="nsew",padx=self.xWidth, pady=self.yWidth)
         FrameBody_Crystal.grid_columnconfigure(0, weight=1)
 
         # in the beam frame, make corrsponding labelFrame
         l = Label(FrameBody_Beam,text="Make-a-beam",style="labelFrameTitle.TLabel")
         LabelFrame_Beam = LabelFrame(FrameBody_Beam,labelwidget=l,style="BodyGroovy.TFrame")
-        LabelFrame_Beam.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        LabelFrame_Beam.grid(row=0,column=0, sticky="nsew",padx=self.xWidth, pady=self.yWidth)
         FrameBody_Beam.grid_columnconfigure(0, weight=1)
 
         # in the strategy frame, make corrsponding labelFrame
         l = Label(FrameBody_Strategy,text="Design-a-strategy",style="labelFrameTitle.TLabel")
         LabelFrame_Strategy = LabelFrame(FrameBody_Strategy,labelwidget=l,style="BodyGroovy.TFrame")
-        LabelFrame_Strategy.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        LabelFrame_Strategy.grid(row=0,column=0, sticky="nsew",padx=self.xWidth, pady=self.yWidth)
         FrameBody_Strategy.grid_columnconfigure(0, weight=1)
         FrameBody_Strategy.grid_rowconfigure(0, weight=1)
 
         # in the run frame, make corrsponding labelFrame
         l = Label(FrameBody_Run,text="Run",style="labelFrameTitle.TLabel")
         LabelFrame_Run = LabelFrame(FrameBody_Run,labelwidget=l,style="BodyGroovy.TFrame")
-        LabelFrame_Run.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        LabelFrame_Run.grid(row=0,column=0, sticky="nsew",padx=self.xWidth, pady=self.yWidth)
         FrameBody_Run.grid_columnconfigure(0, weight=1)
         FrameBody_Run.grid_rowconfigure(0, weight=1)
 
         # in the summary frame, make corrsponding labelFrame
         l = Label(FrameBody_Summary,text="Summary/Output Window",style="labelFrameTitle.TLabel")
         LabelFrame_Summary = LabelFrame(FrameBody_Summary,labelwidget=l,style="BodyGroovy.TFrame")
-        LabelFrame_Summary.grid(row=1,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
+        LabelFrame_Summary.grid(row=1,column=0, sticky="nsew",padx=self.xWidth, pady=self.yWidth)
         FrameBody_Summary.grid_columnconfigure(0, weight=1)
         FrameBody_Summary.grid_rowconfigure(0, weight=1)
         FrameBody_Summary.grid_rowconfigure(1, weight=1)
@@ -230,7 +229,14 @@ class RADDOSEgui(Frame):
         tabs.add(FrameBody_Run, text='run')
         tabs.add(FrameBody_Summary, text='summary')
 
-        #####################################################################################################
+        self.makeHelpFrame(FrameBody_Help)
+        self.makeCrystalFrame(LabelFrame_Crystal)
+        self.makeBeamFrame(LabelFrame_Beam)
+        self.makeStrategyFrame(LabelFrame_Strategy)
+        self.makeRunFrame(LabelFrame_Run)
+        self.makeSummaryFrame(LabelFrame_Summary)
+
+    def makeHelpFrame(self,FrameBody_Help):
         # for help frame --> help/suggestion dialogue box
         self.varHelpBox = StringVar()
         self.helpObj = help() # create help object to be updated as inputs are loaded
@@ -244,7 +250,325 @@ class RADDOSEgui(Frame):
         # update help window
         self.updateHelp()
 
-        #####################################################################################################
+    def makeCrystalFrame(self,LabelFrame_Crystal):
+        # for crystal frame --> make-a-crystal window
+        
+        # make labelframe in which a crystal can be loaded and saved
+        l = Label(LabelFrame_Crystal,text="Load a crystal",style="labelFrameTitle.TLabel")
+        crystLoadLabelFrame = LabelFrame(LabelFrame_Crystal,labelwidget=l,style="MakeABeam.TFrame")
+        crystLoadLabelFrame.grid(row=0,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
+
+        # add crystal 'load' option to crystLoadLabelFrame frame here
+        crystLoadLabel = Label(crystLoadLabelFrame,text="Crystal Load",style="inputBoxes.TLabel")
+        crystLoadLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
+        self.crystLoad = StringVar()
+        self.crystLoadBox = Entry(crystLoadLabelFrame,textvariable=self.crystLoad)
+        self.crystLoadBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
+        addCrystButton = Button(crystLoadLabelFrame,text="Find File",command=self.clickCrystLoad)
+        addCrystButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
+
+        # add crystal naming option to crystLoadLabelFrame frame here. Name is what user wishes to
+        # call the current crystal for future reference
+        crystLoadNameLabel = Label(crystLoadLabelFrame,text="Crystal Name",style="inputBoxes.TLabel")
+        crystLoadNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
+        self.crystLoadName = StringVar()
+        crystLoadNameBox = Entry(crystLoadLabelFrame,textvariable=self.crystLoadName)
+        crystLoadNameBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
+        addCrystButton = Button(crystLoadLabelFrame,text="Add",command=self.clickCrystAdd)
+        addCrystButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
+        crystLoadLabelFrame.grid_rowconfigure(0,weight=1)
+        crystLoadLabelFrame.grid_rowconfigure(1,weight=1)
+        crystLoadLabelFrame.grid_columnconfigure(0,weight=1)
+        crystLoadLabelFrame.grid_columnconfigure(1,weight=1)
+        crystLoadLabelFrame.grid_columnconfigure(2,weight=1)
+        crystLoadLabelFrame.grid_columnconfigure(3,weight=1)
+
+        # make a labelframe in which a crystal can be made from scratch and saved
+        l = Label(LabelFrame_Crystal,text="Make a crystal",style="labelFrameTitle.TLabel")
+        crystMakeLabelFrame = LabelFrame(LabelFrame_Crystal,labelwidget=l,style="MakeABeam.TFrame")
+        crystMakeLabelFrame.grid(row=1,column=0,columnspan=2 ,sticky="nsew",padx=10, pady=0)
+
+        # allow user to give a name to a crystal and make a crystal from scratch here via button interaction
+        crystMakeNameLabel = Label(crystMakeLabelFrame,text="Crystal Name",style="inputBoxes.TLabel")
+        crystMakeNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
+        self.crystMakeName = StringVar()
+        crystMakeNameBox = Entry(crystMakeLabelFrame,textvariable=self.crystMakeName)
+        crystMakeNameBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
+        makeCrystButton = Button(crystMakeLabelFrame,text="Make",command=self.clickCrystMake)
+        makeCrystButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
+        crystMakeLabelFrame.grid_rowconfigure(0,weight=1)
+        crystMakeLabelFrame.grid_columnconfigure(0,weight=1)
+        crystMakeLabelFrame.grid_columnconfigure(1,weight=1)
+        crystMakeLabelFrame.grid_columnconfigure(2,weight=1)
+        crystMakeLabelFrame.grid_columnconfigure(3,weight=1)
+
+        # make a listbox frame in options frame to show added crystals. The listbox of added
+        # crystals is created here, along with a scrollbar
+        crystListFrame = Frame(LabelFrame_Crystal,style="BodyGroovy.TFrame")
+        crystListFrame.grid(row=2,column=0,columnspan=2, sticky="nsew",padx=10, pady=0)
+        scrollbarCrystListY = Scrollbar(crystListFrame, orient=VERTICAL)
+        scrollbarCrystListX = Scrollbar(crystListFrame, orient=HORIZONTAL)
+
+        # want to make a list of crystal object instances (here two example crystals are defined)
+        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1,0,0,{},'Average')
+        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,0,0,{},'Average')
+        self.crystList = [exampleCryst,exampleCryst2]
+
+        self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystListY.set,
+                                    xscrollcommand=scrollbarCrystListX.set,height=self.loadListHeight)
+
+        for cryst in self.crystList:
+            self.crystListbox.insert(END, cryst.getTimeStampedName())
+        self.crystListbox.update_idletasks()
+        self.crystListbox.bind("<<ListboxSelect>>", self.onSelect)
+        scrollbarCrystListY.config(command=self.crystListbox.yview)
+        scrollbarCrystListX.config(command=self.crystListbox.xview)
+        scrollbarCrystListX.pack(side=BOTTOM, fill=X,pady=0, padx=5)
+        self.crystListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
+        scrollbarCrystListY.pack(side=RIGHT, fill=Y,pady=5)
+        self.var3 = StringVar()
+
+        # this button will view the currently selected crystal in the list
+        viewCrystButton = Button(LabelFrame_Crystal, text="View",command=self.clickCrystView)
+        viewCrystButton.grid(row=3,column=0, sticky="nsew",padx=10, pady=5)
+
+        # this button deletes the currently selected crystal from the listbox strategy list above
+        deleteCrystButton = Button(LabelFrame_Crystal, text="Delete",command=self.deleteCryst)
+        deleteCrystButton.grid(row=3,column=1, sticky="nsew",padx=10, pady=5)
+        LabelFrame_Crystal.grid_columnconfigure(0,weight=1)
+        LabelFrame_Crystal.grid_columnconfigure(1,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(0,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(1,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(2,weight=1)
+        LabelFrame_Crystal.grid_rowconfigure(3,weight=1)
+
+    def makeBeamFrame(self,LabelFrame_Beam):
+        # for beam frame --> make-a-beam window
+
+        # make labelframe in which a beam can be loaded and saved
+        l = Label(LabelFrame_Beam,text="Load a beam",style="labelFrameTitle.TLabel")
+        beamLoadLabelFrame = LabelFrame(LabelFrame_Beam,labelwidget=l,style="MakeABeam.TFrame")
+        beamLoadLabelFrame.grid(row=0,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
+
+        # add beam 'load' option to beamLoadLabelFrame frame here
+        beamLoadLabel = Label(beamLoadLabelFrame,text="Beam Load",style="inputBoxes.TLabel")
+        beamLoadLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
+        self.beamLoad = StringVar()
+        self.beamLoadBox = Entry(beamLoadLabelFrame,textvariable=self.beamLoad)
+        self.beamLoadBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
+        addBeamButton = Button(beamLoadLabelFrame,text="Find File",command=self.clickBeamLoad)
+        addBeamButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
+
+        # add beam naming option to beamLoadLabelFrame frame here. Name is what user wishes to
+        # call the current beam for future reference
+        beamLoadNameLabel = Label(beamLoadLabelFrame,text="Beam Name",style="inputBoxes.TLabel")
+        beamLoadNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
+        self.beamLoadName = StringVar()
+        beamLoadNameBox = Entry(beamLoadLabelFrame,textvariable=self.beamLoadName)
+        beamLoadNameBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
+        addBeamButton = Button(beamLoadLabelFrame,text="Add",command=self.clickBeamAdd)
+        addBeamButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
+        beamLoadLabelFrame.grid_rowconfigure(0,weight=1)
+        beamLoadLabelFrame.grid_rowconfigure(1,weight=1)
+        beamLoadLabelFrame.grid_columnconfigure(0,weight=1)
+        beamLoadLabelFrame.grid_columnconfigure(1,weight=1)
+        beamLoadLabelFrame.grid_columnconfigure(2,weight=1)
+        beamLoadLabelFrame.grid_columnconfigure(3,weight=1)
+
+        # make a labelframe in which a beam can be made from scratch and saved
+        l = Label(LabelFrame_Beam,text="Make a beam",style="labelFrameTitle.TLabel")
+        beamMakeLabelFrame = LabelFrame(LabelFrame_Beam,labelwidget=l,style="MakeABeam.TFrame")
+        beamMakeLabelFrame.grid(row=1,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
+
+        # allow user to give a name to a beam and make a beam from scratch here via button interaction
+        beamMakeNameLabel = Label(beamMakeLabelFrame,text="Beam Name",style="inputBoxes.TLabel")
+        beamMakeNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
+        self.beamMakeName = StringVar()
+        beamMakeNameBox = Entry(beamMakeLabelFrame,textvariable=self.beamMakeName)
+        beamMakeNameBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
+        makeBeamButton = Button(beamMakeLabelFrame,text="Make",command=self.clickBeamMake)
+        makeBeamButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
+        beamMakeLabelFrame.grid_rowconfigure(0,weight=1)
+        beamMakeLabelFrame.grid_columnconfigure(0,weight=1)
+        beamMakeLabelFrame.grid_columnconfigure(1,weight=1)
+        beamMakeLabelFrame.grid_columnconfigure(2,weight=1)
+        beamMakeLabelFrame.grid_columnconfigure(3,weight=1)
+
+        # make a listbox frame in options frame to show added beams. The listbox of added
+        # beams is created here, along with a scrollbar
+        beamListFrame = Frame(LabelFrame_Beam,style="BodyGroovy.TFrame")
+        beamListFrame.grid(row=2,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
+        scrollbarBeamListY = Scrollbar(beamListFrame, orient=VERTICAL)
+        scrollbarBeamListX = Scrollbar(beamListFrame, orient=HORIZONTAL)
+        # want to make a list of beam object instances (here two example beams are defined)
+        exampleBeam = beams_Gaussian('Example beam',[25,25],10000000000,10,[100,100])
+        exampleBeam2 = beams_Tophat('Example beam 2',20000000000,12,[120,120])
+        self.beamList = [exampleBeam,exampleBeam2]
+
+        self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamListY.set, xscrollcommand=scrollbarBeamListX.set,height=self.loadListHeight)
+        for beam in self.beamList:
+            self.beamListbox.insert(END, beam.getTimeStampedName())
+        self.beamListbox.update_idletasks()
+        self.beamListbox.bind("<<ListboxSelect>>", self.onSelect)
+        scrollbarBeamListY.config(command=self.beamListbox.yview)
+        scrollbarBeamListX.config(command=self.beamListbox.xview)
+        scrollbarBeamListX.pack(side=BOTTOM, fill=X,pady=0, padx=5)
+        self.beamListbox.pack(side=LEFT,padx=5,pady=5,fill=BOTH,expand=True)
+        scrollbarBeamListY.pack(side=RIGHT, fill=Y,pady=5)
+
+        self.var3 = StringVar()
+
+        # this button will view the currently selected crystal in the list
+        viewBeamButton = Button(LabelFrame_Beam, text="View",command=self.clickBeamView)
+        viewBeamButton.grid(row=3,column=0,sticky="nsew",padx=10, pady=5)
+
+        # this button deletes the currently selected crystal from the listbox strategy list above
+        deleteBeamButton = Button(LabelFrame_Beam, text="Delete",command=self.deleteBeam)
+        deleteBeamButton.grid(row=3,column=1,sticky="nsew",padx=10, pady=5)
+        LabelFrame_Beam.grid_columnconfigure(0,weight=1)
+        LabelFrame_Beam.grid_columnconfigure(1,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(0,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(1,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(2,weight=1)
+        LabelFrame_Beam.grid_rowconfigure(3,weight=1)
+
+    def makeStrategyFrame(self,LabelFrame_Strategy):
+        # for strategy frame --> design-a-strategy window
+
+        # make labelframe in which a crystal can be chosen from list of added crystals
+        l = Label(LabelFrame_Strategy,text="Choose a crystal",style="labelFrameTitle.TLabel")
+        chooseCrystFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
+        chooseCrystFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=10)
+
+        # make a dropdown list to choose one of added crystals
+        self.crystChoice = StringVar(self)
+        self.crystChoices = [cryst.getTimeStampedName() for cryst in self.crystList]
+        self.crystChoiceMenu = dynamicOptionMenu(chooseCrystFrame, self.crystChoice,self.crystChoices[0],*self.crystChoices)
+        self.crystChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
+
+          # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
+        l = Label(LabelFrame_Strategy,text="Choose a beam",style="labelFrameTitle.TLabel")
+        chooseBeamStratFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
+        chooseBeamStratFrame.grid(row=1,column=0,sticky="nsew",padx=10, pady=10)
+
+          # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies
+        # created below
+        self.beamChoice = StringVar(self)
+        self.beamChoices = [bm.getTimeStampedName() for bm in self.beamList]
+        self.beamChoiceMenu = dynamicOptionMenu(chooseBeamStratFrame, self.beamChoice,self.beamChoices[0],*self.beamChoices)
+        self.beamChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
+
+        # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
+        l = Label(LabelFrame_Strategy,text="Choose exposure strategy",style="labelFrameTitle.TLabel")
+        chooseBeamStratFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
+        chooseBeamStratFrame.grid(row=2,column=0,sticky="nsew",padx=10, pady=0)
+
+        # make a button to incorporate the currently selected beam (in beam dropdown list above) to the treeview of beam
+        # strategies below
+        beamStratButton = Button(chooseBeamStratFrame,text='Add Exposure Strategy',command=self.clickAddBeamStrategy)
+        beamStratButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
+
+        # make a treeview to show coupled beam and wedge strategies to be used with the specified crystal above
+        self.BeamStratTree = Treeview(chooseBeamStratFrame,height=self.treeViewHeight)
+        self.BeamStratTree["columns"]=("one","two","three","four")
+        self.BeamStratTree.column("#0",width=30)
+        self.BeamStratTree.column("one", width=100 )
+        self.BeamStratTree.column("two", width=70)
+        self.BeamStratTree.column("three", width=70)
+        self.BeamStratTree.column("four", width=90)
+        self.BeamStratTree.heading("one", text="Beam")
+        self.BeamStratTree.heading("two", text="Start Angle")
+        self.BeamStratTree.heading("three", text="Stop Angle")
+        self.BeamStratTree.heading("four", text="Exposure Time")
+        # define a counter here to specify the number of the beam+wedge strategy in the treeview of beam strategies.
+        # also create a list of indices of inserted entries in treeview, to allow easier deletion by index later. Also
+        # create lists of beam and wedge objects corresponding to entries in the treeview list.
+        self.BeamStratcounter = 1
+        self.treeviewIndexlist = []
+        self.beamList2Run,self.wedgeList2Run = [],[]
+        self.BeamStratTree.pack(side=TOP,padx=10, pady=10,fill=BOTH)
+
+        # make a button to remove the last beam+wedge entry from the treeview list of beam+wedge strategies for current
+        # crystal
+        beamStratRemoveButton = Button(chooseBeamStratFrame,text='Remove last entry',command=self.clickRemoveBeamStrategy)
+        beamStratRemoveButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
+
+    def makeRunFrame(self,LabelFrame_Run):
+        # for run frame --> run current strategy window
+
+        # make a labelframe. This label frame is for Running the experiment once
+        # the crystal, beam and wedge has been defined.
+        l = Label(LabelFrame_Run,text="Run Strategy",style="labelFrameTitle.TLabel")
+        runStrategyFrame = LabelFrame(LabelFrame_Run,labelwidget=l,style="MakeABeam.TFrame")
+        runStrategyFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=0)
+        runStrategyFrame.columnconfigure(1, weight=1)
+
+        # make a box that allows user to uniquely name the experiment (i.e. the
+        #crystal, beam and wedge combination) before running.
+        expLoadNameLabel = Label(runStrategyFrame,text="Experiment Name",style="inputBoxes.TLabel")
+        expLoadNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
+        self.expLoadName = StringVar()
+        expLoadNameBox = Entry(runStrategyFrame,textvariable=self.expLoadName)
+        expLoadNameBox.grid(row=0, column=1, columnspan=3, pady=5,padx=10,sticky=W+E)
+
+        # make a run button to run the currently defined strategy
+        runButton = Button(runStrategyFrame,text="Run",command=self.runManualExperiment)
+        runButton.grid(row=1, columnspan=4, pady=10,padx=10,sticky=W+E)
+        runStrategyFrame.grid_rowconfigure(0,weight=1)
+        runStrategyFrame.grid_rowconfigure(1,weight=1)
+        runStrategyFrame.grid_columnconfigure(0,weight=1)
+        runStrategyFrame.grid_columnconfigure(1,weight=1)
+
+        # make a listbox frame in options frame to show added experiments. The
+        # listbox of added experiments is created here, along with a scrollbar.
+        expListFrame = Frame(LabelFrame_Run,style="BodyGroovy.TFrame")
+        expListFrame.grid(row=4,column=0,sticky="nsew",padx=10, pady=0)
+        scrollbarexpList = Scrollbar(expListFrame, orient=VERTICAL)
+
+        self.emptyExpListString = "No experiments loaded"
+        self.expListbox = Listbox(expListFrame,yscrollcommand=scrollbarexpList.set,height=1)
+        self.expListbox.insert(END, self.emptyExpListString)
+        self.expListbox.update_idletasks()
+        self.expListbox.bind("<<ListboxSelect>>", self.onSelect)
+        scrollbarexpList.config(command=self.expListbox.yview)
+        self.expListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
+        scrollbarexpList.pack(side=RIGHT, fill=Y,pady=5)
+        self.var3 = StringVar()
+
+        # this button will view the currently selected crystal in the list
+        loadExpButton = Button(expListFrame, text="Load to summary window",command=self.clickLoadExperiment)
+        loadExpButton.pack(side=TOP,padx=10, pady=5,fill=X,anchor=N,expand=True)
+
+        # this button deletes the currently selected crystal from the listbox strategy list above
+        deleteExpButton = Button(expListFrame, text="Delete experiment",command=self.findExperimentTodelete)
+        deleteExpButton.pack(side=BOTTOM,padx=10, pady=5,fill=X,anchor=N)
+
+        # Pre-made RADDOSE-3D run box starts here:
+        # make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
+        l = Label(LabelFrame_Run,text="Run pre-made job",style="labelFrameTitle.TLabel")
+        runPremadeRD3DStrategyFrame = LabelFrame(LabelFrame_Run,labelwidget=l,style="MakeABeam.TFrame")
+        runPremadeRD3DStrategyFrame.grid(row=5,column=0,sticky="nsew",padx=10, pady=0)
+
+        #Add button to choose the files required for RADDOSE-3D input
+        choosePremadeFilesButton = Button(runPremadeRD3DStrategyFrame,text="Choose input files",command=self.chooseInputFiles)
+        choosePremadeFilesButton.grid(row=0, columnspan=4, pady=10,padx=10,sticky="nsew")
+        runPremadeRD3DStrategyFrame.grid_rowconfigure(0,weight=1)
+        runPremadeRD3DStrategyFrame.grid_columnconfigure(0,weight=1)
+
+        LabelFrame_Run.grid_columnconfigure(0,weight=1)
+        LabelFrame_Run.grid_rowconfigure(0,weight=1)
+        LabelFrame_Run.grid_rowconfigure(1,weight=1)
+        LabelFrame_Run.grid_rowconfigure(2,weight=1)
+        LabelFrame_Run.grid_rowconfigure(3,weight=1)
+        LabelFrame_Run.grid_rowconfigure(4,weight=1)
+        LabelFrame_Run.grid_rowconfigure(5,weight=1)
+
+        ts = time.time()
+        dirTimestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
+        self.expCompDir = "ExpComp_"+dirTimestamp #Name of directory where strategy comparison files will be stored
+        self.RADDOSEfilename = 'RADDOSE-3D-input.txt' #Create RADDOSE3D input file name
+
+    def makeSummaryFrame(self,LabelFrame_Summary):
         # for summary frame --> summary/output window
         self.experimentDict = {}
         self.expNameList = []
@@ -332,321 +656,6 @@ class RADDOSEgui(Frame):
         expSaveButton = Button(ExpPlotButtonsFrame, text="Save",command=self.clickExpSave)
         expSaveButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
-        #####################################################################################################
-        # for crystal frame --> make-a-crystal window
-
-        # make labelframe in which a crystal can be loaded and saved
-        l = Label(LabelFrame_Crystal,text="Load a crystal",style="labelFrameTitle.TLabel")
-        crystLoadLabelFrame = LabelFrame(LabelFrame_Crystal,labelwidget=l,style="MakeABeam.TFrame")
-        crystLoadLabelFrame.grid(row=0,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
-
-        # add crystal 'load' option to crystLoadLabelFrame frame here
-        crystLoadLabel = Label(crystLoadLabelFrame,text="Crystal Load",style="inputBoxes.TLabel")
-        crystLoadLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
-        self.crystLoad = StringVar()
-        self.crystLoadBox = Entry(crystLoadLabelFrame,textvariable=self.crystLoad)
-        self.crystLoadBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
-        addCrystButton = Button(crystLoadLabelFrame,text="Find File",command=self.clickCrystLoad)
-        addCrystButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
-
-        # add crystal naming option to crystLoadLabelFrame frame here. Name is what user wishes to
-        # call the current crystal for future reference
-        crystLoadNameLabel = Label(crystLoadLabelFrame,text="Crystal Name",style="inputBoxes.TLabel")
-        crystLoadNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
-        self.crystLoadName = StringVar()
-        crystLoadNameBox = Entry(crystLoadLabelFrame,textvariable=self.crystLoadName)
-        crystLoadNameBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
-        addCrystButton = Button(crystLoadLabelFrame,text="Add",command=self.clickCrystAdd)
-        addCrystButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
-        crystLoadLabelFrame.grid_rowconfigure(0,weight=1)
-        crystLoadLabelFrame.grid_rowconfigure(1,weight=1)
-        crystLoadLabelFrame.grid_columnconfigure(0,weight=1)
-        crystLoadLabelFrame.grid_columnconfigure(1,weight=1)
-        crystLoadLabelFrame.grid_columnconfigure(2,weight=1)
-        crystLoadLabelFrame.grid_columnconfigure(3,weight=1)
-
-        # make a labelframe in which a crystal can be made from scratch and saved
-        l = Label(LabelFrame_Crystal,text="Make a crystal",style="labelFrameTitle.TLabel")
-        crystMakeLabelFrame = LabelFrame(LabelFrame_Crystal,labelwidget=l,style="MakeABeam.TFrame")
-        crystMakeLabelFrame.grid(row=1,column=0,columnspan=2 ,sticky="nsew",padx=10, pady=0)
-
-        # allow user to give a name to a crystal and make a crystal from scratch here via button interaction
-        crystMakeNameLabel = Label(crystMakeLabelFrame,text="Crystal Name",style="inputBoxes.TLabel")
-        crystMakeNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
-        self.crystMakeName = StringVar()
-        crystMakeNameBox = Entry(crystMakeLabelFrame,textvariable=self.crystMakeName)
-        crystMakeNameBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
-        makeCrystButton = Button(crystMakeLabelFrame,text="Make",command=self.clickCrystMake)
-        makeCrystButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
-        crystMakeLabelFrame.grid_rowconfigure(0,weight=1)
-        crystMakeLabelFrame.grid_columnconfigure(0,weight=1)
-        crystMakeLabelFrame.grid_columnconfigure(1,weight=1)
-        crystMakeLabelFrame.grid_columnconfigure(2,weight=1)
-        crystMakeLabelFrame.grid_columnconfigure(3,weight=1)
-
-        # make a listbox frame in options frame to show added crystals. The listbox of added
-        # crystals is created here, along with a scrollbar
-        crystListFrame = Frame(LabelFrame_Crystal,style="BodyGroovy.TFrame")
-        crystListFrame.grid(row=2,column=0,columnspan=2, sticky="nsew",padx=10, pady=0)
-        scrollbarCrystListY = Scrollbar(crystListFrame, orient=VERTICAL)
-        scrollbarCrystListX = Scrollbar(crystListFrame, orient=HORIZONTAL)
-
-        # want to make a list of crystal object instances (here two example crystals are defined)
-        exampleCryst = crystals('Example crystal','Cuboid',10,20,30,1,0,0,{},'Average')
-        exampleCryst2 = crystals('Example crystal 2','Cuboid',30,20,10,2,0,0,{},'Average')
-        self.crystList = [exampleCryst,exampleCryst2]
-
-        self.crystListbox = Listbox(crystListFrame,yscrollcommand=scrollbarCrystListY.set,xscrollcommand=scrollbarCrystListX.set,height=loadListHeight)
-
-        for cryst in self.crystList:
-            self.crystListbox.insert(END, cryst.getTimeStampedName())
-        self.crystListbox.update_idletasks()
-        self.crystListbox.bind("<<ListboxSelect>>", self.onSelect)
-        scrollbarCrystListY.config(command=self.crystListbox.yview)
-        scrollbarCrystListX.config(command=self.crystListbox.xview)
-        scrollbarCrystListX.pack(side=BOTTOM, fill=X,pady=0, padx=5)
-        self.crystListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
-        scrollbarCrystListY.pack(side=RIGHT, fill=Y,pady=5)
-        self.var3 = StringVar()
-
-        # this button will view the currently selected crystal in the list
-        viewCrystButton = Button(LabelFrame_Crystal, text="View",command=self.clickCrystView)
-        viewCrystButton.grid(row=3,column=0, sticky="nsew",padx=10, pady=5)
-
-        # this button deletes the currently selected crystal from the listbox strategy list above
-        deleteCrystButton = Button(LabelFrame_Crystal, text="Delete",command=self.deleteCryst)
-        deleteCrystButton.grid(row=3,column=1, sticky="nsew",padx=10, pady=5)
-        LabelFrame_Crystal.grid_columnconfigure(0,weight=1)
-        LabelFrame_Crystal.grid_columnconfigure(1,weight=1)
-        LabelFrame_Crystal.grid_rowconfigure(0,weight=1)
-        LabelFrame_Crystal.grid_rowconfigure(1,weight=1)
-        LabelFrame_Crystal.grid_rowconfigure(2,weight=1)
-        LabelFrame_Crystal.grid_rowconfigure(3,weight=1)
-
-
-        #####################################################################################################
-        # for beam frame --> make-a-beam window
-
-        # make labelframe in which a beam can be loaded and saved
-        l = Label(LabelFrame_Beam,text="Load a beam",style="labelFrameTitle.TLabel")
-        beamLoadLabelFrame = LabelFrame(LabelFrame_Beam,labelwidget=l,style="MakeABeam.TFrame")
-        beamLoadLabelFrame.grid(row=0,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
-
-        # add beam 'load' option to beamLoadLabelFrame frame here
-        beamLoadLabel = Label(beamLoadLabelFrame,text="Beam Load",style="inputBoxes.TLabel")
-        beamLoadLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
-        self.beamLoad = StringVar()
-        self.beamLoadBox = Entry(beamLoadLabelFrame,textvariable=self.beamLoad)
-        self.beamLoadBox.grid(row=0, column=1,columnspan=2,pady=5,sticky=W+E)
-        addBeamButton = Button(beamLoadLabelFrame,text="Find File",command=self.clickBeamLoad)
-        addBeamButton.grid(row=0, column=3,pady=5,padx=6,sticky=W+E)
-
-        # add beam naming option to beamLoadLabelFrame frame here. Name is what user wishes to
-        # call the current beam for future reference
-        beamLoadNameLabel = Label(beamLoadLabelFrame,text="Beam Name",style="inputBoxes.TLabel")
-        beamLoadNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
-        self.beamLoadName = StringVar()
-        beamLoadNameBox = Entry(beamLoadLabelFrame,textvariable=self.beamLoadName)
-        beamLoadNameBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
-        addBeamButton = Button(beamLoadLabelFrame,text="Add",command=self.clickBeamAdd)
-        addBeamButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
-        beamLoadLabelFrame.grid_rowconfigure(0,weight=1)
-        beamLoadLabelFrame.grid_rowconfigure(1,weight=1)
-        beamLoadLabelFrame.grid_columnconfigure(0,weight=1)
-        beamLoadLabelFrame.grid_columnconfigure(1,weight=1)
-        beamLoadLabelFrame.grid_columnconfigure(2,weight=1)
-        beamLoadLabelFrame.grid_columnconfigure(3,weight=1)
-
-        # make a labelframe in which a beam can be made from scratch and saved
-        l = Label(LabelFrame_Beam,text="Make a beam",style="labelFrameTitle.TLabel")
-        beamMakeLabelFrame = LabelFrame(LabelFrame_Beam,labelwidget=l,style="MakeABeam.TFrame")
-        beamMakeLabelFrame.grid(row=1,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
-
-        # allow user to give a name to a beam and make a beam from scratch here via button interaction
-        beamMakeNameLabel = Label(beamMakeLabelFrame,text="Beam Name",style="inputBoxes.TLabel")
-        beamMakeNameLabel.grid(row=1, column=0,pady=5,padx=6,sticky=W+E)
-        self.beamMakeName = StringVar()
-        beamMakeNameBox = Entry(beamMakeLabelFrame,textvariable=self.beamMakeName)
-        beamMakeNameBox.grid(row=1, column=1,columnspan=2,pady=5,sticky=W+E)
-        makeBeamButton = Button(beamMakeLabelFrame,text="Make",command=self.clickBeamMake)
-        makeBeamButton.grid(row=1, column=3,pady=5,padx=6,sticky=W+E)
-        beamMakeLabelFrame.grid_rowconfigure(0,weight=1)
-        beamMakeLabelFrame.grid_columnconfigure(0,weight=1)
-        beamMakeLabelFrame.grid_columnconfigure(1,weight=1)
-        beamMakeLabelFrame.grid_columnconfigure(2,weight=1)
-        beamMakeLabelFrame.grid_columnconfigure(3,weight=1)
-
-        # make a listbox frame in options frame to show added beams. The listbox of added
-        # beams is created here, along with a scrollbar
-        beamListFrame = Frame(LabelFrame_Beam,style="BodyGroovy.TFrame")
-        beamListFrame.grid(row=2,column=0,columnspan=2,sticky="nsew",padx=10, pady=0)
-        scrollbarBeamListY = Scrollbar(beamListFrame, orient=VERTICAL)
-        scrollbarBeamListX = Scrollbar(beamListFrame, orient=HORIZONTAL)
-        # want to make a list of beam object instances (here two example beams are defined)
-        exampleBeam = beams_Gaussian('Example beam',[25,25],10000000000,10,[100,100])
-        exampleBeam2 = beams_Tophat('Example beam 2',20000000000,12,[120,120])
-        self.beamList = [exampleBeam,exampleBeam2]
-
-        self.beamListbox = Listbox(beamListFrame,yscrollcommand=scrollbarBeamListY.set, xscrollcommand=scrollbarBeamListX.set,height=loadListHeight)
-        for beam in self.beamList:
-            self.beamListbox.insert(END, beam.getTimeStampedName())
-        self.beamListbox.update_idletasks()
-        self.beamListbox.bind("<<ListboxSelect>>", self.onSelect)
-        scrollbarBeamListY.config(command=self.beamListbox.yview)
-        scrollbarBeamListX.config(command=self.beamListbox.xview)
-        scrollbarBeamListX.pack(side=BOTTOM, fill=X,pady=0, padx=5)
-        self.beamListbox.pack(side=LEFT,padx=5,pady=5,fill=BOTH,expand=True)
-        scrollbarBeamListY.pack(side=RIGHT, fill=Y,pady=5)
-
-        self.var3 = StringVar()
-
-        # this button will view the currently selected crystal in the list
-        viewBeamButton = Button(LabelFrame_Beam, text="View",command=self.clickBeamView)
-        viewBeamButton.grid(row=3,column=0,sticky="nsew",padx=10, pady=5)
-
-        # this button deletes the currently selected crystal from the listbox strategy list above
-        deleteBeamButton = Button(LabelFrame_Beam, text="Delete",command=self.deleteBeam)
-        deleteBeamButton.grid(row=3,column=1,sticky="nsew",padx=10, pady=5)
-        LabelFrame_Beam.grid_columnconfigure(0,weight=1)
-        LabelFrame_Beam.grid_columnconfigure(1,weight=1)
-        LabelFrame_Beam.grid_rowconfigure(0,weight=1)
-        LabelFrame_Beam.grid_rowconfigure(1,weight=1)
-        LabelFrame_Beam.grid_rowconfigure(2,weight=1)
-        LabelFrame_Beam.grid_rowconfigure(3,weight=1)
-
-
-        #####################################################################################################
-        # for strategy frame --> design-a-strategy window
-
-        # make labelframe in which a crystal can be chosen from list of added crystals
-        l = Label(LabelFrame_Strategy,text="Choose a crystal",style="labelFrameTitle.TLabel")
-        chooseCrystFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
-        chooseCrystFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=10)
-
-        # make a dropdown list to choose one of added crystals
-        self.crystChoice = StringVar(self)
-        self.crystChoices = [cryst.getTimeStampedName() for cryst in self.crystList]
-        self.crystChoiceMenu = dynamicOptionMenu(chooseCrystFrame, self.crystChoice,self.crystChoices[0],*self.crystChoices)
-        self.crystChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
-
-          # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
-        l = Label(LabelFrame_Strategy,text="Choose a beam",style="labelFrameTitle.TLabel")
-        chooseBeamStratFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
-        chooseBeamStratFrame.grid(row=1,column=0,sticky="nsew",padx=10, pady=10)
-
-          # make a dropdown list to choose a beam from the currently added beam list to add to the treeview of beam strategies
-        # created below
-        self.beamChoice = StringVar(self)
-        self.beamChoices = [bm.getTimeStampedName() for bm in self.beamList]
-        self.beamChoiceMenu = dynamicOptionMenu(chooseBeamStratFrame, self.beamChoice,self.beamChoices[0],*self.beamChoices)
-        self.beamChoiceMenu.pack(side=TOP, padx=10, pady=0,fill=BOTH)
-
-        # make a labelframe in which the desired beam strategy can be added (including the specification of wedges)
-        l = Label(LabelFrame_Strategy,text="Choose exposure strategy",style="labelFrameTitle.TLabel")
-        chooseBeamStratFrame = LabelFrame(LabelFrame_Strategy,labelwidget=l,style="MakeABeam.TFrame")
-        chooseBeamStratFrame.grid(row=2,column=0,sticky="nsew",padx=10, pady=0)
-
-        # make a button to incorporate the currently selected beam (in beam dropdown list above) to the treeview of beam
-        # strategies below
-        beamStratButton = Button(chooseBeamStratFrame,text='Add Exposure Strategy',command=self.clickAddBeamStrategy)
-        beamStratButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
-
-        # make a treeview to show coupled beam and wedge strategies to be used with the specified crystal above
-        self.BeamStratTree = Treeview(chooseBeamStratFrame,height=treeViewHeight)
-        self.BeamStratTree["columns"]=("one","two","three","four")
-        self.BeamStratTree.column("#0",width=30)
-        self.BeamStratTree.column("one", width=100 )
-        self.BeamStratTree.column("two", width=70)
-        self.BeamStratTree.column("three", width=70)
-        self.BeamStratTree.column("four", width=90)
-        self.BeamStratTree.heading("one", text="Beam")
-        self.BeamStratTree.heading("two", text="Start Angle")
-        self.BeamStratTree.heading("three", text="Stop Angle")
-        self.BeamStratTree.heading("four", text="Exposure Time")
-        # define a counter here to specify the number of the beam+wedge strategy in the treeview of beam strategies.
-        # also create a list of indices of inserted entries in treeview, to allow easier deletion by index later. Also
-        # create lists of beam and wedge objects corresponding to entries in the treeview list.
-        self.BeamStratcounter = 1
-        self.treeviewIndexlist = []
-        self.beamList2Run,self.wedgeList2Run = [],[]
-        self.BeamStratTree.pack(side=TOP,padx=10, pady=10,fill=BOTH)
-
-        # make a button to remove the last beam+wedge entry from the treeview list of beam+wedge strategies for current
-        # crystal
-        beamStratRemoveButton = Button(chooseBeamStratFrame,text='Remove last entry',command=self.clickRemoveBeamStrategy)
-        beamStratRemoveButton.pack(side=TOP, padx=10, pady=0,fill=X,expand=True)
-
-        # make a labelframe. This label frame is for Running the experiment once
-        # the crystal, beam and wedge has been defined.
-        l = Label(LabelFrame_Run,text="Run Strategy",style="labelFrameTitle.TLabel")
-        runStrategyFrame = LabelFrame(LabelFrame_Run,labelwidget=l,style="MakeABeam.TFrame")
-        runStrategyFrame.grid(row=0,column=0,sticky="nsew",padx=10, pady=0)
-        runStrategyFrame.columnconfigure(1, weight=1)
-
-        # make a box that allows user to uniquely name the experiment (i.e. the
-        #crystal, beam and wedge combination) before running.
-        expLoadNameLabel = Label(runStrategyFrame,text="Experiment Name",style="inputBoxes.TLabel")
-        expLoadNameLabel.grid(row=0, column=0,pady=5,padx=6,sticky=W+E)
-        self.expLoadName = StringVar()
-        expLoadNameBox = Entry(runStrategyFrame,textvariable=self.expLoadName)
-        expLoadNameBox.grid(row=0, column=1, columnspan=3, pady=5,padx=10,sticky=W+E)
-
-        # make a run button to run the currently defined strategy
-        runButton = Button(runStrategyFrame,text="Run",command=self.runManualExperiment)
-        runButton.grid(row=1, columnspan=4, pady=10,padx=10,sticky=W+E)
-        runStrategyFrame.grid_rowconfigure(0,weight=1)
-        runStrategyFrame.grid_rowconfigure(1,weight=1)
-        runStrategyFrame.grid_columnconfigure(0,weight=1)
-        runStrategyFrame.grid_columnconfigure(1,weight=1)
-
-        # make a listbox frame in options frame to show added experiments. The
-        # listbox of added experiments is created here, along with a scrollbar.
-        expListFrame = Frame(LabelFrame_Run,style="BodyGroovy.TFrame")
-        expListFrame.grid(row=4,column=0,sticky="nsew",padx=10, pady=0)
-        scrollbarexpList = Scrollbar(expListFrame, orient=VERTICAL)
-
-        self.emptyExpListString = "No experiments loaded"
-        self.expListbox = Listbox(expListFrame,yscrollcommand=scrollbarCrystListY.set,height=1)
-        self.expListbox.insert(END, self.emptyExpListString)
-        self.expListbox.update_idletasks()
-        self.expListbox.bind("<<ListboxSelect>>", self.onSelect)
-        scrollbarexpList.config(command=self.expListbox.yview)
-        self.expListbox.pack(side=LEFT,padx=10,pady=5,fill=BOTH,expand=True)
-        scrollbarexpList.pack(side=RIGHT, fill=Y,pady=5)
-        self.var3 = StringVar()
-
-        # this button will view the currently selected crystal in the list
-        loadExpButton = Button(expListFrame, text="Load to summary window",command=self.clickLoadExperiment)
-        loadExpButton.pack(side=TOP,padx=10, pady=5,fill=X,anchor=N,expand=True)
-
-        # this button deletes the currently selected crystal from the listbox strategy list above
-        deleteExpButton = Button(expListFrame, text="Delete experiment",command=self.findExperimentTodelete)
-        deleteExpButton.pack(side=BOTTOM,padx=10, pady=5,fill=X,anchor=N)
-
-        # Pre-made RADDOSE-3D run box starts here:
-        # make labelframe in which a pre-made RADDOSE-3D input file can be loaded and run
-        l = Label(LabelFrame_Run,text="Run pre-made job",style="labelFrameTitle.TLabel")
-        runPremadeRD3DStrategyFrame = LabelFrame(LabelFrame_Run,labelwidget=l,style="MakeABeam.TFrame")
-        runPremadeRD3DStrategyFrame.grid(row=5,column=0,sticky="nsew",padx=10, pady=0)
-
-        #Add button to choose the files required for RADDOSE-3D input
-        choosePremadeFilesButton = Button(runPremadeRD3DStrategyFrame,text="Choose input files",command=self.chooseInputFiles)
-        choosePremadeFilesButton.grid(row=0, columnspan=4, pady=10,padx=10,sticky="nsew")
-        runPremadeRD3DStrategyFrame.grid_rowconfigure(0,weight=1)
-        runPremadeRD3DStrategyFrame.grid_columnconfigure(0,weight=1)
-
-        LabelFrame_Run.grid_columnconfigure(0,weight=1)
-        LabelFrame_Run.grid_rowconfigure(0,weight=1)
-        LabelFrame_Run.grid_rowconfigure(1,weight=1)
-        LabelFrame_Run.grid_rowconfigure(2,weight=1)
-        LabelFrame_Run.grid_rowconfigure(3,weight=1)
-        LabelFrame_Run.grid_rowconfigure(4,weight=1)
-        LabelFrame_Run.grid_rowconfigure(5,weight=1)
-
-        ts = time.time()
-        dirTimestamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H-%M-%S')
-        self.expCompDir = "ExpComp_"+dirTimestamp #Name of directory where strategy comparison files will be stored
-        self.RADDOSEfilename = 'RADDOSE-3D-input.txt' #Create RADDOSE3D input file name
 
     #####################################################################################################
     # below is a list of button actions in the gui
