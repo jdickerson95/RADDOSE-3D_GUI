@@ -1565,10 +1565,9 @@ Please check that you have closed all applications that are using any of the rel
         self.currentBeamIndex = [bm.getTimeStampedName() for bm in self.beamList].index(self.beamChoice.get())
 
         currentCrystal = self.crystList[self.currentCrystIndex] # get the selected crystal object here
-        crystalBlock = self.writeCrystalBlock(currentCrystal) #write the crystal block for RADDOSE-3D input
+        crystalBlock = currentCrystal.writeRD3DCrystalBlock() # write the crystal block for RADDOSE-3D input
 
-
-        #Write the RADDOSE3D input file here
+        # Write the RADDOSE3D input file here
         try:
             RADDOSEfile = open(self.RADDOSEfilename,'w')
         except IOError:
@@ -1594,10 +1593,10 @@ Please check that you have closed all applications that are using any of the rel
         for currentBeam in self.beamList2Run:
             counter += 1
             currentWedge = self.wedgeList2Run[counter]
-            beamBlock = self.writeBeamBlock(currentBeam)
+            beamBlock = currentBeam.writeRD3DBeamBlock()
             RADDOSEfile.write(beamBlock)
             RADDOSEfile.write("\n\n")
-            Wedgeblock = self.writeWedgeBlock(currentWedge)
+            Wedgeblock = currentWedge.writeRD3DWedgeBlock()
             RADDOSEfile.write(Wedgeblock)
             RADDOSEfile.write("\n\n")
         RADDOSEfile.close()
@@ -1808,159 +1807,6 @@ Check that you haven't got any applications open that are using files relating t
             elif srcFile != "output-FluencePerDoseHistCSV.csv":
                 allFilesExist = False
         return allFilesExist
-
-    def writeCrystalBlock(self, crystalObj):
-        """Write a text block of crystal information for RADDOSE-3D
-
-        Function to write a text block of the crystal properties for a
-        RADDOSE-3D input file.
-
-        =================
-        Keyword arguments
-        =================
-        crystalObj:
-            a 'crystals' object whose properties contain the required properties
-            for RADDOSE-3D input.
-
-        =================
-        Return parameters
-        =================
-        crystBlock:
-            a string block that contains the crystal information in the form
-            required for input into RADDOSE-3D
-
-        """
-        crystLines = [] #Inialise empty list
-        crystLines.append("Crystal") # Append the string - "Crystal" - to the list
-        crystPropertyDict = vars(crystalObj) #create a dictionary from the crystal object properties and corresponding values
-
-        #Add a dictionary entry that puts all three crystal dimension values into a string
-        crystPropertyDict["Dimensions"] = '{} {} {}'.format(crystalObj.crystDimX, crystalObj.crystDimY, crystalObj.crystDimZ)
-
-        #Add a dictionary entry that puts the unit cell dimensions into a string if present in crystal object
-        try:
-            crystPropertyDict["Unitcell"] = '{} {} {} {} {} {}'.format(crystalObj.unitcell_a, crystalObj.unitcell_b, crystalObj.unitcell_c,
-                                                                       crystalObj.unitcell_alpha, crystalObj.unitcell_beta, crystalObj.unitcell_gamma)
-        except AttributeError:
-            pass
-
-        #loop through each entry in the dictionary, create a string of the key
-        #and value from the dictionary and append that to the list created above
-        for crystProp in crystPropertyDict:
-            # create strings for other (non-dimension) crystal inputs
-            if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
-            crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
-            crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
-            crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma' and '_crystals__' not in crystProp and
-            crystPropertyDict[crystProp]):
-                if crystProp.lower() == "seqfile" or "modelfile":
-                    string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]).split("/")[-1])
-                    crystLines.append(string)
-                else:
-                    string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
-                    crystLines.append(string)
-
-        #write list entries as a single text block with each list entry joined
-        #by a new line character
-        crystBlock = "\n".join(crystLines)
-        return crystBlock #return the crystal block
-
-    def writeBeamBlock(self, beamObj):
-        """Write a text block of beam information for RADDOSE-3D
-
-        Function to write a text block of the beam properties for a
-        RADDOSE-3D input file.
-
-        =================
-        Keyword arguments
-        =================
-        beamObj:
-        a 'beams' object whose properties contain the required properties
-        for RADDOSE-3D input.
-
-        =================
-        Return parameters
-        =================
-        beamBlock:
-        a string block that contains the beam information in the form
-        required for input into RADDOSE-3D
-
-        """
-        beamLines = [] #Inialise empty list
-        beamLines.append("Beam") # Append the string - "Beam" - to the list
-        beamPropertyDict = vars(beamObj) #create a dictionary from the beam object properties and corresponding values
-
-        #loop through each entry in the dictionary, create a string of the key
-        #and value from the dictionary and append that to the list created above
-        for beamProp in beamPropertyDict:
-            if '_beams__' in beamProp:
-                continue
-            if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'file'):
-                string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
-                beamLines.append(string)
-            if beamProp == 'fwhm':
-                string = 'FWHM {} {}'.format(beamObj.fwhm[0], beamObj.fwhm[1])
-                beamLines.append(string)
-            if beamProp == 'collimation':
-                string = 'Collimation Rectangular {} {}'.format(beamObj.collimation[0], beamObj.collimation[1])
-                beamLines.append(string)
-            if beamProp == 'pixelSize':
-                string = 'PixelSize {} {}'.format(beamObj.pixelSize[0], beamObj.pixelSize[1])
-                beamLines.append(string)
-            if beamProp == 'file':
-                string = 'File {}'.format(beamObj.file.split("/")[-1])
-                beamLines.append(string)
-
-
-        #write list entries as a single text block with each list entry joined
-        #by a new line character
-        beamBlock = "\n".join(beamLines)
-        return beamBlock #return the beam block
-
-    def writeWedgeBlock(self, wedgeObj):
-        """Write a text block of wedge information for RADDOSE-3D
-
-        Function to write a text block of the wedge properties for a
-        RADDOSE-3D input file.
-
-        =================
-        Keyword arguments
-        =================
-        wedgeObj:
-            a 'wedges' object whose properties contain the required properties
-            for RADDOSE-3D input.
-
-        =================
-        Return parameters
-        =================
-        wedgeBlock:
-            a string block that contains the wedge information in the form
-            required for input into RADDOSE-3D
-
-        """
-        wedgeLines = [] #Inialise empty list
-        #Ensure the Wedge line is written first into the RADDOSE-3D input file.
-        wedgeString = "Wedge {} {}".format(wedgeObj.angStart, wedgeObj.angStop)
-        wedgeLines.append(wedgeString)
-
-        wedgePropertyDict = vars(wedgeObj) #create a dictionary from the wedge object properties and corresponding values
-
-        #Add a dictionary entries for the wedge object inputs that are in list format.
-        wedgePropertyDict["StartOffset"] = '{} {} {}'.format(wedgeObj.startOffsetList[0], wedgeObj.startOffsetList[1], wedgeObj.startOffsetList[2])
-        wedgePropertyDict["TranslatePerDegree"] = '{} {} {}'.format(wedgeObj.transPerDegList[0], wedgeObj.transPerDegList[1], wedgeObj.transPerDegList[2])
-
-        #loop through each entry in the dictionary, create a string of the key
-        #and value from the dictionary and append that to the list created above
-        for wedgeProp in wedgePropertyDict:
-            if (wedgeProp != 'angStart' and wedgeProp != 'angStop' and wedgeProp != 'startOffsetList'and
-            wedgeProp != 'transPerDegList' and wedgePropertyDict[wedgeProp]):
-                string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
-                wedgeLines.append(string)
-
-        #write list entries as a single text block with each list entry joined
-        #by a new line character
-        wedgeBlock = "\n".join(wedgeLines)
-        return wedgeBlock
 
     def readRADDOSEInputFile(self,filename):
         # read in a RADDOSE-3D input txt file

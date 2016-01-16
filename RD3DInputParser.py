@@ -18,7 +18,6 @@ class parsedRD3Dinput(object):
 		which objects should be returned ('crystal': crystal, 'beam': beam list,
 		 'all': everything)
 		"""
-		commentChars = ['#','!']
 
 		raddoseInput = open(self.RD3DInputPath,'r')
 
@@ -31,10 +30,13 @@ class parsedRD3Dinput(object):
 		wedge = wedges() #create default wedge
 
 		for line in raddoseInput:
+
 			# if empty line, skip over
-			try:
-				line.split()[0]
-			except IndexError:
+			if  self.emptyLine(line) == True:
+				continue
+			line = self.curateLine(line) # remove comment part of line
+			# ignore empty line once comment removed
+			if  self.emptyLine(line) == True:
 				continue
 
 			if "Crystal" in line:
@@ -51,6 +53,7 @@ class parsedRD3Dinput(object):
 				# multiple beams & wedges)
 				if len(self.beamList) != 0:
 					self.wedgeList.append(copy.deepcopy(wedge))
+					wedge = wedges() # make a new wedge object
 
 			elif "Wedge" in line:
 				crystalBlock = False
@@ -62,22 +65,6 @@ class parsedRD3Dinput(object):
 				self.beamList.append(copy.deepcopy(beam))
 				beamInfoDict = {} # create new dictionary in case another beam later in file
 
-			#remove comment part from line
-			commentCharIndices = []
-			for commentChar in commentChars: #look for comment characters and store the index in list
-				index = line.find(commentChar)
-				commentCharIndices.append(index)
-
-			if sorted(commentCharIndices)[-1] > -1: # check for positive indices
-				minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
-				line = line[0:minIndex] #remove comment part from line
-
-			# if empty line after comments removed, skip over
-			try:
-				line.split()[0]
-			except IndexError:
-				continue
-
 			if crystalBlock:
 				crystalInfoDict = self.parseCrystalLine(line,crystalInfoDict)
 
@@ -85,13 +72,35 @@ class parsedRD3Dinput(object):
 				beamInfoDict = self.parseBeamLine(line,beamInfoDict)
 
 			elif wedgeBlock:
-				self.parseWedgeLine(line,wedge)
+				wedge = self.parseWedgeLine(line,wedge)
 
 		self.wedgeList.append(copy.deepcopy(wedge)) #append final wedge
 		raddoseInput.close()
 
 		# convert crystal block dictionary into suitable crystal object
 		self.crystal = self.crystDict2Obj(crystalInfoDict)
+
+	def curateLine(self,line):
+		#removes comment part from line
+		commentChars = ['#','!']
+		commentCharIndices = []
+		for commentChar in commentChars: #look for comment characters and store the index in list
+			index = line.find(commentChar)
+			commentCharIndices.append(index)
+
+		if sorted(commentCharIndices)[-1] > -1: # check for positive indices
+			minIndex = min(i for i in commentCharIndices if i > -1) #find smallest positive index
+			line = line[0:minIndex] #remove comment part from line
+
+		return line # return the comment-less line
+
+	def emptyLine(self,line):
+		# if empty line, flag
+		try:
+			line.split()[0]
+			return False
+		except IndexError:
+			return True
 
 	def parseWedgeLine(self,line,wedge):
 		# parse RD3D input file wedge block 
@@ -109,6 +118,7 @@ class parsedRD3Dinput(object):
 			wedge.transPerDeg = line.split()[1:]
 		elif line.split()[0].lower() == 'rotaxmeamoffset':
 			wedge.transperdeg = line.split()[1]
+		return wedge
 
 	def parseCrystalLine(self,line,crystalInfoDict):
 		if line.split()[0] not in ('Crystal'):
@@ -149,10 +159,20 @@ class parsedRD3Dinput(object):
 		return crystal
 
 	def getCrystalDictInfo(self,crystalInfoDict,crystal):
+		# retrieve crystal type/dimension/pixPerMic etc properties from 
+		# RD3D input file 
 		crystal.type             	= crystalInfoDict["type"]
-		crystal.crystDimX        	= crystalInfoDict["dimensions"][0]
-		crystal.crystDimY        	= crystalInfoDict["dimensions"][1]
-		crystal.crystDimZ        	= crystalInfoDict["dimensions"][2]
+
+		if str(crystal.type).lower() in ('cuboid','spherical','cylindrical'):
+			crystal.crystDimX       = crystalInfoDict["dimensions"][0]
+		if str(crystal.type).lower() in ('cuboid','cylindrical'):
+			crystal.crystDimY       = crystalInfoDict["dimensions"][1]
+		if str(crystal.type).lower() in ('cuboid'):
+			crystal.crystDimZ       = crystalInfoDict["dimensions"][2]
+		if str(crystal.type).lower() in ('polyhedron'):
+			crystal.modelFile		= crystalInfoDict["modelfile"]
+			crystal.wireFrameType	= crystalInfoDict["wireframetype"]
+
 		crystal.pixelsPerMicron  	= crystalInfoDict["pixelspermicron"]
 		crystal.angleP 		  		= crystalInfoDict["anglep"]
 		crystal.angleL 		  		= crystalInfoDict["anglel"]
@@ -213,23 +233,23 @@ class parsedRD3Dinput(object):
 	def getCrystalContainerInfo(self,crystalInfoDict,crystal):
 		# get crystal container information if present
 		try:
-			crystal.containerType 		= crystalInfoDict["containertype"]
+			crystal.containerMaterialType 	= crystalInfoDict["containermaterialtype"]
 		except KeyError:
 			pass
 		try:
-			crystal.materialElements 	= crystalInfoDict["materialelements"]
+			crystal.materialElements 		= crystalInfoDict["materialelements"]
 		except KeyError:
 			pass
 		try:
-			crystal.materialMixture 	= crystalInfoDict["materialmixture"]
+			crystal.materialMixture 		= crystalInfoDict["materialmixture"]
 		except KeyError:
 			pass
 		try:
-			crystal.containerThickness 	= crystalInfoDict["containerthickness"]
+			crystal.containerThickness 		= crystalInfoDict["containerthickness"]
 		except KeyError:
 			pass
 		try:
-			crystal.containerDensity 	= crystalInfoDict["containerdensity"]
+			crystal.containerDensity 		= crystalInfoDict["containerdensity"]
 		except KeyError:
 			pass
 

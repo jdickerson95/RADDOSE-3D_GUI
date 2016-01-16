@@ -63,3 +63,35 @@ class wedges(object):
 		infoString += "Wedge rotation axis beam offset: {}\n".format(str(self.rotAxBeamOffset))
 
 		return infoString
+
+	def writeRD3DWedgeBlock(self):
+		"""Write a text block of wedge information for RADDOSE-3D
+
+		Function to write a text block of the wedge properties for a
+		RADDOSE-3D input file.
+
+		"""
+		wedgeLines = [] # Inialise empty list
+		# Ensure the Wedge line is written first into the RADDOSE-3D input file.
+		wedgeString = "Wedge {} {}".format(self.angStart, self.angStop)
+		wedgeLines.append(wedgeString)
+
+		wedgePropertyDict = vars(self) # create a dictionary from the wedge object properties and corresponding values
+
+		# Add a dictionary entries for the wedge object inputs that are in list format.
+		wedgePropertyDict["StartOffset"] = '{} {} {}'.format(self.startOffsetList[0], self.startOffsetList[1], self.startOffsetList[2])
+		wedgePropertyDict["TranslatePerDegree"] = '{} {} {}'.format(self.transPerDegList[0], self.transPerDegList[1], self.transPerDegList[2])
+
+		# loop through each entry in the dictionary, create a string of the key
+		# and value from the dictionary and append that to the list created above
+		for wedgeProp in wedgePropertyDict:
+			if (wedgeProp != 'angStart' and wedgeProp != 'angStop' and wedgeProp != 'startOffsetList'and
+				wedgeProp != 'transPerDegList' and wedgePropertyDict[wedgeProp]):
+				string = '{} {}'.format(wedgeProp,str(wedgePropertyDict[wedgeProp]))
+				wedgeLines.append(string)
+
+		# write list entries as a single text block with each list entry joined
+		# by a new line character
+		wedgeBlock = "\n".join(wedgeLines)
+		
+		return wedgeBlock

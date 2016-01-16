@@ -48,6 +48,44 @@ class beams(object):
 
 		return ErrorMessage
 
+	def writeRD3DBeamBlock(self):
+		"""Write a text block of beam information for RADDOSE-3D
+
+		Function to write a text block of the beam properties for a
+		RADDOSE-3D input file.
+
+		"""
+		beamLines = [] # Inialise empty list
+		beamLines.append("Beam") # Append the string - "Beam" - to the list
+		beamPropertyDict = vars(self) # create a dictionary from the beam object properties and corresponding values
+
+		# loop through each entry in the dictionary, create a string of the key
+		# and value from the dictionary and append that to the list created above
+		for beamProp in beamPropertyDict:
+			if '_beams__' in beamProp:
+				continue
+			if (beamProp != 'fwhm' and beamProp != 'collimation' and beamProp != 'pixelSize' and beamProp != 'beamName' and beamProp != 'file'):
+				string = '{} {}'.format(beamProp[0].upper()+beamProp[1:],str(beamPropertyDict[beamProp]))
+				beamLines.append(string)
+			if beamProp == 'fwhm':
+				string = 'FWHM {} {}'.format(self.fwhm[0], self.fwhm[1])
+				beamLines.append(string)
+			if beamProp == 'collimation':
+				string = 'Collimation Rectangular {} {}'.format(self.collimation[0], self.collimation[1])
+				beamLines.append(string)
+			if beamProp == 'pixelSize':
+				string = 'PixelSize {} {}'.format(self.pixelSize[0], self.pixelSize[1])
+				beamLines.append(string)
+			if beamProp == 'file':
+				string = 'File {}'.format(self.file.split("/")[-1])
+				beamLines.append(string)
+
+		# write list entries as a single text block with each list entry joined
+		# by a new line character
+		beamBlock = "\n".join(beamLines)
+
+		return beamBlock #return the beam block
+
 class beams_Tophat(beams):
 	# subclass for TopHat type beams
 	def __init__(self,beamName="",beamFlux=0,beamEnergy=0,beamRectColl=[]):

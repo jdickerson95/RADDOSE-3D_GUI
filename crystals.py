@@ -7,7 +7,7 @@ class crystals(object):
 	# this class is for crystal parameters for a loaded or created crystal.
 	# Default absCoefCalc is set to 'Average'
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="", crystDimZ="",
-				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc=""):
+				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="",modelFile=""):
 
 		self.crystName        = crystName
 		self.type             = crystType
@@ -18,6 +18,7 @@ class crystals(object):
 		self.angleP 		  = angleP
 		self.angleL 		  = angleL
 		self.absCoefCalc 	  = absCoefCalc
+		self.modelFile 		  = modelFile
 
 		# find the crystal container information, if it was provided when the crystal object was created
 		self.containerInfoDict = containerInfoDict
@@ -28,7 +29,7 @@ class crystals(object):
 
 	def getTimeStampedName(self):
 		# create a string containing name then timestamp for unique crystal identification
-		timeStampedName =  self.__creationTime + " "*10 + self.crystName 
+		timeStampedName =  self.__creationTime + " "*10 + self.crystName
 		return timeStampedName
 
 	def getCreationTime(self):
@@ -41,10 +42,30 @@ class crystals(object):
 		"""This method checks to see if a crystal has the same properties as
 		another crystal
 		"""
-		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('crystName','_crystals__creationTime')} 
-		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('crystName','_crystals__creationTime')} 
+		compareProps_self = {attr: getattr(self, attr) for attr in vars(self) if attr not in ('crystName','_crystals__creationTime')}
+		compareProps_other = {attr: getattr(other, attr) for attr in vars(other) if attr not in ('crystName','_crystals__creationTime')}
 
 		return compareProps_self == compareProps_other
+
+	def setDimsByCrystType(self):
+		# depending of the crystal type specified, update the dimensions 
+		# of the crystal to the fixed format below
+		crystalType = str(self.type).lower()
+		if crystalType != 'polyhedron':
+			self.modelFile = ""
+			self.wireFrameType = ""
+		else:
+			self.wireFrameType = 'OBJ'
+
+		if crystalType == 'spherical':
+			self.crystDimY = ""
+			self.crystDimZ = ""
+		elif crystalType == 'cylindrical':
+			self.crystDimZ = ""
+		elif crystalType == 'polyhedron':
+			self.crystDimX = ""
+			self.crystDimY = ""
+			self.crystDimZ = ""
 
 	def checkContainerInfoPresent(self):
 		# check whether container info has been provided for crystal
@@ -59,24 +80,33 @@ class crystals(object):
 
 	def getContainerInfo(self):
 		# get info regarding crystal container
-		self.containerType       	= self.containerInfoDict["Type"]
+		self.containerMaterialType       	= self.containerInfoDict["Type"]
 		self.containerThickness 	= self.containerInfoDict["Thickness"]
 		self.containerDensity 		= self.containerInfoDict["Density"]
-		if self.containerType == 'Mixture':
+		if self.containerMaterialType == 'Mixture':
 			self.materialMixture	= self.containerInfoDict["Mixture"]
-		elif self.containerType == 'Elemental':
+		elif self.containerMaterialType == 'Elemental':
 			self.materialElements 	= self.containerInfoDict["Elements"]
 
 	def checkValidInputs(self):
 		ErrorMessage = ""
 		# check valid crystal type
-		if str(self.type).lower() not in ('cuboid','spherical','cylindrical','polyhedron'):
+		crystalType = str(self.type).lower()
+		if crystalType not in ('cuboid','spherical','cylindrical','polyhedron'):
 			ErrorMessage += 'Crystal type {} not of compatible format.\n'.format(str(self.type))
 
-		# check that crystal dimensions can be converted to non-negative float format (from string format)
-		ErrorMessage += checks(self.crystDimX,'x dimension',False).checkIfNonNegFloat()
-		ErrorMessage += checks(self.crystDimY,'y dimension',False).checkIfNonNegFloat()
-		ErrorMessage += checks(self.crystDimZ,'z dimension',False).checkIfNonNegFloat()
+		# check that relevant crystal dimensions (dependent of crystal type) can be converted to 
+		# non-negative float format (from string format)
+		if crystalType in ('cuboid','spherical','cylindrical'):
+			ErrorMessage += checks(self.crystDimX,'x dimension',False).checkIfNonNegFloat()
+		if crystalType in ('cuboid','cylindrical'):
+			ErrorMessage += checks(self.crystDimY,'y dimension',False).checkIfNonNegFloat()
+		if crystalType in ('cuboid'):
+			ErrorMessage += checks(self.crystDimZ,'z dimension',False).checkIfNonNegFloat()
+		if crystalType in ('polyhedron'):
+			ErrorMessage += checks(self.modelFile,'model file',False).checkIfNonBlankString()
+			if str(self.wireFrameType).lower() != 'obj':
+				ErrorMessage += 'Wire frame type not of compatible .obj format\n'
 
 		# check that crystal pixelsPerMicron can be converted to non-negative float format (from string format)
 		ErrorMessage += checks(self.pixelsPerMicron,'pixels per micron',False).checkIfNonNegFloat()
@@ -91,10 +121,10 @@ class crystals(object):
 
 		# check container information is valid (if present)
 		try:
-			self.containerType
+			self.containerMaterialType
 			# check that container type of suitable format
-			if str(self.containerType).lower() not in ('mixture','elemental','none'):
-				ErrorMessage += 'Crystal container type {} not of compatible format.\n'.format(str(self.containerType))
+			if str(self.containerMaterialType).lower() not in ('mixture','elemental','none'):
+				ErrorMessage += 'Crystal container type {} not of compatible format.\n'.format(str(self.containerMaterialType))
 
 			# check that container thickness can be converted to float and is non-negative
 			ErrorMessage += checks(self.containerThickness,'container thickness',False).checkIfNonNegFloat()
@@ -103,14 +133,14 @@ class crystals(object):
 			ErrorMessage += checks(self.containerDensity,'container density',False).checkIfNonNegFloat()
 
 			# check that if 'mixture' type specified, then corresponding mixture is a non-empty string
-			if str(self.containerType).lower() == 'mixture':
+			if str(self.containerMaterialType).lower() == 'mixture':
 				if not isinstance(self.materialMixture, basestring):
 					ErrorMessage += 'Crystal container mixture not of compatible string format.\n'
 				elif len(self.materialMixture) == 0:
 					ErrorMessage += 'Crystal container mixture field is blank.\n'
 
 			# check that if 'elemental' type specified, then corresponding element composition is a non-empty string
-			if str(self.containerType).lower() == 'elemental':
+			if str(self.containerMaterialType).lower() == 'elemental':
 				if not isinstance(self.materialElements, basestring):
 					ErrorMessage += 'Crystal container elemental composition not of compatible string format.\n'
 				elif len(self.materialElements) == 0:
@@ -124,10 +154,18 @@ class crystals(object):
 		return ErrorMessage
 
 	def extractCrystalInfo(self):
-		# create a string containing information of current crystal
+		# create a string containing basic information of current crystal
 		summaryString 	= 	"Crystal Name: {}\n".format(str(self.crystName))
 		summaryString 	+= 	"Type: {}\n".format(str(self.type))
-		summaryString 	+= 	"Dimensions: {} {} {} (microns in x,y,z)\n".format(str(self.crystDimX),str(self.crystDimY),str(self.crystDimZ))
+		if str(self.type).lower() in ('cuboid'):
+			summaryString 	+= 	"Dimensions: {} {} {} (microns in x,y,z)\n".format(str(self.crystDimX),str(self.crystDimY),str(self.crystDimZ))
+		elif str(self.type).lower() in ('spherical'):
+			summaryString 	+= 	"Diameter: {} microns\n".format(str(self.crystDimX))
+		elif str(self.type).lower() in ('cylindrical'):
+			summaryString 	+= 	"Diameter: {} (microns), Height: {} (microns)\n".format(str(self.crystDimX),str(self.crystDimY))
+		elif str(self.type).lower() in ('polyhedron'):
+			summaryString 	+= 	"Model file: {}\n".format(str(self.modelFile))
+
 		summaryString 	+= 	"Pixels per Micron: {}\n".format(str(self.pixelsPerMicron))
 		summaryString 	+= 	"Angle P: {}\n".format(str(self.angleP))
 		summaryString 	+= 	"Angle L: {}\n".format(str(self.angleL))
@@ -135,15 +173,15 @@ class crystals(object):
 
 		# if container information was provided, include in summary
 		try:
-			self.containerType
+			self.containerMaterialType
 		except AttributeError:
 			return summaryString
-		if self.containerType in ('Mixture','Elemental'):
+		if str(self.containerMaterialType).lower() in ('mixture','elemental'):
 			containerString  	= 	"\nContainer Information:\n"
-			containerString 	+= 	"Container Type: {}\n".format(str(self.containerType))
-			if self.containerType == 'Mixture':
+			containerString 	+= 	"Container Type: {}\n".format(str(self.containerMaterialType))
+			if str(self.containerMaterialType).lower() == 'mixture':
 				containerString 	+= 	"Material Mixture: {}\n".format(str(self.materialMixture))
-			elif self.containerType == 'Elemental':
+			elif str(self.containerMaterialType).lower() == 'elemental':
 				containerString 	+= 	"Material Elements: {}\n".format(str(self.materialElements))
 			containerString 	+= 	"Container Thickness: {}\n".format(str(self.containerThickness))
 			containerString 	+= 	"Container Density: {}\n".format(str(self.containerDensity))
@@ -151,14 +189,58 @@ class crystals(object):
 
 		return summaryString
 
+	def writeRD3DCrystalBlock(self):
+		"""Write a text block of crystal information for RADDOSE-3D
+
+		Function to write a text block of the crystal properties for a
+		RADDOSE-3D input file.
+
+		"""
+		crystLines = [] #Inialise empty list
+		crystLines.append("Crystal") # Append the string - "Crystal" - to the list
+		crystPropertyDict = vars(self) #create a dictionary from the crystal object properties and corresponding values
+
+		# Add a dictionary entry that puts all relevant crystal dimension values into a string (dependent on crystal type)
+		if str(self.type).lower() in ('cuboid','spherical','cylindrical'):
+			crystPropertyDict["Dimensions"] = '{} {} {}'.format(self.crystDimX, self.crystDimY, self.crystDimZ)
+
+		# Add a dictionary entry that puts the unit cell dimensions into a string (only if present in crystal object)
+		try:
+			crystPropertyDict["Unitcell"] = '{} {} {} {} {} {}'.format(self.unitcell_a, self.unitcell_b, self.unitcell_c,
+																	   self.unitcell_alpha, self.unitcell_beta, self.unitcell_gamma)
+		except AttributeError:
+			pass
+
+		# loop through each entry in the dictionary, create a string of the key
+		# and value from the dictionary and append that to the list created above
+		for crystProp in crystPropertyDict:
+			# create strings for other (non-dimension) crystal inputs
+			if (crystProp != 'crystDimX' and crystProp != 'crystDimY' and crystProp != 'crystDimZ' and
+				crystProp != 'crystName' and crystProp != 'containerInfoDict' and crystProp != 'unitcell_a' and
+				crystProp != 'unitcell_b' and crystProp != 'unitcell_c' and crystProp != 'unitcell_alpha' and
+				crystProp != 'unitcell_beta' and crystProp != 'unitcell_gamma' and '_crystals__' not in crystProp and
+				crystPropertyDict[crystProp]):
+				if crystProp.lower() == "seqfile" or "modelfile":
+					string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]).split("/")[-1])
+					crystLines.append(string)
+				else:
+					string = '{} {}'.format(crystProp[0].upper()+crystProp[1:],str(crystPropertyDict[crystProp]))
+					crystLines.append(string)
+
+		# write list entries as a single text block with each list entry joined
+		# by a new line character
+		crystBlock = "\n".join(crystLines)
+		return crystBlock #return the crystal block
+
+
 class crystals_pdbCode(crystals):
 	# A subclass for a single pdb file structure
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="",crystDimZ="",
 				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="",
-				 pdbcode="", solventHeavyConc=""):
+				 modelFile="", pdbcode="", solventHeavyConc=""):
 
 		super(crystals_pdbCode, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-											   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc)
+											   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc, modelFile)
 
 		self.pdb 			= pdbcode
 		self.solventHeavyConc 	= solventHeavyConc
@@ -186,14 +268,14 @@ class crystals_pdbCode(crystals):
 class crystals_userDefined(crystals):
 	# A subclass for a user defined crystal composition
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="", crystDimZ="",
-				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="",
+				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="", modelFile="", 
 				 unitcell_a="", unitcell_b="", unitcell_c="",
 				 unitcell_alpha="", unitcell_beta="", unitcell_gamma="",
 				 numMonomers="", numResidues="", numRNA="", numDNA="",
 				 proteinHeavyAtoms="", solventHeavyConc="", solventFraction=""):
 
 		super(crystals_userDefined, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-												   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc)
+												   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc, modelFile)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -257,14 +339,14 @@ class crystals_userDefined(crystals):
 class crystals_RADDOSEv2(crystals):
 	# A subclass for RADDOSE-v2 crystal inputs
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="", crystDimZ="",
-				 crystPixPerMic="", angleP="",angleL="", containerInfoDict={}, absCoefCalc="",
+				 crystPixPerMic="", angleP="",angleL="", containerInfoDict={}, absCoefCalc="", modelFile="", 
 				 unitcell_a="", unitcell_b="", unitcell_c="",
 				 unitcell_alpha="", unitcell_beta="", unitcell_gamma="",
 				 numMonomers="", numResidues="", numRNA="", numDNA="",
 				 proteinHeavyAtoms="", solventHeavyConc="",solventFraction=""):
 
 		super(crystals_RADDOSEv2, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-												 crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc)
+												 crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc, modelFile)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -328,14 +410,14 @@ class crystals_RADDOSEv2(crystals):
 class crystals_seqFile(crystals):
 	# A subclass for sequence file-defined crystal composition
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="", crystDimZ="",
-				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="",
+				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="", modelFile="", 
 				 unitcell_a="", unitcell_b="", unitcell_c="",
 				 unitcell_alpha="", unitcell_beta="", unitcell_gamma="",
 				 numMonomers="", sequenceFile="", proteinHeavyAtoms="",
 				 solventHeavyConc="", solventFraction=""):
 
 		super(crystals_seqFile, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-											   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc)
+											   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc, modelFile)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -386,13 +468,14 @@ class crystals_seqFile(crystals):
 		compositionString 	+= 	"Protein Heavy Atom number: {}\n".format(str(self.proteinHeavyAtoms))
 		compositionString 	+= 	"Solvent Heavy Atom Concentration: {}\n".format(str(self.solventHeavyConc))
 		compositionString 	+= 	"Solvent Fraction: {}\n".format(str(self.solventFraction))
+		compositionString   +=  "Sequence File: {}\n".format(str(self.seqFile))
 
 		return compositionString
 
 class crystals_SAXSuserDefined(crystals):
 	# A subclass for user-defined SAXS crystal composition inputs
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="", crystDimZ="",
-				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="",
+				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="", modelFile="", 
 				 unitcell_a="", unitcell_b="", unitcell_c="",
 				 unitcell_alpha="", unitcell_beta="", unitcell_gamma="",
 				 numResidues="", numRNA="", numDNA="",
@@ -400,7 +483,7 @@ class crystals_SAXSuserDefined(crystals):
 				 solventFraction="", proteinConc=""):
 
 		super(crystals_SAXSuserDefined, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-													   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc)
+													   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc, modelFile)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -466,14 +549,14 @@ class crystals_SAXSuserDefined(crystals):
 class crystals_SAXSseqFile(crystals):
 	# A subclass for sequence file-defined SAXS crystal composition inputs
 	def __init__(self, crystName="", crystType="", crystDimX="", crystDimY="", crystDimZ="",
-				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="",
+				 crystPixPerMic="", angleP="", angleL="", containerInfoDict={}, absCoefCalc="", modelFile="", 
 				 unitcell_a="", unitcell_b="", unitcell_c="",
 				 unitcell_alpha="", unitcell_beta="", unitcell_gamma="",
 				 proteinHeavyAtoms="", solventHeavyConc="",
 				 solventFraction="", proteinConc="", sequenceFile=""):
 
 		super(crystals_SAXSseqFile, self).__init__(crystName, crystType, crystDimX, crystDimY, crystDimZ,
-												   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc)
+												   crystPixPerMic, angleP, angleL, containerInfoDict, absCoefCalc, modelFile)
 
 		self.unitcell_a 		= unitcell_a
 		self.unitcell_b 		= unitcell_b
@@ -485,7 +568,7 @@ class crystals_SAXSseqFile(crystals):
 		self.solventHeavyConc 	= solventHeavyConc
 		self.solventFraction 	= solventFraction
 		self.proteinConc 		= proteinConc
-		self.seqFile 		= sequenceFile
+		self.seqFile 			= sequenceFile
 
 
 	def checkValidInputs_subclass(self):

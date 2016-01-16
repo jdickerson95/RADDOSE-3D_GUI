@@ -168,7 +168,10 @@ class PremadeInputMakerWindow():
                 collimation = [beamParams[1], beamParams[0]]
                 pixelSize = [beamParams[2], beamParams[3]]
 
-                beamFileInputIsFine = self.processExperimentalBeam(collimation, pixelSize)
+                if self.beamImageFile.get() or self.beamApertureXFile or self.beamApertureYFile:
+                    beamFileInputIsFine = self.processExperimentalBeam(collimation, pixelSize)
+                else:
+                    beamFileInputIsFine = True
 
                 if beamFileInputIsFine:
                     #Get a full list of all the variables representing file names
@@ -400,11 +403,15 @@ Please make sure that it is not being used by any other processes.
                 beamFileWarningMessage = """The aperture measurement files either don't exist or they are not in a compatible format (.dat).
     """
                 tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
-            else:
-                beamFileInputIsFine = False
-                beamFileWarningMessage = """Not all the necessary files required to process a beam image were given.
-Please see the documentation for more information."""
-                tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
+#THE CODE COMMENTED BELOW STOPS PREMADE INPUT FILES FROM WORKING IF THE USER
+#DOESN'T GIVE AN IMAGE FILE. THIS CAN BE THE CASE IF THEY OPT TO USE A TOPHAT OR
+#GAUSSIAN PROFILE BEAM SO I'VE COMMENTED THIS PART OF THE CODE OUT. PERHAPS A
+#CHECK NEEDS TO BE WRITTEN ELSEWHERE TO CHECK FOR SENSIBLE INPUT. 
+#             else:
+#                 beamFileInputIsFine = False
+#                 beamFileWarningMessage = """Not all the necessary files required to process a beam image were given.
+# Please see the documentation for more information."""
+#                 tkMessageBox.showinfo("Problem with aperture measurement files",beamFileWarningMessage)
         elif ".png" in self.beamImageFile.get() and os.path.isfile(self.beamImageFile.get()):
             if collimation[0] and collimation[1] and pixelSize[0] and pixelSize[1]:
                 filenameWithExt = self.beamImageFile.get().split("/")[-1]
