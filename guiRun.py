@@ -3,7 +3,7 @@
 
 """
 RADDOSE-3D gui template
-First attempt --> 25 March 2015. Last seen on 27 June 2015
+created --> 25 March 2015. Last modified on 16 Jan 2016
 """
 
 from Tkinter import *
@@ -252,7 +252,7 @@ class RADDOSEgui(Frame):
 
     def makeCrystalFrame(self,LabelFrame_Crystal):
         # for crystal frame --> make-a-crystal window
-        
+
         # make labelframe in which a crystal can be loaded and saved
         l = Label(LabelFrame_Crystal,text="Load a crystal",style="labelFrameTitle.TLabel")
         crystLoadLabelFrame = LabelFrame(LabelFrame_Crystal,labelwidget=l,style="MakeABeam.TFrame")
@@ -1858,7 +1858,8 @@ def center(win):
 def main():
     # when the script is run in python, do the following:
     root = Tk()
-    # widthScrSizeFrac = 0.9
+    # GEOMETRY INFO HAS BEN COMMENTED OUT BELOW SO THAT INTERFACE FITS TO CONTENT SIZE, CAN REMOVE IF NEEDED
+    # widthScrSizeFrac = 0.9 
     # heightScrSizeFrac = 0.9
     # width = root.winfo_screenwidth()
     # height = root.winfo_screenheight()
