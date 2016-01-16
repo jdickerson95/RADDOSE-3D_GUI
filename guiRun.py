@@ -182,37 +182,40 @@ class RADDOSEgui(Frame):
         # tabs.pack(expand='yes')
         tabs.grid(row=1,column=0, sticky="nsew",padx=5, pady=0)
 
-        # in body frame make a left, middle and right side
+        # in body frame, include a series of tabs for each part of the dose calculation
         FrameBody_Crystal = Frame(tabs,style="BodyBackground.TFrame")
         FrameBody_Beam = Frame(tabs,style="BodyBackground.TFrame")
         FrameBody_Strategy = Frame(tabs,style="BodyBackground.TFrame")
         FrameBody_Run = Frame(tabs,style="BodyBackground.TFrame")
         FrameBody_Summary = Frame(tabs,style="BodyBackground.TFrame")
 
-        # in middle body frame make a top and bottom
+        # in the crystal frame, make corrsponding labelFrame
         l = Label(FrameBody_Crystal,text="Make-a-crystal",style="labelFrameTitle.TLabel")
         LabelFrame_Crystal = LabelFrame(FrameBody_Crystal,labelwidget=l,style="BodyGroovy.TFrame")
         LabelFrame_Crystal.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
         FrameBody_Crystal.grid_columnconfigure(0, weight=1)
 
+        # in the beam frame, make corrsponding labelFrame
         l = Label(FrameBody_Beam,text="Make-a-beam",style="labelFrameTitle.TLabel")
         LabelFrame_Beam = LabelFrame(FrameBody_Beam,labelwidget=l,style="BodyGroovy.TFrame")
         LabelFrame_Beam.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
         FrameBody_Beam.grid_columnconfigure(0, weight=1)
 
-        # in right body frame make a LabelFrame in which a strategy can be created and run
+        # in the strategy frame, make corrsponding labelFrame
         l = Label(FrameBody_Strategy,text="Design-a-strategy",style="labelFrameTitle.TLabel")
         LabelFrame_Strategy = LabelFrame(FrameBody_Strategy,labelwidget=l,style="BodyGroovy.TFrame")
         LabelFrame_Strategy.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
         FrameBody_Strategy.grid_columnconfigure(0, weight=1)
         FrameBody_Strategy.grid_rowconfigure(0, weight=1)
 
+        # in the run frame, make corrsponding labelFrame
         l = Label(FrameBody_Run,text="Run",style="labelFrameTitle.TLabel")
         LabelFrame_Run = LabelFrame(FrameBody_Run,labelwidget=l,style="BodyGroovy.TFrame")
         LabelFrame_Run.grid(row=0,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
         FrameBody_Run.grid_columnconfigure(0, weight=1)
         FrameBody_Run.grid_rowconfigure(0, weight=1)
 
+        # in the summary frame, make corrsponding labelFrame
         l = Label(FrameBody_Summary,text="Summary/Output Window",style="labelFrameTitle.TLabel")
         LabelFrame_Summary = LabelFrame(FrameBody_Summary,labelwidget=l,style="BodyGroovy.TFrame")
         LabelFrame_Summary.grid(row=1,column=0, sticky="nsew",padx=xWidth, pady=yWidth)
@@ -220,7 +223,7 @@ class RADDOSEgui(Frame):
         FrameBody_Summary.grid_rowconfigure(0, weight=1)
         FrameBody_Summary.grid_rowconfigure(1, weight=1)
 
-        # add the left, middle & right body frames as tabs
+        # add the above body frames as tabs for each part of the dose calc
         tabs.add(FrameBody_Crystal, text='crystal')
         tabs.add(FrameBody_Beam, text='beam')
         tabs.add(FrameBody_Strategy, text='strategy')
@@ -228,7 +231,7 @@ class RADDOSEgui(Frame):
         tabs.add(FrameBody_Summary, text='summary')
 
         #####################################################################################################
-        # for top left body --> help/suggestion dialogue box
+        # for help frame --> help/suggestion dialogue box
         self.varHelpBox = StringVar()
         self.helpObj = help() # create help object to be updated as inputs are loaded
 
@@ -242,7 +245,7 @@ class RADDOSEgui(Frame):
         self.updateHelp()
 
         #####################################################################################################
-        # for bottom left body --> summary/output window
+        # for summary frame --> summary/output window
         self.experimentDict = {}
         self.expNameList = []
 
@@ -330,7 +333,7 @@ class RADDOSEgui(Frame):
         expSaveButton.grid(row=0, column=2, columnspan=1, pady=5, padx=3, sticky=W+E)
 
         #####################################################################################################
-        # for top middle body --> make-a-crystal window
+        # for crystal frame --> make-a-crystal window
 
         # make labelframe in which a crystal can be loaded and saved
         l = Label(LabelFrame_Crystal,text="Load a crystal",style="labelFrameTitle.TLabel")
@@ -422,7 +425,7 @@ class RADDOSEgui(Frame):
 
 
         #####################################################################################################
-        # for bottom middle body --> make-a-beam window
+        # for beam frame --> make-a-beam window
 
         # make labelframe in which a beam can be loaded and saved
         l = Label(LabelFrame_Beam,text="Load a beam",style="labelFrameTitle.TLabel")
@@ -513,7 +516,7 @@ class RADDOSEgui(Frame):
 
 
         #####################################################################################################
-        # for right body --> design-a-strategy window
+        # for strategy frame --> design-a-strategy window
 
         # make labelframe in which a crystal can be chosen from list of added crystals
         l = Label(LabelFrame_Strategy,text="Choose a crystal",style="labelFrameTitle.TLabel")
