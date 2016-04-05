@@ -176,7 +176,7 @@ class PremadeInputMakerWindow():
                 if beamFileInputIsFine:
                     #Get a full list of all the variables representing file names
                     fullFileVarList = [self.rd3dInputFile.get(), self.sampleModelFile.get(),
-                                       self.sequenceFile.get(), self.beamImageFile]
+                                       self.sequenceFile.get(), self.beamImageFile.get()]
 
                     #Determine which of the files have non empty strings and put those in a
                     #separate list
@@ -406,7 +406,7 @@ Please make sure that it is not being used by any other processes.
 #THE CODE COMMENTED BELOW STOPS PREMADE INPUT FILES FROM WORKING IF THE USER
 #DOESN'T GIVE AN IMAGE FILE. THIS CAN BE THE CASE IF THEY OPT TO USE A TOPHAT OR
 #GAUSSIAN PROFILE BEAM SO I'VE COMMENTED THIS PART OF THE CODE OUT. PERHAPS A
-#CHECK NEEDS TO BE WRITTEN ELSEWHERE TO CHECK FOR SENSIBLE INPUT. 
+#CHECK NEEDS TO BE WRITTEN ELSEWHERE TO CHECK FOR SENSIBLE INPUT.
 #             else:
 #                 beamFileInputIsFine = False
 #                 beamFileWarningMessage = """Not all the necessary files required to process a beam image were given.
