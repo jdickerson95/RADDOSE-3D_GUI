@@ -29,7 +29,7 @@ class crystalMakerWindow(Frame):
 
         # Crystal input --> absorption coefficient
         self.crystalAbsCoeffType = StringVar()
-        self.crystalAbsCoeffType.set('Average protein composition')
+        self.crystalAbsCoeffType.set('User defined composition')
 
         #Crystal input --> container type
         self.containerType = StringVar()
@@ -262,9 +262,9 @@ class crystalMakerWindow(Frame):
         CrystalinputLabel4 = Label(self.currentStrategyCrystal,text="Absorption Coefficient",style="inputBoxes.TLabel")
         CrystalinputLabel4.grid(row=3,column=0,sticky=E,pady=5,padx=6)
         self.hoverAbsCoeff = HoverInfo(CrystalinputLabel4, self.helpText.absCoeffText)
-        self.crystAbsCoeffDict = {'Average protein composition'     : "Average",
+        self.crystAbsCoeffDict = {'User defined composition'        : "RD3D",
+								  'Average protein composition'     : "Average",
                                   'Using PDB code'                  : "EXP",
-                                  'User defined composition'        : "RD3D",
                                   'RADDOSE version 2'               : "RDV2",
                                    'using sequence file'             : "Sequence",
                                   'SAXS (user defined composition)' : "SAXS",
